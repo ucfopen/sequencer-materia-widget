@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<questionanswerdatagrid:TextInputItem xmlns:mx="http://www.adobe.com/2006/mxml"
+                                      xmlns:questionanswerdatagrid="materia.components.questionAnswerDataGrid.*">
+<mx:Script>
+<![CDATA[
+	import mx.controls.TextArea;
+	import mx.core.IUITextField;
+	import mx.core.ScrollPolicy;
+	import mx.core.UIComponent;
+	import mx.core.mx_internal;
+	import mx.events.ScrollEvent;
+	use namespace mx_internal;
+	//--------------------------------------------------------------------------
+	//
+	//  Variables
+	//
+	//--------------------------------------------------------------------------
+	[Embed(source="/assets/fonts/lacurg__.ttf", fontName="___Lacuna", unicodeRange='U+0041-U+005A, U+0021-U+003F, U+0061-U+007E')]
+	public static const lacurgFont:Class;
+	[Embed (source="/assets/images/sequencing_object.png")]
+	private static const IMAGE_TILE:Class;
+	private static const IMAGE_WIDTH:int = 164;
+	private static const IMAGE_HEIGHT:int = 61;
+	private static const TEXT_PADDING:int = 8;
+	private static const CHARACTER_LIMIT:int = 64;
+	private static const MIN_TEXT_SIZE:Number = 10;
+	private static const MAX_TEXT_SIZE:Number = 20;
+	private static const TEXTSTYLE_CUSTOM:Number  = 3;
+	public var toolTipIcon:UIComponent;
+	//--------------------------------------------------------------------------
+	//
+	//  Overridden methods
+	//
+	//--------------------------------------------------------------------------
+	public override function set data(value:Object):void
+	{
+		super.data = value;
+		callLater(resizeTextArea, [this.mainField]);
+		callLater(updateToolTipIcon);
+		if(mainField != null)
+		{
+			mainField.setStyle("textAlign", "center");
+			mainField.setStyle("borderStyle", "none");
+		}
+		this.setStyle("backgroundImage", _isPlaceholder == true? null : IMAGE_TILE);
+	}
+	public override function onChange():void
+	{
+		super.onChange();
+		resizeTextArea(mainField);
+	}
+	public override function setTextStyle(textStyle:int):void
+	{
+		if(_currentTextStyle != TEXTSTYLE_CUSTOM)
+		{
+			_currentTextStyle = TEXTSTYLE_CUSTOM;
+			mainField.setStyle('fontStyle', 'normal');
+			mainField.setStyle('color', '0');
+		}
+	}
+	public override function newInstance():*
+	{
+		// get instance of super
+		var textInput:TextInputItem = TextInputItem(super.newInstance());
+		// create new instance of current class
+		var result:SequencerInputItem = new SequencerInputItem();
+		// copy all properties from super to instance of current class
+		this.cloneTo(result);
+		// apply customizations
+		result.backgroundColor_error =
+		result.backgroundColor_normal = NaN;
+		result.characterLimit = CHARACTER_LIMIT;
+		result.characterLimitVisible = false;
+		result.placeHolderText = "Click To Add Item";
+		// Listen to changes on these input fields
+		result.onCompleteCallback = function():void
+		{
+			var inputItem:SequencerInputItem = SequencerInputItem(this);
+			// Set Text Format
+			var field:IUITextField = inputItem.mainField.getTextField();
+			field.setTextFormat(new TextFormat("___Lacuna", 20, 0x240606, null, null, null, null, null, 'center'));
+			inputItem.mainField.setStyle("fontFamily", "___Lacuna");
+			inputItem.mainField.setStyle("fontSize", 20);
+			inputItem.mainField.setStyle("textAlign", "center");
+			inputItem.mainField.setStyle("color", 0x240606);
+			inputItem.mainField.setStyle("top", null);
+			inputItem.mainField.setStyle("bottom", null);
+			inputItem.mainField.setStyle("left", null);
+			inputItem.mainField.setStyle("right", null);
+			inputItem.mainField.setStyle("verticalCenter", 0);
+			inputItem.mainField.setStyle("horizontalCenter", 0);
+			inputItem.mainField.addEventListener(ScrollEvent.SCROLL, killScrolling, false, 0, true);
+			inputItem.mainField.height = IMAGE_HEIGHT;
+			inputItem.mainField.width = IMAGE_WIDTH - TEXT_PADDING;
+			inputItem.toolTipIcon = new UIComponent();
+			inputItem.toolTipIcon.addChild(new ToolTipIcon());
+			inputItem.toolTipIcon.setStyle("horizontalCenter", IMAGE_WIDTH / 2 - ToolTipIcon.WIDTH / 2);
+			inputItem.toolTipIcon.setStyle("verticalCenter", -IMAGE_HEIGHT / 2 - ToolTipIcon.HEIGHT / 4);
+			inputItem.toolTipIcon.visible = false;
+			inputItem.addChild(inputItem.toolTipIcon);
+			if(focusManager != null) { inputItem.mainField.focusManager.showFocusIndicator = false; }
+			inputItem.mainField.setStyle("focusThickness", 0);
+			field.autoSize = TextFieldAutoSize.CENTER;
+			field.antiAliasType = AntiAliasType.ADVANCED;
+			inputItem.mainField.verticalScrollPolicy = ScrollPolicy.OFF;
+			inputItem.mainField.wordWrap = true;
+		}
+		// return instance of current class
+		return result;
+	}
+	public function updateToolTipIcon():void
+	{
+		if(this.toolTipIcon != null && data.question.options.hasOwnProperty("description"))
+			this.toolTipIcon.visible = data.question.options.description.length > 0;
+	}
+	private static function killScrolling(e:Event):void
+	{
+		var field:TextArea = TextArea(e.currentTarget);
+		field.callLater(function():void { field.verticalScrollPosition = 0; });
+	}
+	private function resizeTextArea(target:TextArea):void
+	{
+		if(target == null) { return; }
+		var field:IUITextField = target.getTextField();
+		// set initial text size
+		target.setStyle("fontSize", 20);
+		var format:TextFormat = field.getTextFormat();
+		format.size = 20;
+		field.setTextFormat(format);
+		// find a good size that fits
+		shrinkToFit(target);
+		// center at new size
+		field.autoSize = TextFieldAutoSize.CENTER;
+		var h:Number = field.height;
+		field.autoSize = TextFieldAutoSize.NONE;
+		if(h > IMAGE_HEIGHT) { h = IMAGE_HEIGHT; }
+		if(field.textHeight < 10) { h = IMAGE_HEIGHT / 2; }
+		target.height = h;
+		if(field.textWidth > IMAGE_WIDTH)
+		{
+			target.wordWrap = true;
+			field.height = h;
+			field.multiline = true;
+			field.wordWrap = true;
+		}
+	}
+	private function shrinkToFit(target:TextArea):void
+	{
+		var field:IUITextField = target.getTextField();
+		// stop when text fits or when we reach min text size
+		if(field.textHeight <= IMAGE_HEIGHT - 5 || Number(target.getStyle("fontSize")) <= MIN_TEXT_SIZE)
+		{
+			return;
+		}
+		// shrink text
+		var format:TextFormat = field.getTextFormat();
+		format.size = Math.max(MIN_TEXT_SIZE, Number(format.size) - 2);
+		field.setTextFormat(format);
+		trace("\tSet To " + format.size);
+		target.setStyle("fontSize", format.size);
+		// continue shrinking text
+		shrinkToFit(target);
+	}
+]]>
+</mx:Script>
+</questionanswerdatagrid:TextInputItem>
