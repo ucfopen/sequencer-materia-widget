@@ -1,0 +1,35 @@
+---
+general:
+  name: Sequencer
+  group: Materia
+  height: 573
+  width: 800
+  in_catalog: Yes
+  is_editable: Yes
+  is_playable: Yes
+  is_qset_encrypted: Yes
+  is_answer_encrypted: Yes
+  is_storage_enabled: No
+  api_version: 2
+files:
+  creator: swf/sequencer-creator.swf
+  player: swf/sequencer-engine.swf
+  flash_version: 10
+score:
+  is_scorable: Yes
+  score_module: Sequencer
+  score_type: SERVER-CLIENT
+meta_data:
+  features:
+    - Customizable
+    - Scorable
+  supported_data:
+    - Question/Answer
+  about: >
+    Sequencer is about teaching ordered
+    events and sequences. Items are
+    presented to students in a random for
+    them to re-arrange.
+  excerpt: >
+    Students must order a random set of
+    words or phrases in the correct order.
