@@ -137,7 +137,7 @@ class Test_Score_Modules_Sequencer extends \Basetest
 			}');
 	}
 
-	protected function _makeWidget($penalty = 15)
+	protected function _make_widget($penalty = 15)
 	{
 		$this->_asAuthor();
 
@@ -150,7 +150,7 @@ class Test_Score_Modules_Sequencer extends \Basetest
 
 	public function test_check_answer()
 	{
-		$inst = $this->_makeWidget();
+		$inst = $this->_make_widget();
 		$play_session = \Materia\Api::session_play_create($inst->id);
 		$qset = \Materia\Api::question_set_get($inst->id, $play_session);
 
@@ -208,16 +208,16 @@ class Test_Score_Modules_Sequencer extends \Basetest
 		$this->assertEquals(100, $this_score[0]['overview']['score']);
 	}
 
-	public function test_checkPenalty()
+	public function test_check_penalty()
 	{
 		$penalty = 15;
-		$inst = $this->_makeWidget($penalty);
+		$inst = $this->_make_widget($penalty);
 		$play_session = \Materia\Api::session_play_create($inst->id);
 		$qset = \Materia\Api::question_set_get($inst->id, $play_session);
 
 		$logs = array();
 		$logs[] = json_decode('{
-			"text":"Used %n attempt%s",
+			"text":"attempt_penalty",
 			"type":1001,
 			"value":-'.$penalty.',
 			"item_id":"0",
