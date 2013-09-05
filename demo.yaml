@@ -9,6 +9,7 @@ qset:
         name: 'American Conflicts from 1776 - 1975'
         items:
           - 
+            materiaType: question
             id: null
             type: QA
             questions:
@@ -25,6 +26,7 @@ qset:
                 Britain to govern them without
                 representation.
           - 
+            materiaType: question
             id: null
             type: QA
             questions:
@@ -35,8 +37,17 @@ qset:
                 value: 100
                 text: 2
             options:
-              description: "Americans declared war in 1812 for a number of reasons, including a desire for expansion into the Northwest Territory, trade restrictions because of Britain's ongoing war with France, impressment of American merchant sailors into the Royal Navy, British support of American Indian tribes against American expansion, and the humiliation of American honour."
+              description: >
+              Americans declared war in 1812 for a number
+              of reasons, including a desire for expansion
+              into the Northwest Territory, trade restrictions 
+              because of Britain's ongoing war with France, 
+              impressment of American merchant sailors 
+              into the Royal Navy, British support of 
+              American Indian tribes against American 
+              expansion, and the humiliation of American honour.
           - 
+            materiaType: question
             id: null
             type: QA
             questions:
@@ -52,6 +63,7 @@ qset:
                 States and Mexico in the wake of the
                 U.S. annexation of Texas
           - 
+            materiaType: question
             id: null
             type: QA
             questions:
@@ -68,6 +80,7 @@ qset:
                 formed the Confederate States of
                 America.
           - 
+            materiaType: question
             id: null
             type: QA
             questions:
@@ -82,6 +95,7 @@ qset:
                 Includes the Charge of the Rough Riders,
                 at San Juan Hill.
           - 
+            materiaType: question
             id: null
             type: QA
             questions:
@@ -96,6 +110,7 @@ qset:
                 More than 9 million combatants were
                 killed in this conflict.
           - 
+            materiaType: question
             id: null
             type: QA
             questions:
@@ -110,6 +125,7 @@ qset:
                 Included two opposing military
                 alliances, the Allies and the Axis.
           - 
+            materiaType: question
             id: null
             type: QA
             questions:
@@ -124,6 +140,7 @@ qset:
                 This war was the result of the physical
                 division of Korea.
           - 
+            materiaType: question
             id: null
             type: QA
             questions:
