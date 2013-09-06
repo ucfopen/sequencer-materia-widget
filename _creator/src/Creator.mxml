@@ -91,7 +91,12 @@
 			var qSet:QuestionSet = new QuestionSet(instanceTitle)
 			var qGroup:QuestionGroup = generateQSET() as QuestionGroup
 			qSet.addGroup(generateQSET() as QuestionGroup)
-			ExternalInterface.call("__materia_flash_save", instanceTitle, qSet, questionSetVersion)
+
+
+			var qsetObject:Object = qSet.convertToObject()
+			scrubErrorsFromQSet(qsetObject);
+
+			ExternalInterface.call("__materia_flash_save", instanceTitle, qsetObject, questionSetVersion)
 		}
 		else
 		{
