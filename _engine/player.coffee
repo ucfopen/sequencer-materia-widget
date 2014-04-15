@@ -107,10 +107,38 @@ Namespace('Sequencer').Engine = do ->
 		# we don't care if nothing is selected
 		return if not _curterm?
 
-		# apply easing (for snap back animation)
-		#_curterm.className = 'tile ease'
+		if not e.clientX
+			e.clientX = e.changedTouches[0].clientX
+			e.clientY = e.changedTouches[0].clientY
+
+		if e.clientX > 360
+			# apply easing (for snap back animation)
+			#_curterm.className = 'tile ease'
+			if _numTiles is 0
+				console.log "adding show"
+				$('#orderInstructions').addClass 'show'
+
+			_tilesInSequence++
+			console.log "number in the dropTile section " + _tilesInSequence + " of " + _numTiles
+			
+			_curterm.style.transform =
+			_curterm.style.msTransform =
+			_curterm.style.webkitTransform = 'translate(590px,' + (80  * (_tilesInSequence - 1) - 20) + 'px)'
+
+			newNumbers = _.template $('#numberBar-numbers').html()
+			number = $(newNumbers number: _tilesInSequence)
+			$('#numberBar').append number
+			number.addClass 'show'
+
+			if _tilesInSequence == _numTiles
+				_tilesSequenced()
+
+			if _numTiles > 0 
+				console.log "adding hide"
+				$('#orderInstructions').addClass 'hide'			
 
 		_curterm = null
+
 
 		# prevent iPad/etc from scrolling
 		e.preventDefault()
