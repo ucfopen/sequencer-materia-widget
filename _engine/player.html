@@ -40,8 +40,8 @@
 			<!-- tiles -->
 			<% for(var t in tiles) { var tile = tiles[t]; %>
 				<div class="tile" data-id="<%= tile.id %>" id="<%= tile.id %>" tabindex="<%= parseInt(t, 10)+1+(tiles.length) %>">
-				<p class="tileText"><%= tile.name %></p>
-				<div class="clue" data-id="<%= tile.id %>"></div>
+				<%= tile.name %>
+				<!--<div class="clue" data-id="<%= tile.id %>"></div>-->
 				</div>
 			<% } %>
 		</section>

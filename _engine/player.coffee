@@ -17,16 +17,92 @@ Namespace('Sequencer').Engine = do ->
 	_dropOrder				= []		# Order to drop the tiles based on randomly calculated z-index
 	_playDemo				= false 	# Boolean for demo on/off
 
+	# zIndex of the terms, incremented so that the dragged term is always on top
+	_zIndex					= 11000
+
+	# the current dragging term
+	_curterm				= null
+
 	# Called by Materia.Engine when your widget Engine should start the user experience.
 	start = (instance, qset, version = '1') ->
 		_qset = qset
 		if _playDemo 
 			_startDemo()
 
-		_drawBoard(instance.name)
+		# attach document listeners
+		document.addEventListener('touchend', _mouseUpEvent, false)
+		document.addEventListener('mouseup', _mouseUpEvent, false)
+		document.addEventListener('MSPointerUp', _mouseUpEvent, false)
+		document.addEventListener('mouseup', _mouseUpEvent, false)
+		document.addEventListener('touchmove', _mouseMoveEvent, false)
+		document.addEventListener('MSPointerMove', _mouseMoveEvent, false)
+		document.addEventListener('mousemove', _mouseMoveEvent, false)
 
+		_drawBoard(instance.name)
+		
 		# Set player height.
 		Materia.Engine.setHeight()
+	
+	# when a term is mouse downed
+	_mouseDownEvent = (e) ->
+		e = window.event if not e?
+		
+		# set current dragging term
+		_curterm = e.target
+		_curterm.style.zIndex = ++_zIndex
+
+		# disable easing while it drags
+		#e.target.className = 'tile'
+
+		# if it's been placed, remove that association
+		if _curterm.getAttribute('data-placed')
+			_labelTextsByQuestionId[_curterm.getAttribute('data-placed')] = ''
+			_curterm.setAttribute('data-placed','')
+
+		# don't scroll the page on an iPad
+		e.preventDefault()
+		e.stopPropagation() if e.stopPropagation?
+
+	# when the widget area has a cursor or finger move
+	_mouseMoveEvent = (e) ->
+		# if no term is being dragged, we don't care
+		return if not _curterm?
+
+		e = window.event if not e?
+
+		# if it's not a mouse move, it's probably touch
+		if not e.clientX
+			e.clientX = e.changedTouches[0].clientX
+			e.clientY = e.changedTouches[0].clientY
+
+		x = (e.clientX - 30)
+		x = 40 if x < 40
+		x = 670 if x > 670
+		y = (e.clientY - 90)
+		y = 0 if y < 0
+		y = 500 if y > 500
+
+		# move the current term
+		_curterm.style.transform =
+		_curterm.style.msTransform =
+		_curterm.style.webkitTransform = 'translate(' + x + 'px,' + y + 'px)'
+
+		# don't scroll on iPad
+		e.preventDefault()
+		e.stopPropagation() if e.stopPropagation?
+
+	# when we let go of a term
+	_mouseUpEvent = (e) ->
+		# we don't care if nothing is selected
+		return if not _curterm?
+
+		# apply easing (for snap back animation)
+		#_curterm.className = 'tile ease'
+
+		_curterm = null
+
+		# prevent iPad/etc from scrolling
+		e.preventDefault()
 	
 	_startDemo = ->
 		console.log "starting demo"
@@ -81,7 +157,7 @@ Namespace('Sequencer').Engine = do ->
 	# Draw the main board.
 	_drawBoard = (title) ->
 		# Disables right click.
-		document.oncontextmenu = -> false    
+		#document.oncontextmenu = -> false    
 
 		theTiles = _makeTiles _qset.items
 
@@ -114,7 +190,7 @@ Namespace('Sequencer').Engine = do ->
 
 		# Drop the tiles on the board.
 		_makeTilesFall 1, dO unless _playDemo
-		
+		###
 		$('.tile').on 'mouseover', ->
 			unless $(this).hasClass 'fall'
 				$(this).addClass 'hover'
@@ -122,31 +198,11 @@ Namespace('Sequencer').Engine = do ->
 		$('.tile').on 'mouseout', ->
 			unless $(this).hasClass 'fall'
 				$(this).removeClass 'hover'
+		###
 
-		$('.tile').draggable
-			connectToSortable: '#orderArea', '#tileSelection'
-			containment: '#dragContainer' 
-			zIndex: '100'
-			stack: 'true'
-			drag: _dragTile
-
-		$('#tileSection').sortable
-			accept: '.tile'
-			cancel: '.nondraggable'
-			connectWith: '#orderArea'
-			# receive: _dropTilesInTileSection
-		 	# axis: 'y'
-
-		$('#orderArea').sortable
-		 	helper: 'clone'
-		 	cancel: '.nondraggable'
-		 	connectWith: '#tileSection'
-		 	# placeholder: 'placeholder'
-		 	# axis: 'y'
-		 	receive: _dropTileInSequenceArea
-			# connectWith: '#tileSection'
-			# start: _orderDragStart
-			# change: _orderDragChange
+		$('.tile').on 'touchstart', _mouseDownEvent
+		$('.tile').on 'MSPointerDown', _mouseDownEvent
+		$('.tile').on 'mousedown', _mouseDownEvent
 
 		# Reveal the clue for clicked tile
 		$('#dragContainer').on 'click', '.clue', ->
@@ -222,11 +278,8 @@ Namespace('Sequencer').Engine = do ->
 			_tiles[tile.id].ypos = _positions[_positions.length-1]
 
 			$('#'+tile.id).css
-				'position': 'absolute'
-				'left': _tiles[tile.id].xpos + 'px'
-				'bottom': _tiles[tile.id].ypos + 'px'
 				'transform': 'rotate('+_tiles[tile.id].angle+'deg)'
-				'z-index': _tiles[tile.id].zInd
+				'z-index': ++_zIndex
 
 			# resize text to fit if needed
 			if textLength >= 30 
@@ -400,9 +453,6 @@ Namespace('Sequencer').Engine = do ->
 		_tilesInSequence++
 		console.log "number in the dropTile section " + _tilesInSequence + " of " + _numTiles
 		
-		$('.tile[data-id='+_currActiveTile+']').removeClass 'ui-draggable-dragging'
-		$('.tile[data-id='+_currActiveTile+']').removeClass 'ui-draggable'
-		$('.tile[data-id='+_currActiveTile+']').removeClass 'ui-droppable'
 
 		$('.tile[data-id='+_currActiveTile+']').css
 			'position': 'relative'
