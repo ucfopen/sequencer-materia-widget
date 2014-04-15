@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<!-- INJECTS IE CLASSES ONTO HTML TAG -->
+<!--[if IE 8 ]>    <html class="IE8"> <![endif]-->
+<!--[if IE 9 ]>    <html class="IE9"> <![endif]-->
+<!--[if (gt IE 9)|!(IE)]><!--> <html class=""> <!--<![endif]-->
+	<head>
+		<title>Sequencer Widget Engine</title>
+
+		<meta charset="utf-8" />
+
+		<!-- STYLESHEETS -->
+		<link rel="stylesheet" type="text/css" href="player.css">
+
+		<!-- REQUIRED MATERIA JAVASCRIPT -->
+		<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+		<script type="text/javascript" src="/js/materia.enginecore.js"></script>
+		<script type="text/javascript" src="/js/materia.score.js"></script>
+
+		<!-- OPTIONAL MATERIA JAVASCRIPT -->
+  		<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+		<!-- <script type="text/javascript" src="/js/materia.storage.manager.js"></script> -->
+		<!-- <script type="text/javascript" src="/js/materia.storage.table.js"></script> -->
+
+		<!-- YOUR PREREQUISITES -->
+		<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.2/underscore-min.js"></script>
+		<!-- MAIN PLAYER SCRIPT -->
+		<script src="player.js"></script>
+	</head>
+
+<body>
+<div class='fade'></div>
+<script type="text/template" id="t-board"><div class="board">
+	<header>
+		<h3>Sequence:</h3>
+		<section id="widgetTitle"><%= title %></section>
+		<hr>
+	</header>
+	<div id="dragContainer">
+		<section id="tileSection">
+			<!-- tiles -->
+			<% for(var t in tiles) { var tile = tiles[t]; %>
+				<div class="tile" data-id="<%= tile.id %>" id="<%= tile.id %>" tabindex="<%= parseInt(t, 10)+1+(tiles.length) %>">
+				<p class="tileText"><%= tile.name %></p>
+				<div class="clue" data-id="<%= tile.id %>"></div>
+				</div>
+			<% } %>
+		</section>
+		<aside id="numberBar" class="nondraggable"></aside>
+		<section id="orderArea">
+			<div id="orderInstructions">Drag and organize tiles here</div>
+		</section>
+		<div id="submitHolder" class="nondraggable">
+			<div id="submit" class="nondraggable">Submit Sequence</div>
+		</div>
+
+	</div>
+	<footer id="score-area"><h4 id="score-text">Score: <span id="score"><%= score %></span></h4><h5><span id="score-info">(-<%= penalty %> for an incorrect sequence)</span></h5>
+	</footer>
+</div>
+</script>
+
+<!-- tiles -->
+<!--
+<script type="text/template" id="t-tile"><div class="tile-slider">
+		<div role="button" class="tile" data-id="<%= tile.id %>" tabindex="<%= parseInt(i, 10)+1+(tiles.length) %>">
+			<p class="tile-text"><%= tile.questions[0].text %></p>
+			<div class="clue"></div>
+		</div>
+	</div>
+</script>
+-->
+
+<!-- clues -->
+<script type="text/template" id="tile-clue-window"><div id="clue-popup">
+		<div class="close">[ close ]</div>
+		<h3 class="clueTitle"><%= name %></h3>
+		<aside class="tile-clue-text">
+			<p class="clueDescription"><%= clue %></p>
+		</aside>
+	</div>
+</script>
+
+<!-- numbers -->
+<script type="text/template" id="numberBar-numbers"><div class="numbers">
+		<%= number %>
+	</div>
+</script>
+
+<!-- tile slots -->
+<script type="text/template" id="slot"><div class="tileSlot">
+		<p>This text belongs to the tileSlot <%= number %></p>		
+	</div>
+</script>
+
+<!-- message window (Finished) -->
+<script type="text/template" id="message-window"><div class="nondraggable" id="message">
+		<h2><%= title %></h2>
+		<p><%= messageText %></p>
+	</div>
+</script>
+
+<!-- message window (Tutorial) -->
+<script type="text/template" id="demo-window"><div id="demo">
+		<div id="popupWindowHeader">
+			<h3>Sequencer!</h3>
+			<h4>Put em in order</h4>
+		</div>
+		<div id="demoArea">
+			<div id="demoTitle"><%= demoTitle %></div>
+			<div id="demoFooter"></div>
+			<div class="demoTile move" id="dt1">1</div>
+			<div class="demoTile move" id="dt2">2</div> 
+			<div class="demoTile move" id="dt3">3</div> 
+			<div id="demoTileSection"></div>
+			<div id="demoOrderArea"></div>
+			<div id="demoNumberBar"></div>
+			<div id="demoSubmitButton" class="hover">Submit</div>
+			<div id="demoMouse"></div>
+			<div id="demoFinish" class="show">Score:
+				<div id="demoScore">100%</div>
+			</div>
+			<div id="playInstructions">
+				<h3>How to play:</h3>
+				<p>Order the tiles correctly in the sequence list.</p>
+				<p>You will be deducted <span class="demoDeduction"><%= penalty %> points</span> for each incorrect sequence you submit.</p>
+			</div>	
+			<div class="demoButton">Play Sequencer</div>
+		</div>
+	</div>
+</script>
+
+<!-- score results -->
+<script type="text/template" id="results-popup"><section id="resultsOuter">
+		<div id="popupWindowHeader">
+			<h3>Sequencer!</h3>
+			<h4>Put 'em in order</h4>
+		</div>
+		<div id="resultsInner">
+			<h5>You have</h5>
+			<div id="flipNumberContainer">
+				<div id="rightDigit">
+					<div class="flipResultNumberTop">
+						<div id="numberTop">0</div>
+					</div>
+
+					<div class="flipResultNumberTopUnder">
+						<div id="numberTopUnder">0</div>
+					</div>
+					
+					<div class="flipResultNumberBottom">
+						<div id="numberBottom">0</div>
+					</div>
+				
+					<div class="flipResultNumberBottomUnder">
+						<div id="numberBottomUnder">0</div>
+					</div>
+				</div>
+
+				<div id="leftDigit">
+					<div class="flipResultNumberTopDouble">
+						<div id="numberTopDouble">0</div>
+					</div>
+
+					<div class="flipResultNumberTopUnderDouble">
+						<div id="numberTopUnderDouble">0</div>
+					</div>
+					
+					<div class="flipResultNumberBottomDouble">
+						<div id="numberBottomDouble">0</div>
+					</div>
+				
+					<div class="flipResultNumberBottomUnderDouble">
+						<div id="numberBottomUnderDouble">0</div>
+					</div>
+				</div>
+			</div>
+		
+			<div id="textBelowNumbers">
+				<h5>items in the right spot</h5>
+				<h6>out of <%= total %>.</h6>
+			</div>
+		</div>
+		<div id="resultsBox">
+			<span id="lostPointsMessage">You lost <span id="pointsLostCircle"><%= penalty %></span> points.</span>
+			<div id="correctMessage">Great Job!</div>
+			<div id="allAttemptsMessage">You lost all points.</div>
+			<div id="resultsButton"></div> 
+		</div>
+	</section>
+</script>
+
+
+<!-- INITIALIZE -->
+	<script type="text/javascript">
+		Materia.Engine.start(Sequencer.Engine);
+	</script>
+
+	
+	</body>
+</html>

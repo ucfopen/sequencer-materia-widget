@@ -2,8 +2,8 @@
 general:
   name: Sequencer
   group: Materia
-  height: 573
-  width: 800
+  height: 548
+  width: 750
   in_catalog: Yes
   is_editable: Yes
   is_playable: Yes
@@ -12,8 +12,8 @@ general:
   is_storage_enabled: No
   api_version: 2
 files:
-  creator: swf/sequencer-creator.swf
-  player: swf/sequencer-engine.swf
+  creator: creator.html
+  player: player.html
   flash_version: 10
 score:
   is_scorable: Yes
@@ -24,11 +24,7 @@ meta_data:
     - Scorable
   supported_data:
     - Question/Answer
-  about: >
-    Sequencer is about teaching ordered
-    events and sequences. Items are
-    presented to students in a random for
-    them to re-arrange.
+  about: 'Sequencer is about teaching ordered events and sequences. Items are presented to students in a random for them to re-arrange.'
   excerpt: >
     Students must order a random set of
     words or phrases in the correct order.
