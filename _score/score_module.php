@@ -19,14 +19,16 @@
  * @package	    Main
  * @subpackage  scoring
  * @category    Modules
-  * @author      ADD NAME HERE
+  * @author     ADD NAME HERE
  */
 
 namespace Materia;
 
 class Score_Modules_Sequencer extends Score_Module
 {
-	const ATTEMPT_PENALTY = 'attempt_penalty';
+
+	private $new_logs = [];
+	private $q_ids = null;
 
 	public function check_answer($log)
 	{
@@ -35,25 +37,42 @@ class Score_Modules_Sequencer extends Score_Module
 			$q = $this->questions[$log->item_id];
 			foreach ($q->answers as $answer)
 			{
-				if ($log->text == $answer['text']) return $answer['value'];
+				if (trim($log->text) == trim($answer['text'])) return $answer['value'];
 			}
-		}
-
-		if (isset($this->questions[$log->item_id]))
-		{
-			$q = $this->questions[$log->item_id];
-			return $log->text == $q->answers[0]['text'] ? 100 : 0;
 		}
 
 		return 0;
 	}
 
-	protected function handle_log_widget_interaction($log)
+	protected function handle_log_question_answered($log)
 	{
-		if ($log->text == $this::ATTEMPT_PENALTY)
-		{
-			array_push($this->global_modifiers, $log->value);
-		}
+		if ($this->q_ids == null) $this->q_ids = array_keys($this->questions);
+
+		$this->total_questions++;
+		$this->verified_score += $this->check_answer($log); // score the question and add it to the total
+
+		// find current log's index from original quetion's array and add to new array
+		$q_index = array_search($log->item_id, $this->q_ids);
+		$this->new_logs[$q_index] = $log;
 	}
 
+	protected function calculate_score()
+	{
+		ksort($this->new_logs);
+		$this->logs = $this->new_logs;
+
+		$global_mod = array_sum($this->global_modifiers);
+		// if ( ! is_numeric($mod)) $mod = 0;
+		if ($this->total_questions > 0)
+		{
+			$points = $this->verified_score + $global_mod * $this->total_questions;
+			$this->calculated_percent = $points / $this->total_questions;
+		}
+		else
+		{
+			$points = 100 + $this->verified_score + $global_mod;
+			$this->calculated_percent = $points;
+		}
+		if ($this->calculated_percent < 0) $this->calculated_percent = 0;
+	}
 }

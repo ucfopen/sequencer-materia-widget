@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<!-- INJECTS IE CLASSES ONTO HTML TAG -->
+<!--[if IE 8 ]>    <html class="IE8"> <![endif]-->
+<!--[if IE 9 ]>    <html class="IE9"> <![endif]-->
+<!--[if (gt IE 9)|!(IE)]><!--> <html class=""> <!--<![endif]-->
+	<head>
+		<title>Sequencer Widget Engine</title>
+
+		<meta charset="utf-8" />
+
+		<!-- STYLESHEETS -->
+		<link rel="stylesheet" type="text/css" href="creator.css">
+
+		<!-- REQUIRED MATERIA JAVASCRIPT -->
+		<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+		<script type="text/javascript" src="/js/materia.creatorcore.js"></script>
+
+		<!-- YOUR PREREQUISITES -->
+		<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+		<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.2/underscore-min.js"></script>
+		<link href='http://fonts.googleapis.com/css?family=Lato:300,400,100,700' rel='stylesheet' type='text/css'>
+		<!-- MAIN CREATOR SCRIPT -->
+		<script src="creator.js"></script>
+	</head>
+
+	<body>
+		<div id='fader' class='dim'></div>
+		<header>
+			<label>
+				<img src='assets/materialogo.png'></img>
+			</label>
+			<input type="text" id="title" placeholder="My Sequencer Widget"/>
+			<div id='options'>
+				<h5>Options</h5>
+				<div id='assessmentDetails' class='show'>
+					<h6 id='mode'>Assessment Mode</h6>
+					<div class='optionsDot'></div>
+					<h6 id='numTries'>10 free Tries</h6>
+					<div class='optionsDot'></div>
+					<h6 id='penalty'>5pt Penalty</h6>
+				</div>
+				<div id='practiceDetails'>
+					<h6 id='mode'>Practice Mode</h6>
+				</div>
+			</div>
+			<div id='verticalBar'></div>
+		</header>
+		<div id='creatorBody'>
+			<div id='tileSection'>
+				<section id='columnSection' class='hidden'>
+					<h1 class='tileColumnTitle'>Tile</h1>
+					<h1 class='tileColumnTitle'>Optional Information</h1>
+				</section>
+				<div id='addSliderButton'>
+					<div class='icon-plus'></div>
+					Add Step
+				</div>
+				<div id='arrow'><p>Click here to add the first step</p></div>
+				<div style='clear:both'></div>
+			</div>
+		</div>
+
+		<!--Tile Slider Template -->
+		<script type="text/template" id="t-slide-info"><div class="tileInfoSlider">
+				<div class="block">
+					<div class='number'><%= tileNum %></div>
+					<div class='addTileDot'></div>
+					<div class='addInbetween'>
+						<div class='icon-plus'></div>
+					</div>
+				</div>
+				<div class='tile'>
+					<textarea class="tile-text nondraggable" type="text" placeholder='<%= tileText %>'></textarea>
+				</div>
+				<div class='optionalInfo'>
+					<textarea type='text' placeholder='<%= clueText %>'></textarea>
+				</div>
+				<div class='remove'>
+					<div class='icon-close'></div>
+				</div>
+				<div class='peak'></div>
+			</div>
+		</script>
+
+		<!-- numbers -->
+		<script type="text/template" id="numberBar-numbers"><div class="block">
+				<div class=number><%= tileNum %></div>
+				<div class='addTileDot'></div>
+				<div class='addTileHover2'></div>
+				<div class='addTileHover'>+</div>
+			</div>
+		</script>
+
+		<!-- options -->
+		<div id="optionsPopup" class='popup'>
+			<h2>Options</h2>
+			<div class='section'>
+				<h4 id='gameModeTitle'>Mode</h4>
+				<div id='modeContainer'>
+					<div id='modeSlider'></div>
+					<div id='practiceMode'>Practice</div>
+					<div id='assessmentMode' class='active'>Assessment</div>
+				</div>
+			</div>
+			<p>In <b>practice mode</b>, students will have unlimited attempts to submit the correct sequence. Every student who submits the correct sequence will receive a perfect score.</p>
+			<p>In <b>assessment mode</b>, students will be pernalized for each incorrect sequence they submit. The instructor can allow a number of free attempts before penalties apply.</p>
+			<div id='assessmentOptions' class='show'>
+				<div class='section'>
+					<h4>Number of free tries</h4>
+					<input type='number' id='numTriesInput' value='10' min='0' max='100'>
+					<p>Students will have this many tries to submit their sequence before losing any points.</p>
+				</div>
+				<div class='section'>
+					<h4>Incorrect submission penalty</h4>
+					<input type='number' id='penaltyInput' value='5' min='0' max='100'>
+					<h4 class='after'>Points</h4>
+					<p>Everyone starts with 100 points. Students will lose this amount of points when submitting an inorrect sequence.</p>
+				</div>
+			</div>
+			<div class='closeWindow centeredButton'>Close</div>
+		</div>
+
+		<!-- initial popup -->
+		<div id="startPopup" class='popup'>
+			<aside class='textLeft'>
+				<h2>Sequencer</h2>
+				<p>Create a sequence that students will put in order.</p>
+				<p>In practice mode students have unlimited attempts to get the correct sequence.</p>
+				<p>In assessment mode you can define scoring options to determine their score.</p>
+			</aside>
+			<aside class='photoRight'>
+				<img src='assets/SequencerScreenShot.png'/>
+			</aside>
+			<h4 id='lowerLine'>Start by giving your Sequencer widget a title</h4>
+			<input id='inputTitle' type='text' placeholder='My Sequencer Widget'/>
+			<div class='closeWindow rightButton'>Get Started</div>
+		</div>
+
+<!-- INITIALIZE -->
+	<script type="text/javascript">
+		Materia.CreatorCore.start(Sequencer.Creator);
+	</script>
+
+	</body>
+</html>
