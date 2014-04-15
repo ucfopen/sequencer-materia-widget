@@ -76,36 +76,36 @@ qset:
             secession from the United States and
             formed the Confederate States of
             America.
-      # - 
-      #   materiaType: question
-      #   id: 5
-      #   type: QA
-      #   questions:
-      #     - 
-      #       text: Spanish-American War
-      #   answers:
-      #     - 
-      #       value: 100
-      #       text: 5
-      #   options:
-      #     description: >
-      #       Includes the Charge of the Rough Riders,
-      #       at San Juan Hill.
-      # - 
-      #   materiaType: question
-      #   id: 6
-      #   type: QA
-      #   questions:
-      #     - 
-      #       text: World War I
-      #   answers:
-      #     - 
-      #       value: 100
-      #       text: 6
-      #   options:
-      #     description: >
-      #       More than 9 million combatants were
-      #       killed in this conflict.
+      - 
+        materiaType: question
+        id: 5
+        type: QA
+        questions:
+          - 
+            text: Spanish-American War
+        answers:
+          - 
+            value: 100
+            text: 5
+        options:
+          description: >
+            Includes the Charge of the Rough Riders,
+            at San Juan Hill.
+      - 
+        materiaType: question
+        id: 6
+        type: QA
+        questions:
+          - 
+            text: World War I
+        answers:
+          - 
+            value: 100
+            text: 6
+        options:
+          description: >
+            More than 9 million combatants were
+            killed in this conflict.
       # - 
       #   materiaType: question
       #   id: 7
