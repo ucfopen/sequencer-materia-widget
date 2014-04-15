@@ -53,11 +53,11 @@ Namespace('Sequencer').Engine = do ->
 
 		# disable easing while it drags
 		#e.target.className = 'tile'
-
-		# if it's been placed, remove that association
-		if _curterm.getAttribute('data-placed')
-			_labelTextsByQuestionId[_curterm.getAttribute('data-placed')] = ''
-			_curterm.setAttribute('data-placed','')
+		
+		# if its been placed, pull it out of the sequence array
+		if i = _sequence.indexOf(~~_curterm.id) != -1
+			_sequence.splice(i,1)
+			_tilesInSequence--
 
 		# don't scroll the page on an iPad
 		e.preventDefault()
@@ -136,6 +136,8 @@ Namespace('Sequencer').Engine = do ->
 			if _numTiles > 0 
 				console.log "adding hide"
 				$('#orderInstructions').addClass 'hide'			
+
+			_sequence.push ~~_curterm.id
 
 		_curterm = null
 
@@ -542,8 +544,6 @@ Namespace('Sequencer').Engine = do ->
 		$('.fade').addClass 'active'
 
 		# Get order of the tiles for grading
-		_sequence = $('#orderArea').sortable 'toArray', attribute: 'data-id'
-		_sequence.shift()
 		console.log _sequence
 		# Grade the sequence based on order of tiles
 		correct = _determineNumCorrect _sequence
