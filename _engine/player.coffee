@@ -87,6 +87,17 @@ Namespace('Sequencer').Engine = do ->
 		_curterm.style.msTransform =
 		_curterm.style.webkitTransform = 'translate(' + x + 'px,' + y + 'px)'
 
+		if x > 360
+			console.log 'yellow'
+			console.log $('#orderArea').addClass 'hoverTile'
+			#$('#'+_currActiveTile).css
+			#	'transform': 'rotate(0deg)'
+
+		if x < 360
+			$('#orderArea').removeClass 'hoverTile'
+			#$('#'+_currActiveTile).css
+			#	'transform': 'rotate('+_tiles[_currActiveTile].angle+'deg)'
+
 		# don't scroll on iPad
 		e.preventDefault()
 		e.stopPropagation() if e.stopPropagation?
@@ -433,15 +444,6 @@ Namespace('Sequencer').Engine = do ->
 			_clueOpen = false
 		_currActiveTile = this.id
 		# console.log "Currently active tile is: " + _currActiveTile
-		if ui.position.left > 360
-			$('#orderArea').addClass 'hoverTile'
-			$('#'+_currActiveTile).css
-				'transform': 'rotate(0deg)'
-
-		if ui.position.left < 360
-			$('#orderArea').removeClass 'hoverTile'
-			$('#'+_currActiveTile).css
-				'transform': 'rotate('+_tiles[_currActiveTile].angle+'deg)'
 
 	_dropTileInSequenceArea = (event, ui) ->
 		console.log "dropping tile " + _currActiveTile + " to the orderbar"
