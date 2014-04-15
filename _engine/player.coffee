@@ -53,11 +53,11 @@ Namespace('Sequencer').Engine = do ->
 
 		# disable easing while it drags
 		#e.target.className = 'tile'
-
-		# if it's been placed, remove that association
-		if _curterm.getAttribute('data-placed')
-			_labelTextsByQuestionId[_curterm.getAttribute('data-placed')] = ''
-			_curterm.setAttribute('data-placed','')
+		
+		# if its been placed, pull it out of the sequence array
+		if i = _sequence.indexOf(~~_curterm.id) != -1
+			_sequence.splice(i,1)
+			_tilesInSequence--
 
 		# don't scroll the page on an iPad
 		e.preventDefault()
@@ -87,6 +87,17 @@ Namespace('Sequencer').Engine = do ->
 		_curterm.style.msTransform =
 		_curterm.style.webkitTransform = 'translate(' + x + 'px,' + y + 'px)'
 
+		if x > 360
+			console.log 'yellow'
+			console.log $('#orderArea').addClass 'hoverTile'
+			#$('#'+_currActiveTile).css
+			#	'transform': 'rotate(0deg)'
+
+		if x < 360
+			$('#orderArea').removeClass 'hoverTile'
+			#$('#'+_currActiveTile).css
+			#	'transform': 'rotate('+_tiles[_currActiveTile].angle+'deg)'
+
 		# don't scroll on iPad
 		e.preventDefault()
 		e.stopPropagation() if e.stopPropagation?
@@ -96,10 +107,40 @@ Namespace('Sequencer').Engine = do ->
 		# we don't care if nothing is selected
 		return if not _curterm?
 
-		# apply easing (for snap back animation)
-		#_curterm.className = 'tile ease'
+		if not e.clientX
+			e.clientX = e.changedTouches[0].clientX
+			e.clientY = e.changedTouches[0].clientY
+
+		if e.clientX > 360
+			# apply easing (for snap back animation)
+			#_curterm.className = 'tile ease'
+			if _numTiles is 0
+				console.log "adding show"
+				$('#orderInstructions').addClass 'show'
+
+			_tilesInSequence++
+			console.log "number in the dropTile section " + _tilesInSequence + " of " + _numTiles
+			
+			_curterm.style.transform =
+			_curterm.style.msTransform =
+			_curterm.style.webkitTransform = 'translate(590px,' + (80  * (_tilesInSequence - 1) - 20) + 'px)'
+
+			newNumbers = _.template $('#numberBar-numbers').html()
+			number = $(newNumbers number: _tilesInSequence)
+			$('#numberBar').append number
+			number.addClass 'show'
+
+			if _tilesInSequence == _numTiles
+				_tilesSequenced()
+
+			if _numTiles > 0 
+				console.log "adding hide"
+				$('#orderInstructions').addClass 'hide'			
+
+			_sequence.push ~~_curterm.id
 
 		_curterm = null
+
 
 		# prevent iPad/etc from scrolling
 		e.preventDefault()
@@ -432,15 +473,6 @@ Namespace('Sequencer').Engine = do ->
 			_clueOpen = false
 		_currActiveTile = this.id
 		# console.log "Currently active tile is: " + _currActiveTile
-		if ui.position.left > 360
-			$('#orderArea').addClass 'hoverTile'
-			$('#'+_currActiveTile).css
-				'transform': 'rotate(0deg)'
-
-		if ui.position.left < 360
-			$('#orderArea').removeClass 'hoverTile'
-			$('#'+_currActiveTile).css
-				'transform': 'rotate('+_tiles[_currActiveTile].angle+'deg)'
 
 	_dropTileInSequenceArea = (event, ui) ->
 		console.log "dropping tile " + _currActiveTile + " to the orderbar"
@@ -511,8 +543,6 @@ Namespace('Sequencer').Engine = do ->
 		$('.fade').addClass 'active'
 
 		# Get order of the tiles for grading
-		_sequence = $('#orderArea').sortable 'toArray', attribute: 'data-id'
-		_sequence.shift()
 		console.log _sequence
 		# Grade the sequence based on order of tiles
 		correct = _determineNumCorrect _sequence
