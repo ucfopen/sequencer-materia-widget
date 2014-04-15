@@ -80,7 +80,7 @@ html, body {
 
 header {
 	position: absolute;
-	z-index: 1;
+	z-index: -1;
 	width: 425px;
 	height: 85px;
 	margin: 0px 20px 10px 20px;
@@ -228,33 +228,21 @@ header {
 		opacity: 1;
 		height: 61px;
 		width: 164px;
-		position: relative;
+		position: absolute;
+		left: -50px;
+		top: 30px;
+
 		z-index: 10;
 		background: url("assets/sequencing_object.png") 0 0;
-		margin: 3px;
 		font-size: 20px;
 		bottom: auto;
-		-webkit-border-radius: 5px;
-		   -moz-border-radius: 5px;
-		        border-radius: 5px;
-		-webkit-box-shadow: 0 4px 3px -3px black;
-           -moz-box-shadow: 0 4px 3px -3px black;
-                box-shadow: 0 4px 3px -3px black;
+		border-radius: 5px;
+		box-shadow: 0 4px 3px -3px black;
 
 		&.hover {
 			cursor: hand;
-			-webkit-box-shadow: 0 8px 6px -6px black;
-	           -moz-box-shadow: 0 8px 6px -6px black;
-	                box-shadow: 0 8px 6px -6px black;
-			-webkit-animation: wiggle 200ms ease; 
-		       -moz-animation: wiggle 200ms ease;
-		        -ms-animation: wiggle 200ms ease;
-		            animation: wiggle 200ms ease;
-			-webkit-transition: 100ms;
-			   -moz-transition: 100ms;
-			    -ms-transition: 100ms;
-			     -o-transition: 100ms;
-		     		transition: 100ms;
+			box-shadow: 0 8px 6px -6px black;
+			transition: 100ms;
 		}
 
 		&.noShow {
