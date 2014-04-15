@@ -173,7 +173,7 @@ Namespace('Sequencer').Engine = do ->
 			score: 100
 			penalty: _qset.options.penalty
 
-		cWidth = 240
+		cWidth = 300
 		cHeight = 300
 
 		$('body').append _$board
@@ -254,8 +254,8 @@ Namespace('Sequencer').Engine = do ->
 			textLength = _tiles[tile.id].name.length
 			tries = 1
 			
-			_tiles[tile.id].xpos = Math.floor (Math.random() * maxWidth) + 20
-			_tiles[tile.id].ypos =  Math.floor (Math.random() * maxHeight) + 70
+			_tiles[tile.id].xpos = Math.floor (Math.random() * maxWidth) + 50
+			_tiles[tile.id].ypos =  Math.floor (Math.random() * maxHeight) + 90
 			_tiles[tile.id].zInd = Math.floor (Math.random() * 4) + 8 
 			_tiles[tile.id].dropOrder = _tiles[tile.id].zInd
 			_tiles[tile.id].angle = Math.floor (Math.random() * 16) - 8 
@@ -279,6 +279,7 @@ Namespace('Sequencer').Engine = do ->
 
 			$('#'+tile.id).css
 				'transform': 'rotate('+_tiles[tile.id].angle+'deg)'
+				'transform' : 'translate(' + _tiles[tile.id].xpos + 'px,' + _tiles[tile.id].ypos+ 'px)'
 				'z-index': ++_zIndex
 
 			# resize text to fit if needed
@@ -290,8 +291,6 @@ Namespace('Sequencer').Engine = do ->
 				console.log "\tshrinking text on " + _tiles[tile.id].name
 				$('#'+tile.id).css
 					'font-size': 18+'px'
-
-		# _showPositionsArray()
 
 		# Remove the clue symbol if there is no hint available
 		unless _tiles[tile.id].clue
@@ -356,31 +355,31 @@ Namespace('Sequencer').Engine = do ->
 
 	# Runs after the demo is over. Drops all tiles with 3 slightly different drop animations
 	_makeTilesFall = (fallversion, dropOrder) ->
-		setTimeout -> 
-			nextTileID = dropOrder.shift()
-			# foundFlag = false
-			# for tile in $('.tile')
-			# 	if _tiles[tile.id].zInd == minZ
-			# 		nextTileID = tile.id
-			# 		foundFlag = true
-			# 		console.log "tiles: " + nextTileID + " " + _tiles[tile.id].name + "'s Z is: "+ _tiles[tile.id].zInd
-			# 		console.log "minZ is: " + minZ + " foundFlag is " + foundFlag
-			# 		# Udpdate for new drop order.
-			# 		_tiles[tile.id].zInd = 0
-			# 	if tile.id is 9 and foundflag is false and minZ >= 12
-			# 		console.log "foundflag is false incrememting minZ to " + minZ
-			# 		minZ++
+		# setTimeout -> 
+		nextTileID = dropOrder.shift()
+		# foundFlag = false
+		# for tile in $('.tile')
+		# 	if _tiles[tile.id].zInd == minZ
+		# 		nextTileID = tile.id
+		# 		foundFlag = true
+		# 		console.log "tiles: " + nextTileID + " " + _tiles[tile.id].name + "'s Z is: "+ _tiles[tile.id].zInd
+		# 		console.log "minZ is: " + minZ + " foundFlag is " + foundFlag
+		# 		# Udpdate for new drop order.
+		# 		_tiles[tile.id].zInd = 0
+		# 	if tile.id is 9 and foundflag is false and minZ >= 12
+		# 		console.log "foundflag is false incrememting minZ to " + minZ
+		# 		minZ++
 
-			$('#'+nextTileID).removeClass 'noShow'
-			$('#'+nextTileID).addClass 'fall' + fallversion
-			if _dropOrder.length > 0
-				_makeTilesFall(fallversion%3+1, dropOrder)
-			# Remove the fall classes after the animation
-			else 
-				$('.tile').removeClass 'fall1'
-				$('.tile').removeClass 'fall2'
-				$('.tile').removeClass 'fall3'
-		, 80
+		$('#'+nextTileID).removeClass 'noShow'
+		# $('#'+nextTileID).addClass 'fall' + fallversion
+		if _dropOrder.length > 0
+			_makeTilesFall(fallversion%3+1, dropOrder)
+		# Remove the fall classes after the animation
+		# else 
+		# 	$('.tile').removeClass 'fall1'
+		# 	$('.tile').removeClass 'fall2'
+		# 	$('.tile').removeClass 'fall3'
+		# , 100
 
 	# Get the drop order for the tiles based on their zindex
 	_generateDropOrder = () ->
