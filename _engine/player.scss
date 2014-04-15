@@ -397,13 +397,14 @@ header {
 		// overflow-y: auto;
 		// overflow-x: hidden;
 		direction: ltr;
-		-webkit-border-radius: 0px 10px 0px 0px;
-		   -moz-border-radius: 0px 10px 0px 0px;
-		        border-radius: 0px 10px 0px 0px;
+		border-radius: 0px 10px 0px 0px;
 		// shadow Right, Top
-		-webkit-box-shadow: inset -10px 0 10px -10px #000000, inset 0px 10px 10px -10px #000000;
-		   -moz-box-shadow: inset -10px 0 10px -10px #000000, inset 0px 10px 10px -10px #000000;
-				box-shadow: inset -10px 0 10px -10px #000000, inset 0px 10px 10px -10px #000000;
+		box-shadow: inset -10px 0 10px -10px #000000, inset 0px 10px 10px -10px #000000;
+		transition: 200ms ease-in;
+
+		&.hoverTile {
+			background: yellow;
+		}
 
 		#orderInstructions {
 			position: absolute;
@@ -435,28 +436,6 @@ header {
 			font-family: sans-serif;
 			background: $light;
 			z-index: 500;
-		}
-
-		#dropTiles {
-			position: relative;
-			top: 0px;
-			float: right;
-			width: auto;
-			height: 100%;
-			padding: 5px;
-			background: $lblue;
-			-webkit-transition: 200ms ease-out; 
-	  		   -moz-transition: 200ms ease-out;
-	       		-ms-transition: 200ms ease-out;
-	        		transition: 200ms ease-out;
-			
-			&.hoverTile {
-				background: yellow;
-				-webkit-transition: 200ms ease-in; 
-		  		   -moz-transition: 200ms ease-in;
-		       		-ms-transition: 200ms ease-in;
-		        		transition: 200ms ease-in;
-			}
 		}
 	}
 
