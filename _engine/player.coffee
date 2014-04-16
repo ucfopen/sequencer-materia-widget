@@ -18,6 +18,8 @@ Namespace('Sequencer').Engine = do ->
 	_playDemo				= false 	# Boolean for demo on/off
 	_insertAfter			= 0 		# Number to where to drop tile inbetween other tiles
 	_ORDERHEIGHT			= 70
+	_addTempNum 			= true
+	_tempNumber				= null
 
 	# zIndex of the terms, incremented so that the dragged term is always on top
 	_zIndex					= 11000
@@ -71,13 +73,15 @@ Namespace('Sequencer').Engine = do ->
 		e.preventDefault()
 		e.stopPropagation() if e.stopPropagation?
 
+		_addTempNum = true
+
 	# when the widget area has a cursor or finger move
 	_mouseMoveEvent = (e) ->
 		# if no term is being dragged, we don't care
 		return if not _curterm?
 		
 		e = window.event if not e?
-
+		
 		# if it's not a mouse move, it's probably touch
 		if not e.clientX
 			e.clientX = e.changedTouches[0].clientX
@@ -109,13 +113,23 @@ Namespace('Sequencer').Engine = do ->
 		if x > -135
 			_insertAfter = 0
 
+			# Add an extra temporary number when you drag the tile into the tile area
+			if _addTempNum is true
+				console.log 1 + $('#numberBar').children().length
+				newNumbers = _.template $('#numberBar-numbers').html()
+				_tempNumber = $(newNumbers number: 1 + $('#numberBar').children().length)
+				$('#numberBar').append _tempNumber
+				_tempNumber.addClass 'show'
+				_addTempNum = false
+			
 			_curterm.style.webkitTransform += ' rotate(' + 0 + 'deg)'
+			
 			for i in [0..._sequence.length]
 				if y > ((_ORDERHEIGHT * i) - 20)
 					_insertAfter = _sequence[i]
 			console.log _insertAfter
 			if _insertAfter is -1
-				# console.log "Heere"
+				# console.log "Here"
 			else if _insertAfter == 0
 				_sequence.splice(0, -1, -1)
 			else if _insertAfter is _sequence[_sequence.length-1]
@@ -124,7 +138,21 @@ Namespace('Sequencer').Engine = do ->
 				console.log _insertAfter
 				_sequence.splice(_sequence.indexOf(_insertAfter) + 1, 0, -1)
 				# console.log "insertAfter: " + _insertAfter + "last elem  is: " + _sequence[_sequence.length-1]
-					
+
+			# Code for highlighting the numbers when hover in order spot
+			console.log "The index of -1 is : " + _sequence.indexOf(-1)
+			numSpot = $('#numberBar').children()[_sequence.indexOf(-1)]
+			unless numSpot?
+				numSpot = _tempNumber
+			$('.highlight').removeClass 'highlight'
+			$(numSpot).addClass 'highlight'
+		
+		else
+			if _addTempNum is false
+				$('#numberBar').children()[$('#numberBar').children().length-1].remove()
+				_addTempNum = true 
+
+		console.log "clientX is: " + e.clientX 			
 		_repositionOrderedTiles() 
 
 		if x <= -135
@@ -142,8 +170,7 @@ Namespace('Sequencer').Engine = do ->
 	_mouseUpEvent = (e) ->
 		# we don't care if nothing is selected
 		return if not _curterm?
-
-
+		_addTempNum = true
 		# Remove the empty slots
 		for i in [0..._sequence.length]
 				if _sequence[i] is -1
@@ -153,12 +180,11 @@ Namespace('Sequencer').Engine = do ->
 			e.clientX = e.changedTouches[0].clientX
 			e.clientY = e.changedTouches[0].clientY
 			
-		
-		if e.clientX > -135
+		console.log "clientX is: " + e.clientX 
+		if e.clientX > 426
 			# apply easing (for snap back animation)
 			#_curterm.className = 'tile ease'
 			if _numTiles is 0
-				# console.log "adding show"
 				$('#orderInstructions').addClass 'show'
 
 			_tilesInSequence++
@@ -168,7 +194,6 @@ Namespace('Sequencer').Engine = do ->
 				_tilesSequenced()
 
 			if _numTiles > 0 
-				# console.log "adding hide"
 				$('#orderInstructions').addClass 'hide'
 			if _insertAfter == 0
 				console.log "insert at beg"
@@ -180,8 +205,15 @@ Namespace('Sequencer').Engine = do ->
 					if _sequence[i] is ~~_curterm.id
 						_sequence.splice(i, 1)
 				_sequence.push ~~_curterm.id
+		else 
+			console.log "dropping in normal area"
+
+		if _numTiles is 0
+			$('#numberBar').empty()
+			$('#orderInstructions').addClass 'show'
 
 		_repositionOrderedTiles()
+
 		_updateTileNums()
 	
 		_curterm = null
@@ -281,7 +313,7 @@ Namespace('Sequencer').Engine = do ->
 		$('.tile').on 'mousedown', _mouseDownEvent
 
 		# Reveal the clue for clicked tile
-		$('#dragContainer').on 'click', '.clue', ->
+		$('#orderArea').on 'click', '.clue', ->
 			_revealClue $(this).data('id')
 
 		# Scroll the numberBar with the orderArea
@@ -493,12 +525,12 @@ Namespace('Sequencer').Engine = do ->
 			$('#clue-popup').remove()
 			_clueOpen = false
 
-	_dragTile = (event, ui) ->
-		if $('#clue-popup').length
-			$('#clue-popup').remove()
-			_clueOpen = false
-		_currActiveTile = this.id
-		# console.log "Currently active tile is: " + _currActiveTile
+	# _dragTile = (event, ui) ->
+	# 	if $('#clue-popup').length
+	# 		$('#clue-popup').remove()
+	# 		_clueOpen = false
+	# 	_currActiveTile = this.id
+	# 	# console.log "Currently active tile is: " + _currActiveTile
 
 	# _dropTileInSequenceArea = (event, ui) ->
 	# 	console.log "dropping tile " + _currActiveTile + " to the orderbar"
@@ -554,11 +586,12 @@ Namespace('Sequencer').Engine = do ->
 	# Updates the numbers in the number bar when a tile is dropped or dragged in/out
 	_updateTileNums = () ->
 		$('#numberBar').empty()
-		for i in [1.._tilesInSequence]
-			newNumbers = _.template $('#numberBar-numbers').html()
-			number = $(newNumbers number: i)
-			$('#numberBar').append number
-			number.addClass 'show'
+		if _tilesInSequence > 0
+			for i in [1.._tilesInSequence]
+				newNumbers = _.template $('#numberBar-numbers').html()
+				number = $(newNumbers number: i)
+				$('#numberBar').append number
+				number.addClass 'show'
 
 	# All tiles have been moved to the orderArea. No tiles left on the board
 	_tilesSequenced = ->
@@ -651,7 +684,6 @@ Namespace('Sequencer').Engine = do ->
 					$('#resultsOuter').remove()
 					$('.board').removeClass 'dim'
 					$('.fade').removeClass 'active'
-
 
 			# Used last attempt
 			else

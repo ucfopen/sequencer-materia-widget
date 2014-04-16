@@ -370,7 +370,7 @@ header {
 		        		transition: 100ms ease;
 	        }
 
-		    &:hover {
+		    &.highlight {
 		    	background: $hblurple;
 		    	color: $blurple;
 		    	-webkit-transition: 100ms ease; 
@@ -390,8 +390,8 @@ header {
 		margin-right: 15px;
 		margin-left: 10px;
 		background: $lblurple;
-		// overflow-y: auto;
-		// overflow-x: auto;
+		overflow-x: visible;
+		// overflow-y: scroll;
 		direction: ltr;
 		border-radius: 0px 10px 0px 0px;
 		// shadow Right, Top
