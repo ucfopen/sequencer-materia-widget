@@ -51,6 +51,9 @@ Namespace('Sequencer').Engine = do ->
 		
 		# set current dragging term
 		_curterm = e.target
+
+		if _curterm.className == "clue"
+			_curterm = _curterm.parentNode
 		_curterm.style.zIndex = ++_zIndex
 
 		# disable easing while it drags
