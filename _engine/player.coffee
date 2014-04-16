@@ -95,28 +95,29 @@ Namespace('Sequencer').Engine = do ->
 		_curterm.style.msTransform =
 		_curterm.style.webkitTransform = 'translate(' + x + 'px,' + y + 'px)'
 
-		_insertAfter = 0
 
 		# Drag tile into the order area
 		if x > 420
+			_insertAfter = 0
+
 			_curterm.style.webkitTransform += ' rotate(' + 0 + 'deg)'
 			for i in [0..._sequence.length]
 				if y > ((_ORDERHEIGHT * i) - 20)
 					console.log "np++"
 					_insertAfter = _sequence[i]
-		console.log _insertAfter
-		if _insertAfter is -1
-			# console.log "Heere"
-		else if _insertAfter == 0
-			console.log "splicing!"
-			_sequence.splice(0, -1, -1)
-		else if _insertAfter is _sequence[_sequence.length-1]
-			# console.log "executed!!!!"
-		else if _insertAfter
 			console.log _insertAfter
-			_sequence.splice(_sequence.indexOf(_insertAfter) + 1, 0, -1)
-			# console.log "insertAfter: " + _insertAfter + "last elem  is: " + _sequence[_sequence.length-1]
-				
+			if _insertAfter is -1
+				# console.log "Heere"
+			else if _insertAfter == 0
+				console.log "splicing!"
+				_sequence.splice(0, -1, -1)
+			else if _insertAfter is _sequence[_sequence.length-1]
+				# console.log "executed!!!!"
+			else if _insertAfter
+				console.log _insertAfter
+				_sequence.splice(_sequence.indexOf(_insertAfter) + 1, 0, -1)
+				# console.log "insertAfter: " + _insertAfter + "last elem  is: " + _sequence[_sequence.length-1]
+					
 		_repositionOrderedTiles() 
 			
 
@@ -145,7 +146,8 @@ Namespace('Sequencer').Engine = do ->
 		if not e.clientX
 			e.clientX = e.changedTouches[0].clientX
 			e.clientY = e.changedTouches[0].clientY
-
+			
+		
 		if e.clientX > 420
 			# apply easing (for snap back animation)
 			#_curterm.className = 'tile ease'
@@ -155,11 +157,6 @@ Namespace('Sequencer').Engine = do ->
 
 			_tilesInSequence++
 			# console.log "number in the dropTile section " + _tilesInSequence + " of " + _numTiles
-
-			newNumbers = _.template $('#numberBar-numbers').html()
-			number = $(newNumbers number: _tilesInSequence)
-			# _updateTileNums() 
-			number.addClass 'show'
 
 			if _tilesInSequence == _numTiles
 				_tilesSequenced()
@@ -179,7 +176,8 @@ Namespace('Sequencer').Engine = do ->
 				_sequence.push ~~_curterm.id
 
 		_repositionOrderedTiles()
-
+		_updateTileNums()
+	
 		_curterm = null
 
 		# Prevent iPad/etc from scrolling
@@ -319,8 +317,6 @@ Namespace('Sequencer').Engine = do ->
 	# Reposition the tiles in the order area
 	_repositionOrderedTiles = () ->
 		i = 0
-		# console.log _sequence
-
 		for id in _sequence
 			if id is -1
 				i++ 
@@ -549,11 +545,13 @@ Namespace('Sequencer').Engine = do ->
 	# 	_tilesInSequence--
 
 	# Updates the numbers in the number bar when a tile is dropped or dragged in/out
-	# _updateTileNums = () ->
-	# 	i = 1
-	# 	for slider in $('.tileInfoSlider')
-	# 		$(slider).children('.block').children('.number').html(i)
-	# 		i++ 
+	_updateTileNums = () ->
+		$('#numberBar').empty()
+		for i in [1.._tilesInSequence]
+			newNumbers = _.template $('#numberBar-numbers').html()
+			number = $(newNumbers number: i)
+			$('#numberBar').append number
+			number.addClass 'show'
 
 	# All tiles have been moved to the orderArea. No tiles left on the board
 	_tilesSequenced = ->
