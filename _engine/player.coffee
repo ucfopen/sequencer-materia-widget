@@ -72,8 +72,9 @@ Namespace('Sequencer').Engine = do ->
 		# don't scroll the page on an iPad
 		e.preventDefault()
 		e.stopPropagation() if e.stopPropagation?
-
+		
 		_addTempNum = true
+		_updateTileNums()
 
 	# when the widget area has a cursor or finger move
 	_mouseMoveEvent = (e) ->
@@ -98,12 +99,12 @@ Namespace('Sequencer').Engine = do ->
 		y = 70 if x < -20 and y < 70 
 		y = 385 if x < -20 and y > 385
 
-
 		console.log "Xpos: "+x+" Ypos: "+y
 		for i in [0..._sequence.length]
 			if _sequence[i] is -1
 				_sequence.splice(i, 1)
 				i--
+
 		# move the current term
 		_curterm.style.transform = 
 		_curterm.style.msTransform =
@@ -377,14 +378,12 @@ Namespace('Sequencer').Engine = do ->
 			tries = 1
 			
 			_tiles[tile.id].xpos = Math.floor (Math.random() * maxWidth) - 475
-			console.log "randnum is " +_tiles[tile.id].xpos
 			_tiles[tile.id].ypos =  Math.floor (Math.random() * maxHeight) + 90
 			_tiles[tile.id].zInd = Math.floor (Math.random() * 4) + 8 
 			_tiles[tile.id].dropOrder = _tiles[tile.id].zInd
-			_tiles[tile.id].angle = Math.floor (Math.random() * 16) - 8 
+			_tiles[tile.id].angle = Math.floor (Math.random() * 14) - 7 
 
 			# Get new position if tile is too close to another tile unless too many tries
-			# More than likey not worth the computation
 			while ! _checkTilePosition _tiles[tile.id].xpos , _tiles[tile.id].ypos 
 				if tries > 10
 					_positions.push _tiles[tile.id].xpos 
@@ -401,8 +400,7 @@ Namespace('Sequencer').Engine = do ->
 			_tiles[tile.id].ypos = _positions[_positions.length-1]
 
 			$('#'+tile.id).css
-				# 'transform': 'rotate('+_tiles[tile.id].angle+'deg)'
-				'transform' : 'translate(' + _tiles[tile.id].xpos + 'px,' + _tiles[tile.id].ypos+ 'px)'
+				'transform': 'rotate('+_tiles[tile.id].angle+'deg) translate(' + _tiles[tile.id].xpos + 'px,' + _tiles[tile.id].ypos+ 'px)'
 				'z-index': ++_zIndex
 
 			# resize text to fit if needed
@@ -418,13 +416,6 @@ Namespace('Sequencer').Engine = do ->
 		# Remove the clue symbol if there is no hint available
 		unless _tiles[tile.id].clue
 			console.log "does not have clue"
-
-	_showPositionsArray = ->
-		console.log "Current tile positions:"
-		i = 1
-		while i <= _numTiles*2
-			console.log "\t[x:"+_positions[i-1]+", y:"+_positions[i]+"]"
-			i+=2
 
 	# Check potential position to see if there is already a tile in the area
 	_checkTilePosition = (w, h) ->
