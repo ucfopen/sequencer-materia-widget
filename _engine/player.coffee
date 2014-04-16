@@ -64,6 +64,8 @@ Namespace('Sequencer').Engine = do ->
 			console.log "I is :" + i
 			_sequence.splice(i,1)
 			_tilesInSequence--
+		
+		_insertAfter = -1
 
 		# don't scroll the page on an iPad
 		e.preventDefault()
@@ -81,38 +83,40 @@ Namespace('Sequencer').Engine = do ->
 			e.clientX = e.changedTouches[0].clientX
 			e.clientY = e.changedTouches[0].clientY
 
-		x = (e.clientX - 30)
-		x = 0 if x < 0
-		x = 670 if x > 670
-		y = (e.clientY - 50)
+		x = (e.clientX - 560)
+		# x boundaries
+		x = -475 if x < -475
+		x = 70 if x > 70
+		y = (e.clientY - 80)
+		# y boundaries
 		y = -30 if y < -30
 		y = 500 if y > 500
+		y = 70 if x < -20 and y < 70 
+		y = 385 if x < -20 and y > 385
 
+
+		console.log "Xpos: "+x+" Ypos: "+y
 		for i in [0..._sequence.length]
 			if _sequence[i] is -1
 				_sequence.splice(i, 1)
 				i--
-
 		# move the current term
 		_curterm.style.transform = 
 		_curterm.style.msTransform =
 		_curterm.style.webkitTransform = 'translate(' + x + 'px,' + y + 'px)'
 
-
 		# Drag tile into the order area
-		if x > 420
+		if x > -135
 			_insertAfter = 0
 
 			_curterm.style.webkitTransform += ' rotate(' + 0 + 'deg)'
 			for i in [0..._sequence.length]
 				if y > ((_ORDERHEIGHT * i) - 20)
-					console.log "np++"
 					_insertAfter = _sequence[i]
 			console.log _insertAfter
 			if _insertAfter is -1
 				# console.log "Heere"
 			else if _insertAfter == 0
-				console.log "splicing!"
 				_sequence.splice(0, -1, -1)
 			else if _insertAfter is _sequence[_sequence.length-1]
 				# console.log "executed!!!!"
@@ -122,9 +126,8 @@ Namespace('Sequencer').Engine = do ->
 				# console.log "insertAfter: " + _insertAfter + "last elem  is: " + _sequence[_sequence.length-1]
 					
 		_repositionOrderedTiles() 
-			
 
-		if x <= 420
+		if x <= -135
 			for i in [0..._sequence.length]
 				if _sequence[i] is -1
 					_sequence.splice(i, 1)
@@ -151,7 +154,7 @@ Namespace('Sequencer').Engine = do ->
 			e.clientY = e.changedTouches[0].clientY
 			
 		
-		if e.clientX > 420
+		if e.clientX > -135
 			# apply easing (for snap back animation)
 			#_curterm.className = 'tile ease'
 			if _numTiles is 0
@@ -239,7 +242,7 @@ Namespace('Sequencer').Engine = do ->
 	# Draw the main board.
 	_drawBoard = (title) ->
 		# Disables right click.
-		#document.oncontextmenu = -> false    
+		#document.oncontextmenu = -> false
 
 		theTiles = _makeTiles _qset.items
 
@@ -327,7 +330,7 @@ Namespace('Sequencer').Engine = do ->
 			curterm = document.getElementById id 
 			curterm.style.transform =
 			curterm.style.msTransform =
-			curterm.style.webkitTransform = 'translate(590px,' + (_ORDERHEIGHT * i - 20) + 'px)'
+			curterm.style.webkitTransform = 'translate(60px,' + (_ORDERHEIGHT * i - 20) + 'px)'
 
 			i++
 		
@@ -341,7 +344,8 @@ Namespace('Sequencer').Engine = do ->
 			textLength = _tiles[tile.id].name.length
 			tries = 1
 			
-			_tiles[tile.id].xpos = Math.floor (Math.random() * maxWidth) + 50
+			_tiles[tile.id].xpos = Math.floor (Math.random() * maxWidth) - 475
+			console.log "randnum is " +_tiles[tile.id].xpos
 			_tiles[tile.id].ypos =  Math.floor (Math.random() * maxHeight) + 90
 			_tiles[tile.id].zInd = Math.floor (Math.random() * 4) + 8 
 			_tiles[tile.id].dropOrder = _tiles[tile.id].zInd
@@ -563,6 +567,7 @@ Namespace('Sequencer').Engine = do ->
 		newMessage = _.template $('#message-window').html()
 		message = $(newMessage title: 'You\'re Done', messageText: 'Make sure you have the right sequence and press the \"Submit Sequence\" button.')
 		$('#tileSection').append message
+		# $('#tileSection').addClass 'fade'
 		message.addClass 'show'
 
 		$('#submit').addClass 'enabled'

@@ -37,6 +37,17 @@
 	</header>
 	<div id="dragContainer">
 		<section id="tileSection">
+			<!-- tiles
+			<% for(var t in tiles) { var tile = tiles[t]; %>
+				<div class="tile" data-id="<%= tile.id %>" id="<%= tile.id %>" tabindex="<%= parseInt(t, 10)+1+(tiles.length) %>">
+				<%= tile.name %>
+				<div class="clue" data-id="<%= tile.id %>"></div>
+				</div>
+			<% } %> -->
+		</section>
+		<aside id="numberBar" class="nondraggable"></aside>
+		<section id="orderArea">
+			<div id="orderInstructions">Drag and organize tiles here</div>
 			<!-- tiles -->
 			<% for(var t in tiles) { var tile = tiles[t]; %>
 				<div class="tile" data-id="<%= tile.id %>" id="<%= tile.id %>" tabindex="<%= parseInt(t, 10)+1+(tiles.length) %>">
@@ -44,10 +55,7 @@
 				<div class="clue" data-id="<%= tile.id %>"></div>
 				</div>
 			<% } %>
-		</section>
-		<aside id="numberBar" class="nondraggable"></aside>
-		<section id="orderArea">
-			<div id="orderInstructions">Drag and organize tiles here</div>
+
 		</section>
 		<div id="submitHolder" class="nondraggable">
 			<div id="submit" class="nondraggable">Submit Sequence</div>
