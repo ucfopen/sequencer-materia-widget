@@ -16,6 +16,8 @@ Namespace('Sequencer').Engine = do ->
 	_attempts				= 0			# Number of tries the current user has made
 	_dropOrder				= []		# Order to drop the tiles based on randomly calculated z-index
 	_playDemo				= false 	# Boolean for demo on/off
+	_insertAfter			= 0 		# Number to where to drop tile inbetween other tiles
+	_ORDERHEIGHT			= 70
 
 	# zIndex of the terms, incremented so that the dragged term is always on top
 	_zIndex					= 11000
@@ -55,7 +57,8 @@ Namespace('Sequencer').Engine = do ->
 		#e.target.className = 'tile'
 		
 		# if its been placed, pull it out of the sequence array
-		if i = _sequence.indexOf(~~_curterm.id) != -1
+		if (i = _sequence.indexOf(~~_curterm.id)) != -1
+			console.log "I is :" + i
 			_sequence.splice(i,1)
 			_tilesInSequence--
 
@@ -67,7 +70,7 @@ Namespace('Sequencer').Engine = do ->
 	_mouseMoveEvent = (e) ->
 		# if no term is being dragged, we don't care
 		return if not _curterm?
-
+		
 		e = window.event if not e?
 
 		# if it's not a mouse move, it's probably touch
@@ -76,27 +79,53 @@ Namespace('Sequencer').Engine = do ->
 			e.clientY = e.changedTouches[0].clientY
 
 		x = (e.clientX - 30)
-		x = 40 if x < 40
+		x = 0 if x < 0
 		x = 670 if x > 670
-		y = (e.clientY - 90)
-		y = 0 if y < 0
+		y = (e.clientY - 50)
+		y = -30 if y < -30
 		y = 500 if y > 500
 
+		for i in [0..._sequence.length]
+			if _sequence[i] is -1
+				_sequence.splice(i, 1)
+				i--
+
 		# move the current term
-		_curterm.style.transform =
+		_curterm.style.transform = 
 		_curterm.style.msTransform =
 		_curterm.style.webkitTransform = 'translate(' + x + 'px,' + y + 'px)'
 
-		if x > 360
-			console.log 'yellow'
-			console.log $('#orderArea').addClass 'hoverTile'
-			#$('#'+_currActiveTile).css
-			#	'transform': 'rotate(0deg)'
+		_insertAfter = 0
 
-		if x < 360
-			$('#orderArea').removeClass 'hoverTile'
-			#$('#'+_currActiveTile).css
-			#	'transform': 'rotate('+_tiles[_currActiveTile].angle+'deg)'
+		# Drag tile into the order area
+		if x > 420
+			_curterm.style.webkitTransform += ' rotate(' + 0 + 'deg)'
+			for i in [0..._sequence.length]
+				if y > ((_ORDERHEIGHT * i) - 20)
+					console.log "np++"
+					_insertAfter = _sequence[i]
+		console.log _insertAfter
+		if _insertAfter is -1
+			# console.log "Heere"
+		else if _insertAfter == 0
+			console.log "splicing!"
+			_sequence.splice(0, -1, -1)
+		else if _insertAfter is _sequence[_sequence.length-1]
+			# console.log "executed!!!!"
+		else if _insertAfter
+			console.log _insertAfter
+			_sequence.splice(_sequence.indexOf(_insertAfter) + 1, 0, -1)
+			# console.log "insertAfter: " + _insertAfter + "last elem  is: " + _sequence[_sequence.length-1]
+				
+		_repositionOrderedTiles() 
+			
+
+		if x <= 420
+			for i in [0..._sequence.length]
+				if _sequence[i] is -1
+					_sequence.splice(i, 1)
+			# Rotate the tile back to the current tile object's stored angle
+			_curterm.style.webkitTransform += ' rotate(' + _tiles[_curterm.id].angle + 'deg)'
 
 		# don't scroll on iPad
 		e.preventDefault()
@@ -107,46 +136,57 @@ Namespace('Sequencer').Engine = do ->
 		# we don't care if nothing is selected
 		return if not _curterm?
 
+
+		# Remove the empty slots
+		for i in [0..._sequence.length]
+				if _sequence[i] is -1
+					_sequence.splice(i, 1)
+
 		if not e.clientX
 			e.clientX = e.changedTouches[0].clientX
 			e.clientY = e.changedTouches[0].clientY
 
-		if e.clientX > 360
+		if e.clientX > 420
 			# apply easing (for snap back animation)
 			#_curterm.className = 'tile ease'
 			if _numTiles is 0
-				console.log "adding show"
+				# console.log "adding show"
 				$('#orderInstructions').addClass 'show'
 
 			_tilesInSequence++
-			console.log "number in the dropTile section " + _tilesInSequence + " of " + _numTiles
-			
-			_curterm.style.transform =
-			_curterm.style.msTransform =
-			_curterm.style.webkitTransform = 'translate(590px,' + (80  * (_tilesInSequence - 1) - 20) + 'px)'
+			# console.log "number in the dropTile section " + _tilesInSequence + " of " + _numTiles
 
 			newNumbers = _.template $('#numberBar-numbers').html()
 			number = $(newNumbers number: _tilesInSequence)
-			$('#numberBar').append number
+			# _updateTileNums() 
 			number.addClass 'show'
 
 			if _tilesInSequence == _numTiles
 				_tilesSequenced()
 
 			if _numTiles > 0 
-				console.log "adding hide"
-				$('#orderInstructions').addClass 'hide'			
+				# console.log "adding hide"
+				$('#orderInstructions').addClass 'hide'
+			if _insertAfter == 0
+				console.log "insert at beg"
+				_sequence.splice(0, 0, ~~_curterm.id)
+			else if _insertAfter and _insertAfter != -1 and _insertAfter != _sequence[_sequence.length-1]
+				_sequence.splice(_sequence.indexOf(_insertAfter)+1, 0, ~~_curterm.id)
+			else 
+				for i in [0..._sequence.length]
+					if _sequence[i] is ~~_curterm.id
+						_sequence.splice(i, 1)
+				_sequence.push ~~_curterm.id
 
-			_sequence.push ~~_curterm.id
+		_repositionOrderedTiles()
 
 		_curterm = null
 
-
-		# prevent iPad/etc from scrolling
+		# Prevent iPad/etc from scrolling
 		e.preventDefault()
 	
 	_startDemo = ->
-		console.log "starting demo"
+		# console.log "starting demo"
 		demoScreen = _.template $('#demo-window').html()
 		_$demo = $ demoScreen 
 			demoTitle: ''
@@ -224,22 +264,13 @@ Namespace('Sequencer').Engine = do ->
 		_resizeTitle _qset.name.length
 
 		# Set the positions for each tile.
-		_positionTiles cWidth, cHeight
+		_setInitialTilePosition cWidth, cHeight
 
 		# Set the order of the tiles to be dropped based on their zIndex
 		dO = _generateDropOrder()
 
 		# Drop the tiles on the board.
 		_makeTilesFall 1, dO unless _playDemo
-		###
-		$('.tile').on 'mouseover', ->
-			unless $(this).hasClass 'fall'
-				$(this).addClass 'hover'
-
-		$('.tile').on 'mouseout', ->
-			unless $(this).hasClass 'fall'
-				$(this).removeClass 'hover'
-		###
 
 		$('.tile').on 'touchstart', _mouseDownEvent
 		$('.tile').on 'MSPointerDown', _mouseDownEvent
@@ -284,9 +315,25 @@ Namespace('Sequencer').Engine = do ->
 				colorTitle += '<span h1 class="words color2">'+i+'</h1>'
 			index++
 		return colorTitle
+	
+	# Reposition the tiles in the order area
+	_repositionOrderedTiles = () ->
+		i = 0
+		# console.log _sequence
 
+		for id in _sequence
+			if id is -1
+				i++ 
+				continue
+			curterm = document.getElementById id 
+			curterm.style.transform =
+			curterm.style.msTransform =
+			curterm.style.webkitTransform = 'translate(590px,' + (_ORDERHEIGHT * i - 20) + 'px)'
+
+			i++
+		
 	# Set random tile position, angle, and z-index
-	_positionTiles = (maxWidth, maxHeight) ->
+	_setInitialTilePosition = (maxWidth, maxHeight) ->
 		console.log "got to position tiles"
 
 		for tile in $('.tile')
@@ -319,7 +366,7 @@ Namespace('Sequencer').Engine = do ->
 			_tiles[tile.id].ypos = _positions[_positions.length-1]
 
 			$('#'+tile.id).css
-				'transform': 'rotate('+_tiles[tile.id].angle+'deg)'
+				# 'transform': 'rotate('+_tiles[tile.id].angle+'deg)'
 				'transform' : 'translate(' + _tiles[tile.id].xpos + 'px,' + _tiles[tile.id].ypos+ 'px)'
 				'z-index': ++_zIndex
 
@@ -336,31 +383,6 @@ Namespace('Sequencer').Engine = do ->
 		# Remove the clue symbol if there is no hint available
 		unless _tiles[tile.id].clue
 			console.log "does not have clue"
-
-	# _generateDropOrder2 = (tileID) ->
-	# 	# If no tiles are in the list
-	# 	if _dropOrder.length is 0
-	# 		_dropOrder.push {
-	# 			z: _tiles[tileID].zInd,
-	# 			t: tileID
-	# 		}
-
-	# 	# There is at least one tile in the list
-	# 	else
-	# 		for j in [0.._dropOrder.length-1]
-	# 			if _tiles[tileID].zInd < _dropOrder[j].z 
-	# 				_dropOrder.splice j, 0, {
-	# 					z: _tiles[tileID].zInd,
-	# 					t: tileID
-	# 				}
-	# 				break
-	# 			if j is _dropOrder.length-1
-	# 				_dropOrder.push {
-	# 					z: _tiles[tileID].zInd,
-	# 					t: tileID
-	# 				}
-
-	# 	console.log _dropOrder
 
 	_showPositionsArray = ->
 		console.log "Current tile positions:"
@@ -396,6 +418,8 @@ Namespace('Sequencer').Engine = do ->
 
 	# Runs after the demo is over. Drops all tiles with 3 slightly different drop animations
 	_makeTilesFall = (fallversion, dropOrder) ->
+
+		# Uncomment for the drop animation
 		# setTimeout -> 
 		nextTileID = dropOrder.shift()
 		# foundFlag = false
@@ -442,7 +466,6 @@ Namespace('Sequencer').Engine = do ->
 					_tiles[tile.id].zInd = 0
 					
 			minZ++ 
-		console.log _dropOrder
 		_dropOrder
 
 	# Show the clue from the id of the tile clicked
@@ -474,56 +497,63 @@ Namespace('Sequencer').Engine = do ->
 		_currActiveTile = this.id
 		# console.log "Currently active tile is: " + _currActiveTile
 
-	_dropTileInSequenceArea = (event, ui) ->
-		console.log "dropping tile " + _currActiveTile + " to the orderbar"
+	# _dropTileInSequenceArea = (event, ui) ->
+	# 	console.log "dropping tile " + _currActiveTile + " to the orderbar"
 		
-		if _numTiles is 0 
-			console.log "adding show"
-			$('#orderInstructions').addClass 'show'
+	# 	if _numTiles is 0 
+	# 		console.log "adding show"
+	# 		$('#orderInstructions').addClass 'show'
 
-		_tilesInSequence++
-		console.log "number in the dropTile section " + _tilesInSequence + " of " + _numTiles
+	# 	_tilesInSequence++
+	# 	console.log "number in the dropTile section " + _tilesInSequence + " of " + _numTiles
 		
 
-		$('.tile[data-id='+_currActiveTile+']').css
-			'position': 'relative'
-			'transform': 'rotate(0deg)'
-			'bottom': 'auto'
-			'left': 50+'px'
-			'margin': '-10px 10px 0px 10px'
+	# 	$('.tile[data-id='+_currActiveTile+']').css
+	# 		'position': 'relative'
+	# 		'transform': 'rotate(0deg)'
+	# 		'bottom': 'auto'
+	# 		'left': 50+'px'
+	# 		'margin': '-10px 10px 0px 10px'
 
-		# Fix the font alignment when drop in the order area
-		$('.tile[data-id='+_currActiveTile+']', 'tileText').css
-			'display': 'table-cell'
-			'vertical-align': 'middle'
+	# 	# Fix the font alignment when drop in the order area
+	# 	$('.tile[data-id='+_currActiveTile+']', 'tileText').css
+	# 		'display': 'table-cell'
+	# 		'vertical-align': 'middle'
 
-		$('#orderArea').append $('.tile[data-id='+_currActiveTile+']')
+	# 	$('#orderArea').append $('.tile[data-id='+_currActiveTile+']')
 
-		newNumbers = _.template $('#numberBar-numbers').html()
-		number = $(newNumbers number: _tilesInSequence)
-		$('#numberBar').append number
-		number.addClass 'show'
+	# 	newNumbers = _.template $('#numberBar-numbers').html()
+	# 	number = $(newNumbers number: _tilesInSequence)
+	# 	$('#numberBar').append number
+	# 	number.addClass 'show'
 
-		if _tilesInSequence == _numTiles
-			_tilesSequenced()
+	# 	if _tilesInSequence == _numTiles
+	# 		_tilesSequenced()
 
-		if _numTiles > 0 
-			console.log "adding hide"
-			$('#orderInstructions').addClass 'hide'			
+	# 	if _numTiles > 0 
+	# 		console.log "adding hide"
+	# 		$('#orderInstructions').addClass 'hide'			
 
-	_dropTilesInTileSection = (event, ui) ->
-		console.log 'dropping tile in tile seciton'
-		$('#tileSection').append $('.tile[data-id='+_currActiveTile+']')
-		$('#orderArea').removeChild $('.tile[data-id='+_currActiveTile+']')
+	# _dropTilesInTileSection = (event, ui) ->
+	# 	console.log 'dropping tile in tile seciton'
+	# 	$('#tileSection').append $('.tile[data-id='+_currActiveTile+']')
+	# 	$('#orderArea').removeChild $('.tile[data-id='+_currActiveTile+']')
 		
-		$('.tile[data-id='+_currActiveTile+']').css
-			'position': 'relative'
-			'transform': 'rotate('+_tiles[i].angle+'deg)'
-			'bottom': 'auto'
-			'left': _tiles[i].xpos +'px'
-			'margin': '-10px 10px 0px 10px'
+	# 	$('.tile[data-id='+_currActiveTile+']').css
+	# 		'position': 'relative'
+	# 		'transform': 'rotate('+_tiles[i].angle+'deg)'
+	# 		'bottom': 'auto'
+	# 		'left': _tiles[i].xpos +'px'
+	# 		'margin': '-10px 10px 0px 10px'
 
-		_tilesInSequence--
+	# 	_tilesInSequence--
+
+	# Updates the numbers in the number bar when a tile is dropped or dragged in/out
+	# _updateTileNums = () ->
+	# 	i = 1
+	# 	for slider in $('.tileInfoSlider')
+	# 		$(slider).children('.block').children('.number').html(i)
+	# 		i++ 
 
 	# All tiles have been moved to the orderArea. No tiles left on the board
 	_tilesSequenced = ->
@@ -722,11 +752,6 @@ Namespace('Sequencer').Engine = do ->
 
 				_doubleDigitFlipCorrect ++ctr, results
 		, 120
-
-	# # Extracts a number from a string 
-	# filterInt = (stringValue) -> 
-	# 	if /^(\-|\+)?([0-9]+|Infinity)$/.test(stringValue)
-	# 		return Number(stringValue)
 
 	_sendScores = () ->
 		answer = 0
