@@ -3,8 +3,6 @@
 }
 
 @mixin boxSizing() {
-	-webkit-box-sizing: border-box;
-	-moz-box-sizing: border-box;
 	box-sizing: border-box;
 }
 
@@ -59,11 +57,7 @@ html, body {
 	padding: 0;
 	margin: 0;
 	font-family: 'AmericanTypewriter', sans-serif;
-	-webkit-user-select: none;
-	   -moz-user-select: none;
-	    -ms-user-select: none;
-	     -o-user-select: none;
-	        user-select: none;
+	user-select: none;
 }
 
 .color0 {
@@ -98,9 +92,7 @@ header {
 		width: 90%;
 		font-size: 25px;
 		overflow: hidden;
-		-webkit-box-shadow: 0px 8px -6px black;
-	       -moz-box-shadow: 0px 8px -6px black;
-			    box-shadow: 0px 8px -6px black;
+		box-shadow: 0px 8px -6px black;
 
 		.words, h1 {
 			font-family: 'AmericanTypewriter';
@@ -138,11 +130,7 @@ header {
 	height: 100%;
 	z-index: 0;
 	background: transparent;
-	-webkit-transition: all 400ms;
-	   -moz-transition: all 400ms;
-	    -ms-transition: all 400ms;
-	     -o-transition: all 400ms;
-		    transition: all 400ms;
+	transition: all 400ms;
 	&.active {
 		position: absolute;
 		background: rgba(0,0,0,.4);
@@ -155,10 +143,7 @@ header {
 	bottom: auto;
 	margin: 10px 10px 0px 10px;
 	background: #994949;
-	-webkit-transform: rotate(0deg);
-	   -moz-transform: rotate(0deg);
-	     -o-transform: rotate(0deg);
-			transform: rotate(0deg);
+	transform: rotate(0deg);
 
 	p {
 		position: relative;
@@ -177,22 +162,14 @@ header {
 	padding: 0px 0px 0px 0px;
 	overflow: auto;
 	z-index: 10;
-	-webkit-transition: 100ms;
-	   -moz-transition: 100ms;
-	    -ms-transition: 100ms;
-	     -o-transition: 100ms;
-		    transition: 100ms;
+	transition: 100ms;
 
 
 	&.dim {
 		background: rgba(0,0,0,.3);
 		z-index: 500;
 		pointer-events: none;
-		-webkit-transition: 200ms;
-		   -moz-transition: 200ms;
-		    -ms-transition: 200ms;
-		     -o-transition: 200ms;
-		     	transition: 200ms;
+		transition: 200ms;
 	}
 }
 
@@ -205,24 +182,34 @@ header {
 	margin-bottom: 15px;
 	padding: 15px 15px 15px 15px;
 	background: url("assets/panel_bg.png") 0 0;
-	-webkit-border-radius: 10px;
-	   -moz-border-radius: 10px;
-	        border-radius: 10px;
-	-webkit-box-shadow: inset 0px 0px 10px -10px #000000;
-	   -moz-box-shadow: inset 0px 0px 10px -10px #000000;
-			box-shadow: inset 0px 0px 10px -10px #000000;
-		-webkit-transition: 100ms;
-	   -moz-transition: 100ms;
-	    -ms-transition: 100ms;
-	     -o-transition: 100ms;
+    border-radius: 10px;
+	box-shadow: inset 0px 0px 10px -10px #000000;
+	transition: 200ms;
+	z-index: 9;
 
+     &:before{
+		content: "";
+		position: absolute;
+		width: 100%;
+		height: 100%;
+		border-radius: 10px;
+		margin-top: -15px;
+		margin-left: -15px;
+		background: rgba(0,0,0,0);
+		transition: 200ms;
+	}
 	&.fade {
-		background: url("assets/fade_panel_bg.png") 0 0;
-		-webkit-transition: 400ms;
-		   -moz-transition: 400ms;
-		    -ms-transition: 400ms;
-		     -o-transition: 400ms;
-		     	transition: 400ms;
+		&:before{
+			content: "";
+			position: absolute;
+			width: 100%;
+			height: 100%;
+			border-radius: 10px;
+			margin-top: -15px;
+			margin-left: -15px;
+			background: rgba(0,0,0,.2);
+			transition: 400ms;
+		}
 	}
 }
 
@@ -257,54 +244,28 @@ header {
 
 	&.fall1 {
 		opacity: 1;
-		-webkit-animation: tileFall1 150ms linear;
-	       -moz-animation: tileFall1 150ms linear;
-		    -ms-animation: tileFall1 150ms linear;
-	    	    animation: tileFall1 150ms linear;
-	   	-webkit-transition: 100ms;
-		   -moz-transition: 100ms;
-		    -ms-transition: 100ms;
-		     -o-transition: 100ms;
-	    	 	transition: 100ms;
+		animation: tileFall1 150ms linear;
+	   	transition: 100ms;
 
 	}
 	
 	&.fall2 {
 		opacity: 1;
-		-webkit-animation: tileFall2 150ms linear;
-	       -moz-animation: tileFall2 150ms linear;
-		    -ms-animation: tileFall2 150ms linear;
-	    	    animation: tileFall2 150ms linear;
-	   	-webkit-transition: 100ms;
-		   -moz-transition: 100ms;
-		    -ms-transition: 100ms;
-		     -o-transition: 100ms;
-	     		transition: 100ms;
+		animation: tileFall2 150ms linear;
+	   	transition: 100ms;
 	}
 
 	&.fall3 {
 		opacity: 1;
-		-webkit-animation: tileFall3 150ms linear;
-	       -moz-animation: tileFall3 150ms linear;
-		    -ms-animation: tileFall3 150ms linear;
-	    	    animation: tileFall3 150ms linear;
-	   	-webkit-transition: 100ms;
-		   -moz-transition: 100ms;
-		    -ms-transition: 100ms;
-		     -o-transition: 100ms;
-	     		transition: 100ms;
+		animation: tileFall3 150ms linear;
+	   	transition: 100ms;
 
 	}
 
 	&.dragging {
 		z-index: 300;
-		-webkit-box-shadow: 10px 5px 5px black;
-		   -moz-box-shadow: 10px 5px 5px black;
-				box-shadow: 10px 5px 5px black;
-		-webkit-transform: scale(1.2); 
-		   -moz-transform: scale(1.2); 
-		     -o-transform: scale(1.2); 
-				transform: scale(1.2);
+		box-shadow: 10px 5px 5px black;
+		transform: scale(1.2);
 	}
 
 	@include boxSizing();
@@ -324,11 +285,6 @@ header {
 			width: 16px;
 		}
 	}
-
-	// .clueWindow {
-	// 	position: relative;
-	// 	background:
-	// }
 }
 
 #numberBar { 
@@ -340,13 +296,9 @@ header {
 	background: $blurple;
 	overflow: hidden;
 	z-index: 5;
-	-webkit-border-radius: 10px 0px 0px 0px;
-	   -moz-border-radius: 10px 0px 0px 0px;
-	        border-radius: 10px 0px 0px 0px;
+	border-radius: 10px 0px 0px 0px;
 	// shadow Left, Top
-	-webkit-box-shadow: inset 10px 0 10px -10px #000000, inset 0px 10px 10px -10px #000000;
-	   -moz-box-shadow: inset 10px 0 10px -10px #000000, inset 0px 10px 10px -10px #000000;
-			box-shadow: inset 10px 0 10px -10px #000000, inset 0px 10px 10px -10px #000000;
+	box-shadow: inset 10px 0 10px -10px #000000, inset 0px 10px 10px -10px #000000;
 
 
 	.numbers {
@@ -360,25 +312,17 @@ header {
 		margin: 20px 8px 33px 8px;
 		font-size: 25px;
 		font-family: sans-serif;
-		-webkit-border-radius: 50%;
-  		   -moz-border-radius: 50%;
-       			border-radius: 50%;
+		border-radius: 50%;
        
         &.show { 
         	opacity: 1;
-        	-webkit-transition: 100ms ease;
-	  		   -moz-transition: 100ms ease;
-	       		-ms-transition: 100ms ease;
-	        		transition: 100ms ease;
+        	transition: 100ms ease;
         }
 
 	    &.highlight {
 	    	background: $hblurple;
 	    	color: $blurple;
-	    	-webkit-transition: 100ms ease; 
-	  		   -moz-transition: 100ms ease;
-	       		-ms-transition: 100ms ease;
-	        		transition: 100ms ease;
+	    	transition: 100ms ease;
 	    }
 	}
 }
@@ -393,10 +337,8 @@ header {
 	margin-left: 10px;
 	background: $lblurple;
 	overflow-x: visible;
-	// overflow-y: scroll;
 	direction: ltr;
 	border-radius: 0px 10px 0px 0px;
-	// shadow Right, Top
 	box-shadow: inset -10px 0 10px -10px #000000, inset 0px 10px 10px -10px #000000;
 	transition: 200ms ease-in;
 
@@ -412,10 +354,7 @@ header {
 		background: $light;
 		border-radius: 10px 10px;
 		opacity: 1;
-		-webkit-transition: 1s ease; 
-  		   -moz-transition: 1s ease;
-       		-ms-transition: 1s ease;
-        		transition: 1s ease;
+		transition: 1s ease;
 
 		&.hide {
 			opacity: 0;
@@ -443,10 +382,7 @@ header {
 	background: #ccc;  
 	margin: 5px;
 	opacity: .7;
-	-webkit-transition: 50ms eas-out; 
-		   -moz-transition: 50ms ease-out;
-   		-ms-transition: 50ms ease-out;
-    		transition: 50ms ease-out;
+	transition: 50ms ease-out;
 }
 
 #submitHolder {
@@ -459,12 +395,8 @@ header {
 	background: $blurple;
 	z-index: 5;
 	//Shadow Left, Right, Bottom
-	-webkit-box-shadow: inset 10px 0 10px -10px #000000, inset -10px 0 10px -10px #000000, inset 0px -10px 10px -10px #000000;
-	   -moz-box-shadow: inset 10px 0 10px -10px #000000, inset -10px 0 10px -10px #000000, inset 0px -10px 10px -10px #000000;
-			box-shadow: inset 10px 0 10px -10px #000000, inset -10px 0 10px -10px #000000, inset 0px -10px 10px -10px #000000;
-	-webkit-border-radius: 0px 0px 10px 10px;
-	   -moz-border-radius: 0px 0px 10px 10px;
-	        border-radius: 0px 0px 10px 10px;
+	box-shadow: inset 10px 0 10px -10px #000000, inset -10px 0 10px -10px #000000, inset 0px -10px 10px -10px #000000;
+	border-radius: 0px 0px 10px 10px;
 
 	#submit {
 		position: absolute;
@@ -485,17 +417,10 @@ header {
 		background: -o-linear-gradient(top, $light, $grey);
 		background:	linear-gradient(top, $light, $grey);
 		border: 1px solid $medgrey;
-		-webkit-border-radius: 10px;
-		   -moz-border-radius: 10px;
-		        border-radius: 10px;
-		-webkit-box-shadow: inset 0 3px 0 rgba(255,255,255,0.5);
-		   -moz-box-shadow: inset 0 3px 0 rgba(255,255,255,0.5);
-			    box-shadow: inset 0 3px 0 rgba(255,255,255,0.5);
-		-webkit-transition: all 300ms ease;
-		   -moz-transition: all 300ms ease;
-		    -ms-transition: all 300ms ease;
-		     -o-transition: all 300ms ease;
-	  		   	transition: all 300ms ease;
+		border-radius: 10px;
+		box-shadow: inset 0 3px 0 rgba(255,255,255,0.5);
+		transition: all 300ms ease;
+		pointer-events: none;
 		&.enabled {
 			cursor: pointer;
 			color: $blue;
@@ -506,22 +431,13 @@ header {
 			background: -o-linear-gradient(bottom, $light, $grey);
 			background:	linear-gradient(bottom, $light, $grey);
 			border: 1px solid $medgrey;
-			-webkit-border-radius: 10px;
-			   -moz-border-radius: 10px;
-			        border-radius: 10px;
-			-webkit-box-shadow: inset 0 3px 0 rgba(255,255,255,0.5), 0px 0px 2px 2px rgba(0,0,0,0.05);
-			   -moz-box-shadow: inset 0 3px 0 rgba(255,255,255,0.5), 0px 0px 2px 2px rgba(0,0,0,0.05);
-				    box-shadow: inset 0 3px 0 rgba(255,255,255,0.5), 0px 0px 2px 2px rgba(0,0,0,0.05);
-			-webkit-transition: all 300ms ease;
-			   -moz-transition: all 300ms ease;
-			    -ms-transition: all 300ms ease;
-			     -o-transition: all 300ms ease;
-		  		   	transition: all 300ms ease;
+			border-radius: 10px;
+			box-shadow: inset 0 3px 0 rgba(255,255,255,0.5), 0px 0px 2px 2px rgba(0,0,0,0.05);
+			transition: all 300ms ease;
+			pointer-events: all;
 			&:hover {
 				border: 1px solid transparent;
-				-webkit-box-shadow: inset 0 3px 0 rgba(255,255,255,0.5), 0px 0px 2px 2px $blue;
-				   -moz-box-shadow: inset 0 3px 0 rgba(255,255,255,0.5), 0px 0px 2px 2px $blue;
-					    box-shadow: inset 0 3px 0 rgba(255,255,255,0.5), 0px 0px 2px 2px $blue;
+				box-shadow: inset 0 3px 0 rgba(255,255,255,0.5), 0px 0px 2px 2px $blue;
 			}
 		}
 	}
@@ -545,19 +461,9 @@ header {
 	overflow-y: auto;
 	font-size: 15px;
 
-	&.slideOut{
-		-webkit-animation: clueSlideOut 300ms ease-in; 
-		   -moz-animation: clueSlideOut 300ms ease-in;
-		    -ms-animation: clueSlideOut 300ms ease-in;
-		        animation: clueSlideOut 300ms ease-in;
-	}
-
 	&.show {
 		opacity: 1;
-		-webkit-animation: clueSlideIn 300ms ease-out; 
-		   -moz-animation: clueSlideIn 300ms ease-out;
-		    -ms-animation: clueSlideIn 300ms ease-out;
-		        animation: clueSlideIn 300ms ease-out;
+		animation: clueSlideIn 300ms ease-out;
 	}
 
 	p {
@@ -568,11 +474,7 @@ header {
 		position: absolute;
 		right: 10px;
 		color: $light;
-		-webkit-transition: 200ms;
-		   -moz-transition: 200ms;
-		    -ms-transition: 200ms;
-		     -o-transition: 200ms;
-		     	transition: 200ms;
+		transition: 200ms;
 
 		&:hover {
 			color: $grey;
@@ -591,9 +493,7 @@ header {
 	z-index: 99;
 	border: 10px solid $green;
 	border-bottom: 0px;
-	-webkit-box-shadow: 0px 8px -6px black;
-	   -moz-box-shadow: 0px 8px -6px black;
-			box-shadow: 0px 8px -6px black;
+	box-shadow: 0px 8px -6px black;
 
 	#score-text {
 		float: left;
@@ -609,18 +509,11 @@ header {
 	#score {
 		overflow: hidden;
 		color: $orange;
-		-webkit-transition: 100ms;
-		   -moz-transition: 100ms;
-		    -ms-transition: 100ms;
-		     -o-transition: 100ms;
-		     	transition: 100ms;
+		transition: 100ms;
 
 		&.show {
 			opacity: 1;
-			-webkit-animation: scoreAppear 600ms ease-out; 
-			   -moz-animation: scoreAppear 600ms ease-out;
-			    -ms-animation: scoreAppear 600ms ease-out;
-			        animation: scoreAppear 600ms ease-out;
+			animation: scoreAppear 600ms ease-out;
 		}
 	}
 }
@@ -629,25 +522,19 @@ header {
 	position: absolute;
 	top: -10px;
 	left: -10px;
-	-webkit-transform: rotate(-6deg);
-	   -moz-transform: rotate(-6deg);
-			transform: rotate(-6deg);
+	transform: rotate(-6deg);
 	h3 {
 		font-size: 40px;
 		color: $light;
 		margin: 0px;
-		-webkit-text-shadow: 0 0 3px $dgrey;
-		   -moz-text-shadow: 0 0 3px $dgrey;
-				text-shadow: 0 0 3px $dgrey;
+		text-shadow: 0 0 3px $dgrey;
 	}
 	
 	h4 {
 		font-size: 15px;
 		color: $dgrey;
 		margin: -5px 0px 0px 95px;
-		-webkit-text-shadow: 0 0 1px $light;
-		   -moz-text-shadow: 0 0 1px $light;
-				text-shadow: 0 0 1px $light;
+		text-shadow: 0 0 1px $light;
 	}
 }	
 
@@ -662,12 +549,8 @@ header {
 	background-repeat: no-repeat;;
 	z-index: 150;
 	// background: url("assets/sequencer.png") 0 0;
-	-webkit-border-radius: 10px;
-	   -moz-border-radius: 10px;
-	        border-radius: 10px;
-    -webkit-box-shadow: 0px 0px 10px 10px rgba(0,0,0,.1);
-	   -moz-box-shadow: 0px 0px 10px 10px rgba(0,0,0,.1);
-			box-shadow: 0px 0px 10px 10px rgba(0,0,0,.1);
+	border-radius: 10px;
+    box-shadow: 0px 0px 10px 10px rgba(0,0,0,.1);
 
 	#resultsInner {
 		position: absolute;
@@ -679,17 +562,9 @@ header {
 		color: $dgrey;
 		font-family: 'Lacurg';
 		padding: 10px 10px 15px 10px;
-		-webkit-border-radius: 10px;
-		   -moz-border-radius: 10px;
-		        border-radius: 10px;
-		-webkit-box-shadow: 0px 0px 20px 20px rgba(0,0,0,.1) inset;
-		   -moz-box-shadow: 0px 0px 20px 20px rgba(0,0,0,.1) inset;
-				box-shadow: 0px 0px 20px 20px rgba(0,0,0,.1) inset;
-		-webkit-transition: 100ms;
-		   -moz-transition: 100ms;
-		    -ms-transition: 100ms;
-		     -o-transition: 100ms;
-		     	transition: 100ms;
+		border-radius: 10px;
+		box-shadow: 0px 0px 20px 20px rgba(0,0,0,.1) inset;
+		transition: 100ms;
 
 
 		#textBelowNumbers {
@@ -721,9 +596,7 @@ header {
 					width: 65px;
 					overflow-y: hidden;
 					z-index: 150;
-					-webkit-border-radius: 5px 5px 0px 0px;
-					   -moz-border-radius: 5px 5px 0px 0px;
-					        border-radius: 5px 5px 0px 0px;
+					border-radius: 5px 5px 0px 0px;
 
 					#numberTopUnder { 
 						color: $red;
@@ -742,9 +615,7 @@ header {
 					width: 65px;
 					overflow-y: hidden;
 					z-index: 151;
-					-webkit-border-radius: 5px 5px 0px 0px;
-					   -moz-border-radius: 5px 5px 0px 0px;
-					        border-radius: 5px 5px 0px 0px;
+					border-radius: 5px 5px 0px 0px;
 					
 					#numberTop {
 						color: $red;
@@ -755,15 +626,8 @@ header {
 
 					&.flip {
 						opacity: 0;
-						-webkit-animation: flipNumberFromTop 100ms ease-in; 
-						   -moz-animation: flipNumberFromTop 100ms ease-in;
-						    -ms-animation: flipNumberFromTop 100ms ease-in;
-						        animation: flipNumberFromTop 100ms ease-in;
-						-webkit-transition: opacity 1ms 100ms;
-						   -moz-transition: opacity 1ms 100ms;
-						    -ms-transition: opacity 1ms 100ms;
-						     -o-transition: opacity 1ms 100ms;
-		     					transition: opacity 1ms 100ms;
+						animation: flipNumberFromTop 100ms ease-in;
+						transition: opacity 1ms 100ms;
 					}
 				}
 
@@ -776,9 +640,7 @@ header {
 					background: $dgrey;
 					overflow-y: hidden;
 					z-index: 150;
-					-webkit-border-radius: 0px 0px 5px 5px;
-					   -moz-border-radius: 0px 0px 5px 5px;
-					        border-radius: 0px 0px 5px 5px;
+					border-radius: 0px 0px 5px 5px;
 
 					#numberBottomUnder {
 						position: relative;
@@ -799,9 +661,7 @@ header {
 					background: $dgrey;
 					overflow-y: hidden;
 					z-index: 151;
-					-webkit-border-radius: 0px 0px 5px 5px;
-					   -moz-border-radius: 0px 0px 5px 5px;
-					        border-radius: 0px 0px 5px 5px;
+					border-radius: 0px 0px 5px 5px;
 
 					#numberBottom {
 						position: relative;
@@ -813,15 +673,8 @@ header {
 
 					&.flip {
 						opacity: 1;
-						-webkit-animation: flipNumberFromBottom 100ms 100ms ease-out;
-						   -moz-animation: flipNumberFromBottom 100ms 100ms ease-out;
-						    -ms-animation: flipNumberFromBottom 100ms 100ms ease-out;
-						        animation: flipNumberFromBottom 100ms 100ms ease-out;
-						-webkit-transition: opacity 1ms 100ms;
-						   -moz-transition: opacity 1ms 100ms;
-						    -ms-transition: opacity 1ms 100ms;
-						     -o-transition: opacity 1ms 100ms;
-		    				 	transition: opacity 1ms 100ms;
+						animation: flipNumberFromBottom 100ms 100ms ease-out;
+						transition: opacity 1ms 100ms;
 					}
 				}
 			}
@@ -840,9 +693,7 @@ header {
 					width: 65px;
 					overflow-y: hidden;
 					z-index: 150;
-					-webkit-border-radius: 5px 5px 0px 0px;
-					   -moz-border-radius: 5px 5px 0px 0px;
-					        border-radius: 5px 5px 0px 0px;
+					border-radius: 5px 5px 0px 0px;
 
 					#numberTopUnderDouble { 
 						color: $red;
@@ -861,9 +712,7 @@ header {
 					width: 65px;
 					overflow-y: hidden;
 					z-index: 151;
-					-webkit-border-radius: 5px 5px 0px 0px;
-					   -moz-border-radius: 5px 5px 0px 0px;
-					        border-radius: 5px 5px 0px 0px;
+					border-radius: 5px 5px 0px 0px;
 					
 					#numberTopDouble {
 						color: $red;
@@ -874,15 +723,8 @@ header {
 
 					&.flip {
 						opacity: 0;
-						-webkit-animation: flipNumberFromTop 60ms ease-in; 
-						   -moz-animation: flipNumberFromTop 60ms ease-in;
-						    -ms-animation: flipNumberFromTop 60ms ease-in;
-						        animation: flipNumberFromTop 60ms ease-in;
-						-webkit-transition: opacity 1ms 60ms;
-						   -moz-transition: opacity 1ms 60ms;
-						    -ms-transition: opacity 1ms 60ms;
-						     -o-transition: opacity 1ms 60ms;
-		    				 	transition: opacity 1ms 60ms;
+						animation: flipNumberFromTop 60ms ease-in;
+						transition: opacity 1ms 60ms;
 					}
 				}
 
@@ -895,9 +737,7 @@ header {
 					background: $dgrey;
 					overflow-y: hidden;
 					z-index: 150;
-					-webkit-border-radius: 0px 0px 5px 5px;
-					   -moz-border-radius: 0px 0px 5px 5px;
-					        border-radius: 0px 0px 5px 5px;
+					border-radius: 0px 0px 5px 5px;
 
 					#numberBottomUnderDouble {
 						position: relative;
@@ -918,9 +758,7 @@ header {
 					background: $dgrey;
 					overflow-y: hidden;
 					z-index: 151;
-					-webkit-border-radius: 0px 0px 5px 5px;
-					   -moz-border-radius: 0px 0px 5px 5px;
-					        border-radius: 0px 0px 5px 5px;
+					border-radius: 0px 0px 5px 5px;
 
 					#numberBottomDouble {
 						position: relative;
@@ -932,15 +770,8 @@ header {
 
 					&.flip {
 						opacity: 1;
-						-webkit-animation: flipNumberFromBottom 60ms 60ms ease-out;
-						   -moz-animation: flipNumberFromBottom 60ms 60ms ease-out;
-						    -ms-animation: flipNumberFromBottom 60ms 60ms ease-out;
-						        animation: flipNumberFromBottom 60ms 60ms ease-out;
-						-webkit-transition: opacity 1ms 60ms;
-						   -moz-transition: opacity 1ms 60ms;
-						    -ms-transition: opacity 1ms 60ms;
-						     -o-transition: opacity 1ms 60ms;
-		     					transition: opacity 1ms 60ms;
+						animation: flipNumberFromBottom 60ms 60ms ease-out;
+						transition: opacity 1ms 60ms;
 
 					}
 				}
@@ -985,23 +816,14 @@ header {
 			background: -ms-linear-gradient(top, $light, $grey);
 			background: -o-linear-gradient(top, $light, $grey);
 			background:	linear-gradient(top, $light, $grey);
-		 	-webkit-border-radius: 10px;
-			   -moz-border-radius: 10px;
-			        border-radius: 10px;
+		 	border-radius: 10px;
 			
 			&.show {
 				pointer-events: auto;
 				cursor: pointer;
 				opacity: 1;
-				-webkit-animation: zoomBounce 300ms ease-out 300ms; 
-				   -moz-animation: zoomBounce 300ms ease-out 300ms;
-				    -ms-animation: zoomBounce 300ms ease-out 300ms;
-				        animation: zoomBounce 300ms ease-out 300ms;
-			    -webkit-transition: 200ms 300ms;
-				   -moz-transition: 200ms 300ms;
-				    -ms-transition: 200ms 300ms;
-				     -o-transition: 200ms 300ms;
-				     	transition: 200ms 300ms;
+				animation: zoomBounce 300ms ease-out 300ms;
+			    transition: 200ms 300ms;
 			}
 		}
 
@@ -1016,15 +838,8 @@ header {
 
 			&.show {
 				opacity: 1;
-				-webkit-animation: zoomBounce 300ms ease-out; 
-				   -moz-animation: zoomBounce 300ms ease-out;
-				    -ms-animation: zoomBounce 300ms ease-out;
-				        animation: zoomBounce 300ms ease-out;
-				-webkit-transition: 200ms;
-				   -moz-transition: 200ms;
-				    -ms-transition: 200ms;
-				     -o-transition: 200ms;
-				     	transition: 200ms;
+				animation: zoomBounce 300ms ease-out;
+				transition: 200ms;
 			}
 
 			#pointsLostCircle {
@@ -1034,9 +849,7 @@ header {
 				height: 25px;
 				width: 25px;
 				padding: 2px;
-				-webkit-border-radius: 50%;
-				   -moz-border-radius: 50%;
-				        border-radius: 50%;
+				border-radius: 50%;
 			}
 		}
 
@@ -1049,24 +862,12 @@ header {
 			margin-left: -10px;
 			color: $light;
 			font-size: 20px;
-			-webkit-transform: scale(.7);
-			   -moz-transform: scale(.7);
-			    -ms-transform: scale(.7);
-			     -o-transform: scale(.7);
-			        transform: scale(.7);
+			transform: scale(.7);
 
 			&.show {
 				opacity: 1;
-				-webkit-transform: scale(1);
-				   -moz-transform: scale(1);
-				    -ms-transform: scale(1);
-				     -o-transform: scale(1);
-			     		transform: scale(1);
-				-webkit-transition: 300ms;
-				   -moz-transition: 300ms;
-				    -ms-transition: 300ms;
-				     -o-transition: 300ms;
-				     	transition: 300ms;
+				transform: scale(1);
+				transition: 300ms;
 			}
 		}
 
@@ -1079,24 +880,12 @@ header {
 			bottom: 40px;
 			color: $light;
 			font-size: 20px;
-			-webkit-transform: scale(.7);
-			   -moz-transform: scale(.7);
-			    -ms-transform: scale(.7);
-			     -o-transform: scale(.7);
-			        transform: scale(.7);
+			transform: scale(.7);
 
 			&.show {
 				opacity: 1;
-				-webkit-transform: scale(1);
-				   -moz-transform: scale(1);
-				    -ms-transform: scale(1);
-				     -o-transform: scale(1);
-			     		transform: scale(1);
-				-webkit-transition: 300ms;
-				   -moz-transition: 300ms;
-				    -ms-transition: 300ms;
-				     -o-transition: 300ms;
-				     	transition: 300ms;
+				transform: scale(1);
+				transition: 300ms;
 			}
 		}
 	}
@@ -1115,25 +904,13 @@ header {
 	font-family: 'Lacurg';
 	border: 1px solid $dgrey;
 	opacity: 0;
-	-webkit-box-shadow: 0px 8px -6px black;
-	   -moz-box-shadow: 0px 8px -6px black;
-			box-shadow: 0px 8px -6px black;
- 	-webkit-border-radius: 10px;
-	   -moz-border-radius: 10px;
-	        border-radius: 10px;
-	-webkit-transition: 100ms;
-	   -moz-transition: 100ms;
-	    -ms-transition: 100ms;
-	     -o-transition: 100ms;
-		 	transition: 100ms;
+	box-shadow: 0px 8px -6px black;
+ 	border-radius: 10px;
+	transition: 100ms;
 
 	&.show {
 		opacity: .9;
-		-webkit-transition: 200ms;
-		   -moz-transition: 200ms;
-		    -ms-transition: 200ms;
-		     -o-transition: 200ms;
-		     	transition: 100ms;
+		transition: 100ms;
 	}
 }
 
@@ -1145,12 +922,8 @@ header {
 	height: 330px;
 	background: $titleblue;
 	z-index: 150;
-	-webkit-border-radius: 10px;
-	   -moz-border-radius: 10px;
-	        border-radius: 10px;
-    -webkit-box-shadow: 0px 0px 10px 10px rgba(0,0,0,.1);
-	   -moz-box-shadow: 0px 0px 10px 10px rgba(0,0,0,.1);
-			box-shadow: 0px 0px 10px 10px rgba(0,0,0,.1);
+	border-radius: 10px;
+   	box-shadow: 0px 0px 10px 10px rgba(0,0,0,.1);
 
 	#demoArea {
 		position: absolute;
@@ -1162,12 +935,8 @@ header {
 		background: $medgrey;
 		background-repeat: no-repeat;
 		z-index: 150;
-		-webkit-border-radius: 10px;
-		   -moz-border-radius: 10px;
-		        border-radius: 10px;
-	    -webkit-box-shadow: 0px 0px 20px 20px rgba(0,0,0,.1) inset;
-		   -moz-box-shadow: 0px 0px 20px 20px rgba(0,0,0,.1) inset;
-				box-shadow: 0px 0px 20px 20px rgba(0,0,0,.1) inset;
+		border-radius: 10px;
+	   	box-shadow: 0px 0px 20px 20px rgba(0,0,0,.1) inset;
 		
 		#demoTileSection {
 			position: absolute;
@@ -1176,9 +945,7 @@ header {
 			height: 220px;
 			padding: 5px;
 			background: $lblurple;
-			-webkit-border-radius: 3px;
-			   -moz-border-radius: 3px;
-			        border-radius: 3px;
+			border-radius: 3px;
 		}
 
 		#demoTitle {
@@ -1220,9 +987,7 @@ header {
 			padding: 5px;
 			background:  $lblurple;
 			z-index: 300;
-			-webkit-border-radius: 3px;
-			   -moz-border-radius: 3px;
-			        border-radius: 3px;
+			border-radius: 3px;
 		}
 
 		#demoNumberBar {
@@ -1234,9 +999,7 @@ header {
 			padding: 5px;
 			background: $blurple;
 			z-index: 300;
-			-webkit-border-radius: 3px;
-			   -moz-border-radius: 3px;
-			        border-radius: 3px;
+			border-radius: 3px;
 		}
 
 		#demoMouse {
@@ -1248,10 +1011,7 @@ header {
 			z-index: 301;
 			background: url("assets/demoMouse.png");
 			background-repeat: no-repeat;
-			-webkit-animation: demoMouseMovement 10000ms ease-out 300ms infinite; 
-			   -moz-animation: demoMouseMovement 10000ms ease-out 300ms infinite;
-			    -ms-animation: demoMouseMovement 10000ms ease-out 300ms infinite;
-			        animation: demoMouseMovement 10000ms ease-out 300ms infinite;
+			animation: demoMouseMovement 10000ms ease-out 300ms infinite;
 		}
 
 		#demoSubmitButton {
@@ -1264,18 +1024,12 @@ header {
 			text-align: center;
 			color: $grey;
 			background: $light;
-			-webkit-border-radius: 3px;
-			   -moz-border-radius: 3px;
-			        border-radius: 3px;
+			border-radius: 3px;
 
 			&.hover {
 				background: $blurple;
 				color: blue;
-				-webkit-transition: all 200ms ease 4800ms;
-				   -moz-transition: all 200ms ease 4800ms;
-				    -ms-transition: all 200ms ease 4800ms;
-				     -o-transition: all 200ms ease 4800ms;
-				     	transition: all 200ms ease 4800ms;
+				transition: all 200ms ease 4800ms;
 			}
 		}
 
@@ -1288,12 +1042,8 @@ header {
 			font-size: 18px;
 			padding-top: 5px;
 			z-index: 301;
-			-webkit-border-radius: 3px;
-			   -moz-border-radius: 3px;
-			        border-radius: 3px;
-		    -webkit-box-shadow: 0px 0px 3px 3px rgba(0,0,0,.05);
-			   -moz-box-shadow: 0px 0px 3px 3px rgba(0,0,0,.05);
-					box-shadow: 0px 0px 3px 3px rgba(0,0,0,.05);
+			border-radius: 3px;
+		    box-shadow: 0px 0px 3px 3px rgba(0,0,0,.05);
 		}
 
 		#dt1 {
@@ -1303,10 +1053,7 @@ header {
 			transform: rotate(2deg);
 
 			&.move {
-				-webkit-animation: demoTile1Movement 10000ms ease-out 300ms infinite; 
-				   -moz-animation: demoTile1Movement 10000ms ease-out 300ms infinite;
-				    -ms-animation: demoTile1Movement 10000ms ease-out 300ms infinite;
-				        animation: demoTile1Movement 10000ms ease-out 300ms infinite;
+				animation: demoTile1Movement 10000ms ease-out 300ms infinite;
 			}
 		}
 
@@ -1317,10 +1064,7 @@ header {
 			transform: rotate(-1deg);
 
 			&.move {
-				-webkit-animation: demoTile2Movement 10000ms ease-out 300ms infinite; 
-				   -moz-animation: demoTile2Movement 10000ms ease-out 300ms infinite;
-				    -ms-animation: demoTile2Movement 10000ms ease-out 300ms infinite;
-				        animation: demoTile2Movement 10000ms ease-out 300ms infinite;
+				animation: demoTile2Movement 10000ms ease-out 300ms infinite;
 			}
 		}	
 
@@ -1331,10 +1075,7 @@ header {
 			transform: rotate(1deg);
 
 			&.move {
-				-webkit-animation: demoTile3Movement 10000ms ease-out 300ms infinite; 
-				   -moz-animation: demoTile3Movement 10000ms ease-out 300ms infinite;
-				    -ms-animation: demoTile3Movement 10000ms ease-out 300ms infinite;
-				        animation: demoTile3Movement 10000ms ease-out 300ms infinite;
+				animation: demoTile3Movement 10000ms ease-out 300ms infinite;
 			}
 		}
 
@@ -1350,9 +1091,7 @@ header {
 			color: $light;
 			padding: 10px 15px 0px 15px;
 			text-align: center;
-			-webkit-border-radius: 3px;
-			   -moz-border-radius: 3px;
-			        border-radius: 3px;
+			border-radius: 3px;
 
 			#demoScore {
 				position: relative;
@@ -1361,16 +1100,11 @@ header {
 				background: $medgrey;
 				font-size: 30px;
 				text-align: center;
-				-webkit-border-radius: 3px;
-				   -moz-border-radius: 3px;
-				        border-radius: 3px;
+				border-radius: 3px;
 			}
 
 			&.show {
-				-webkit-animation: demoFinishScreen 10000ms ease-out 300ms infinite; 
-				   -moz-animation: demoFinishScreen 10000ms ease-out 300ms infinite;
-				    -ms-animation: demoFinishScreen 10000ms ease-out 300ms infinite;
-				        animation: demoFinishScreen 10000ms ease-out 300ms infinite;
+				animation: demoFinishScreen 10000ms ease-out 300ms infinite;
 			}
 		}
 		
@@ -1405,28 +1139,15 @@ header {
 			background-image: -ms-linear-gradient(top, $light, $grey);
 			background-image: -o-linear-gradient(top, $light, $grey);
 			background-image: linear-gradient(top, $light, $grey);
-		 	-webkit-border-radius: 10px;
-			   -moz-border-radius: 10px;
-			        border-radius: 10px;
-			-webkit-transition: 200ms 1s;
-			   -moz-transition: 200ms 1s;
-			    -ms-transition: 200ms 1s;
-			     -o-transition: 200ms 1s;
-			     	transition: 200ms 1s;
+		 	border-radius: 10px;
+			transition: 200ms 1s;
 		
 			&.show {
 				pointer-events: auto;
 				cursor: pointer;
 				opacity: 1;
-				-webkit-transition: 200ms 500ms;
-				   -moz-transition: 200ms 500ms;
-				    -ms-transition: 200ms 500ms;
-				     -o-transition: 200ms 500ms;
-				     	transition: 200ms 500ms;
-				-webkit-animation: zoomBounce 300ms ease-out 500ms; 
-				   -moz-animation: zoomBounce 300ms ease-out 500ms;
-				    -ms-animation: zoomBounce 300ms ease-out 500ms;
-				        animation: zoomBounce 300ms ease-out 500ms;
+				transition: 200ms 500ms;
+				animation: zoomBounce 300ms ease-out 500ms;
 			}
 		}
 	}
