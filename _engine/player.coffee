@@ -63,7 +63,6 @@ Namespace('Sequencer').Engine = do ->
 		
 		# if its been placed, pull it out of the sequence array
 		if (i = _sequence.indexOf(~~_curterm.id)) != -1
-			console.log "I is :" + i
 			_sequence.splice(i,1)
 			_tilesInSequence--
 		
@@ -99,7 +98,6 @@ Namespace('Sequencer').Engine = do ->
 		y = 70 if x < -20 and y < 70 
 		y = 385 if x < -20 and y > 385
 
-		console.log "Xpos: "+x+" Ypos: "+y
 		for i in [0..._sequence.length]
 			if _sequence[i] is -1
 				_sequence.splice(i, 1)
@@ -116,7 +114,6 @@ Namespace('Sequencer').Engine = do ->
 
 			# Add an extra temporary number when you drag the tile into the tile area
 			if _addTempNum is true
-				console.log 1 + $('#numberBar').children().length
 				newNumbers = _.template $('#numberBar-numbers').html()
 				_tempNumber = $(newNumbers number: 1 + $('#numberBar').children().length)
 				$('#numberBar').append _tempNumber
@@ -128,20 +125,16 @@ Namespace('Sequencer').Engine = do ->
 			for i in [0..._sequence.length]
 				if y > ((_ORDERHEIGHT * i) + 10)
 					_insertAfter = _sequence[i]
-			console.log _insertAfter
 			if _insertAfter is -1
-				# console.log "Here"
+				# dont do it
 			else if _insertAfter == 0
 				_sequence.splice(0, -1, -1)
 			else if _insertAfter is _sequence[_sequence.length-1]
-				# console.log "executed!!!!"
+				# also don't do it
 			else if _insertAfter
-				console.log _insertAfter
 				_sequence.splice(_sequence.indexOf(_insertAfter) + 1, 0, -1)
-				# console.log "insertAfter: " + _insertAfter + "last elem  is: " + _sequence[_sequence.length-1]
 
 			# Code for highlighting the numbers when hover in order spot
-			console.log "The index of -1 is : " + _sequence.indexOf(-1)
 			numSpot = $('#numberBar').children()[_sequence.indexOf(-1)]
 			unless numSpot?
 				numSpot = _tempNumber
@@ -153,7 +146,6 @@ Namespace('Sequencer').Engine = do ->
 				$('#numberBar').children()[$('#numberBar').children().length-1].remove()
 				_addTempNum = true 
 
-		console.log "clientX is: " + e.clientX 			
 		_repositionOrderedTiles() 
 
 		if x <= 430
@@ -181,7 +173,6 @@ Namespace('Sequencer').Engine = do ->
 			e.clientX = e.changedTouches[0].clientX
 			e.clientY = e.changedTouches[0].clientY
 			
-		console.log "clientX is: " + e.clientX 
 		if e.clientX > 426
 
 			_curterm.style.position = 'absolute'
@@ -191,7 +182,6 @@ Namespace('Sequencer').Engine = do ->
 				$('#orderInstructions').addClass 'show'
 
 			_tilesInSequence++
-			# console.log "number in the dropTile section " + _tilesInSequence + " of " + _numTiles
 
 			if _tilesInSequence == _numTiles
 				_tilesSequenced()
@@ -199,7 +189,7 @@ Namespace('Sequencer').Engine = do ->
 			if _numTiles > 0 
 				$('#orderInstructions').addClass 'hide'
 			if _insertAfter == 0
-				console.log "insert at beg"
+				# insert at beginning
 				_sequence.splice(0, 0, ~~_curterm.id)
 			else if _insertAfter and _insertAfter != -1 and _insertAfter != _sequence[_sequence.length-1]
 				_sequence.splice(_sequence.indexOf(_insertAfter)+1, 0, ~~_curterm.id)
@@ -227,7 +217,6 @@ Namespace('Sequencer').Engine = do ->
 		e.preventDefault()
 	
 	_startDemo = ->
-		# console.log "starting demo"
 		demoScreen = _.template $('#demo-window').html()
 		_$demo = $ demoScreen 
 			demoTitle: ''
@@ -245,22 +234,18 @@ Namespace('Sequencer').Engine = do ->
 		idArray = []
 		i = 0
 		while i <= needed
-			console.log i+" needed"
-			console.log idArray
 			newNum = Math.floor (Math.random() * 200) + 1
 			if idArray.indexOf(newNum) is -1 then idArray[i] = newNum else i--
 			i++
 		idArray
 
 	_makeTiles = (items) ->
-		console.log "number of items" + items.length
 		_ids = _makeRandomIdForTiles items.length
 		i = 0
 
 		for tile in items
 
 			_numTiles++
-			console.log "ids is: " + _ids[i]
 			_tiles[_ids[i]] =
 		 		id : _ids[i]
 		 		name : tile.questions[0].text
@@ -272,7 +257,6 @@ Namespace('Sequencer').Engine = do ->
 		 		dropOrder : 0
 		 		order : i
 		 	i++
-		console.log "IDS is: " + _ids
 
 		_tiles
 
@@ -283,7 +267,6 @@ Namespace('Sequencer').Engine = do ->
 
 		theTiles = _makeTiles _qset.items
 
-		# console.log "all tiles are : " + _tiles[_ids[1]]
 		tBoard = _.template $('#t-board').html()
 
 		# color each word in the title individually
@@ -373,11 +356,8 @@ Namespace('Sequencer').Engine = do ->
 		
 	# Set random tile position, angle, and z-index
 	_setInitialTilePosition = (maxWidth, maxHeight) ->
-		console.log "got to position tiles"
 
 		for tile in $('.tile')
-			console.log "\n\nPositioning tile: " + tile.id + " " + _tiles[tile.id].name
-			# console.log "got to after first line"
 			textLength = _tiles[tile.id].name.length
 			tries = 1
 			
@@ -410,17 +390,15 @@ Namespace('Sequencer').Engine = do ->
 
 			# resize text to fit if needed
 			if textLength >= 30 
-				console.log "\tshrinking text on " + _tiles[tile.id].name
 				$('#'+tile.id).css
 					'font-size': 16+'px'
 			if textLength >= 20 
-				console.log "\tshrinking text on " + _tiles[tile.id].name
 				$('#'+tile.id).css
 					'font-size': 18+'px'
 
 		# Remove the clue symbol if there is no hint available
-		unless _tiles[tile.id].clue
-			console.log "does not have clue"
+		#unless _tiles[tile.id].clue
+			# TODO
 
 	# Check potential position to see if there is already a tile in the area
 	_checkTilePosition = (w, h) ->
@@ -479,7 +457,6 @@ Namespace('Sequencer').Engine = do ->
 
 	# Get the drop order for the tiles based on their zindex
 	_generateDropOrder = () ->
-		console.log "got to make tiles fall"
 		minZ = 99
 		maxZ = 0
 		for tile in $('.tile')
@@ -503,7 +480,6 @@ Namespace('Sequencer').Engine = do ->
 	_revealClue = (id) -> 
 		# Removes the old clue if it is hidden on the page
 		if _clueOpen
-			console.log "it exists."
 			$('#clue-popup').remove()
 
 		# Set up the tile template
@@ -606,7 +582,6 @@ Namespace('Sequencer').Engine = do ->
 		$('.fade').addClass 'active'
 
 		# Get order of the tiles for grading
-		console.log _sequence
 		# Grade the sequence based on order of tiles
 		correct = _determineNumCorrect _sequence
 		_showResults correct
@@ -616,19 +591,14 @@ Namespace('Sequencer').Engine = do ->
 		numCorrect = 0
 		correctOrder = 0
 		for i in submitted
-			console.log "checking " + i
 			if _tiles[i].order is correctOrder
-				console.log "match for " + i
 				numCorrect++
-			else
-				console.log "no good for " + i
 			correctOrder++
 		return numCorrect
 
 	# Displays the results template after user has submitted a sequence
 	_showResults = (results) ->
 		_attempts++
-		console.log "number of attempts " + _attempts
 
 		# Results template window
 		tResults = _.template $('#results-popup').html()
@@ -636,7 +606,6 @@ Namespace('Sequencer').Engine = do ->
 			total: _numTiles
 			penalty: _qset.options.penalty
 
-		console.log "You got " + results + " of " + _numTiles
 		$('body').append $results
 		unless results == _numTiles
 			# Update the score based on the new results
@@ -735,7 +704,6 @@ Namespace('Sequencer').Engine = do ->
 				'margin-left': 10+'px'
 
 		digits = ctr.toString().split ''
-		# console.log "digits as string" + digits
 		if digits.length is 1
 			digits = 0 + digits
 		leftDigit = digits[0]
@@ -787,12 +755,10 @@ Namespace('Sequencer').Engine = do ->
 
 	_sendScores = () ->
 		answer = 0
-		# console.log "sent scores"
 		for i in _sequence
 			Materia.Score.submitQuestionForScoring _tiles[i].order, ++answer
 
 	_end = () ->
-		# console.log "ending..."
 		Materia.Engine.end yes
 
 	#public
