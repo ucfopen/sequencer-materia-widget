@@ -36,31 +36,29 @@
 		<hr>
 	</header>
 	<div id="dragContainer">
-		<section id="tileSection">
-			<!-- tiles
-			<% for(var t in tiles) { var tile = tiles[t]; %>
-				<div class="tile" data-id="<%= tile.id %>" id="<%= tile.id %>" tabindex="<%= parseInt(t, 10)+1+(tiles.length) %>">
-				<%= tile.name %>
-				<div class="clue" data-id="<%= tile.id %>"></div>
-				</div>
-			<% } %> -->
-		</section>
-		<aside id="numberBar" class="nondraggable"></aside>
-		<section id="orderArea">
-			<div id="orderInstructions">Drag and organize tiles here</div>
-			<!-- tiles -->
-			<% for(var t in tiles) { var tile = tiles[t]; %>
-				<div class="tile" data-id="<%= tile.id %>" id="<%= tile.id %>" tabindex="<%= parseInt(t, 10)+1+(tiles.length) %>">
-				<%= tile.name %>
-				<div class="clue" data-id="<%= tile.id %>"></div>
-				</div>
-			<% } %>
-
-		</section>
-		<div id="submitHolder" class="nondraggable">
-			<div id="submit" class="nondraggable">Submit Sequence</div>
-		</div>
-
+		<!-- tiles -->
+		<% for(var t in tiles) { var tile = tiles[t]; %>
+			<div class="tile" data-id="<%= tile.id %>" id="<%= tile.id %>" tabindex="<%= parseInt(t, 10)+1+(tiles.length) %>">
+			<%= tile.name %>
+			<div class="clue" data-id="<%= tile.id %>"></div>
+			</div>
+		<% } %>
+	</div>
+	<section id="tileSection">
+		<!-- tiles
+		<% for(var t in tiles) { var tile = tiles[t]; %>
+			<div class="tile" data-id="<%= tile.id %>" id="<%= tile.id %>" tabindex="<%= parseInt(t, 10)+1+(tiles.length) %>">
+			<%= tile.name %>
+			<div class="clue" data-id="<%= tile.id %>"></div>
+			</div>
+		<% } %> -->
+	</section>
+	<aside id="numberBar" class="nondraggable"></aside>
+	<section id="orderArea">
+		<div id="orderInstructions">Drag and organize tiles here</div>
+	</section>
+	<div id="submitHolder" class="nondraggable">
+		<div id="submit" class="nondraggable">Submit Sequence</div>
 	</div>
 	<footer id="score-area"><h4 id="score-text">Score: <span id="score"><%= score %></span></h4><h5><span id="score-info">(-<%= penalty %> for an incorrect sequence)</span></h5>
 	</footer>
