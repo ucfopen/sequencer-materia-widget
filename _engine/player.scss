@@ -172,10 +172,11 @@ header {
 #dragContainer {
 	position: absolute;
 	width: 100%;
-	height: 100%;
+	top: 10px;
+	bottom: 58px;
 	padding: 0px 0px 0px 0px;
-	overflow: hidden;
-	z-index: 0;
+	overflow: auto;
+	z-index: 10;
 	-webkit-transition: 100ms;
 	   -moz-transition: 100ms;
 	    -ms-transition: 100ms;
@@ -193,338 +194,339 @@ header {
 		     -o-transition: 200ms;
 		     	transition: 200ms;
 	}
+}
 
-	#tileSection {
-		position: absolute;
-		top: 10px;
-		width: 440px;
-		height: 500px;
-		margin-left: 15px;
-		margin-bottom: 15px;
-		padding: 15px 15px 15px 15px;
-		background: url("assets/panel_bg.png") 0 0;
-		-webkit-border-radius: 10px;
-		   -moz-border-radius: 10px;
-		        border-radius: 10px;
-		-webkit-box-shadow: inset 0px 0px 10px -10px #000000;
-		   -moz-box-shadow: inset 0px 0px 10px -10px #000000;
-				box-shadow: inset 0px 0px 10px -10px #000000;
-   		-webkit-transition: 100ms;
+#tileSection {
+	position: absolute;
+	top: 10px;
+	width: 440px;
+	height: 500px;
+	margin-left: 15px;
+	margin-bottom: 15px;
+	padding: 15px 15px 15px 15px;
+	background: url("assets/panel_bg.png") 0 0;
+	-webkit-border-radius: 10px;
+	   -moz-border-radius: 10px;
+	        border-radius: 10px;
+	-webkit-box-shadow: inset 0px 0px 10px -10px #000000;
+	   -moz-box-shadow: inset 0px 0px 10px -10px #000000;
+			box-shadow: inset 0px 0px 10px -10px #000000;
+		-webkit-transition: 100ms;
+	   -moz-transition: 100ms;
+	    -ms-transition: 100ms;
+	     -o-transition: 100ms;
+
+	&.fade {
+		background: url("assets/fade_panel_bg.png") 0 0;
+		-webkit-transition: 400ms;
+		   -moz-transition: 400ms;
+		    -ms-transition: 400ms;
+		     -o-transition: 400ms;
+		     	transition: 400ms;
+	}
+}
+
+.tile {
+	opacity: 1;
+	height: 61px;
+	width: 164px;
+	position: absolute;
+	left: -50px;
+	top: 30px;
+	z-index: 10;
+	background: url("assets/sequencing_object.png") 0 0;
+	font-family: sans-serif;
+	font-size: 20px;
+	color: $dgrey;
+	padding-top: 8px;
+	text-align: center;
+	vertical-align: middle;
+	bottom: auto;
+	border-radius: 5px;
+	box-shadow: 0 4px 3px -3px black;
+
+	&.hover {
+		cursor: hand;
+		box-shadow: 0 8px 6px -6px black;
+		transition: 100ms;
+	}
+
+	&.noShow {
+		opacity: 0;
+	}
+
+	&.fall1 {
+		opacity: 1;
+		-webkit-animation: tileFall1 150ms linear;
+	       -moz-animation: tileFall1 150ms linear;
+		    -ms-animation: tileFall1 150ms linear;
+	    	    animation: tileFall1 150ms linear;
+	   	-webkit-transition: 100ms;
 		   -moz-transition: 100ms;
 		    -ms-transition: 100ms;
 		     -o-transition: 100ms;
+	    	 	transition: 100ms;
 
-		&.fade {
-			background: url("assets/fade_panel_bg.png") 0 0;
-			-webkit-transition: 400ms;
-			   -moz-transition: 400ms;
-			    -ms-transition: 400ms;
-			     -o-transition: 400ms;
-			     	transition: 400ms;
-		}
+	}
+	
+	&.fall2 {
+		opacity: 1;
+		-webkit-animation: tileFall2 150ms linear;
+	       -moz-animation: tileFall2 150ms linear;
+		    -ms-animation: tileFall2 150ms linear;
+	    	    animation: tileFall2 150ms linear;
+	   	-webkit-transition: 100ms;
+		   -moz-transition: 100ms;
+		    -ms-transition: 100ms;
+		     -o-transition: 100ms;
+	     		transition: 100ms;
 	}
 
-	.tile {
+	&.fall3 {
 		opacity: 1;
-		height: 61px;
-		width: 164px;
+		-webkit-animation: tileFall3 150ms linear;
+	       -moz-animation: tileFall3 150ms linear;
+		    -ms-animation: tileFall3 150ms linear;
+	    	    animation: tileFall3 150ms linear;
+	   	-webkit-transition: 100ms;
+		   -moz-transition: 100ms;
+		    -ms-transition: 100ms;
+		     -o-transition: 100ms;
+	     		transition: 100ms;
+
+	}
+
+	&.dragging {
+		z-index: 300;
+		-webkit-box-shadow: 10px 5px 5px black;
+		   -moz-box-shadow: 10px 5px 5px black;
+				box-shadow: 10px 5px 5px black;
+		-webkit-transform: scale(1.2); 
+		   -moz-transform: scale(1.2); 
+		     -o-transform: scale(1.2); 
+				transform: scale(1.2);
+	}
+
+	@include boxSizing();
+
+	.clue {
 		position: absolute;
-		left: -50px;
-		top: 30px;
+		bottom: 5px;
+		left: 5px;
 		z-index: 10;
-		background: url("assets/sequencing_object.png") 0 0;
-		font-family: sans-serif;
-		font-size: 20px;
-		color: $dgrey;
-		padding-top: 8px;
-		text-align: center;
-		vertical-align: middle;
-		bottom: auto;
-		border-radius: 5px;
-		box-shadow: 0 4px 3px -3px black;
-
-		&.hover {
-			cursor: hand;
-			box-shadow: 0 8px 6px -6px black;
-			transition: 100ms;
-		}
-
-		&.noShow {
-			opacity: 0;
-		}
-
-		&.fall1 {
-			opacity: 1;
-			-webkit-animation: tileFall1 150ms linear;
-		       -moz-animation: tileFall1 150ms linear;
-			    -ms-animation: tileFall1 150ms linear;
-		    	    animation: tileFall1 150ms linear;
-		   	-webkit-transition: 100ms;
-			   -moz-transition: 100ms;
-			    -ms-transition: 100ms;
-			     -o-transition: 100ms;
-		    	 	transition: 100ms;
-
-		}
+		background: url("assets/Clue_fade.png") 0 0;
+		height: 22px;
+		width: 16px;
 		
-		&.fall2 {
-			opacity: 1;
-			-webkit-animation: tileFall2 150ms linear;
-		       -moz-animation: tileFall2 150ms linear;
-			    -ms-animation: tileFall2 150ms linear;
-		    	    animation: tileFall2 150ms linear;
-		   	-webkit-transition: 100ms;
-			   -moz-transition: 100ms;
-			    -ms-transition: 100ms;
-			     -o-transition: 100ms;
-		     		transition: 100ms;
-		}
-
-		&.fall3 {
-			opacity: 1;
-			-webkit-animation: tileFall3 150ms linear;
-		       -moz-animation: tileFall3 150ms linear;
-			    -ms-animation: tileFall3 150ms linear;
-		    	    animation: tileFall3 150ms linear;
-		   	-webkit-transition: 100ms;
-			   -moz-transition: 100ms;
-			    -ms-transition: 100ms;
-			     -o-transition: 100ms;
-		     		transition: 100ms;
-
-		}
-
-		&.dragging {
-			z-index: 300;
-			-webkit-box-shadow: 10px 5px 5px black;
-			   -moz-box-shadow: 10px 5px 5px black;
-					box-shadow: 10px 5px 5px black;
-			-webkit-transform: scale(1.2); 
-			   -moz-transform: scale(1.2); 
-			     -o-transform: scale(1.2); 
-					transform: scale(1.2);
-		}
-
-		@include boxSizing();
-
-		.clue {
-			position: absolute;
-			bottom: 5px;
-			left: 5px;
-			z-index: 10;
-			background: url("assets/Clue_fade.png") 0 0;
+		&:hover {
+			background: url("assets/Clue_glow.png") 0 0;
 			height: 22px;
 			width: 16px;
-			
-			&:hover {
-				background: url("assets/Clue_glow.png") 0 0;
-				height: 22px;
-				width: 16px;
-			}
 		}
-
-		// .clueWindow {
-		// 	position: relative;
-		// 	background:
-		// }
 	}
 
-	#numberBar { 
+	// .clueWindow {
+	// 	position: relative;
+	// 	background:
+	// }
+}
+
+#numberBar { 
+	position: absolute;
+	width: 50px;
+	right: 205px;
+	top: 10px;
+	height: 480px;
+	background: $blurple;
+	overflow: hidden;
+	z-index: 5;
+	-webkit-border-radius: 10px 0px 0px 0px;
+	   -moz-border-radius: 10px 0px 0px 0px;
+	        border-radius: 10px 0px 0px 0px;
+	// shadow Left, Top
+	-webkit-box-shadow: inset 10px 0 10px -10px #000000, inset 0px 10px 10px -10px #000000;
+	   -moz-box-shadow: inset 10px 0 10px -10px #000000, inset 0px 10px 10px -10px #000000;
+			box-shadow: inset 10px 0 10px -10px #000000, inset 0px 10px 10px -10px #000000;
+
+
+	.numbers {
+		opacity: 0;
+		color: $light;
+		text-align: center;
+		background: $titleblue;
+		float: top;
+		padding-top: 5px;
+		height: 32px;
+		margin: 20px 8px 33px 8px;
+		font-size: 25px;
+		font-family: sans-serif;
+		-webkit-border-radius: 50%;
+  		   -moz-border-radius: 50%;
+       			border-radius: 50%;
+       
+        &.show { 
+        	opacity: 1;
+        	-webkit-transition: 100ms ease;
+	  		   -moz-transition: 100ms ease;
+	       		-ms-transition: 100ms ease;
+	        		transition: 100ms ease;
+        }
+
+	    &.highlight {
+	    	background: $hblurple;
+	    	color: $blurple;
+	    	-webkit-transition: 100ms ease; 
+	  		   -moz-transition: 100ms ease;
+	       		-ms-transition: 100ms ease;
+	        		transition: 100ms ease;
+	    }
+	}
+}
+
+#orderArea {
+	position: absolute;
+	top: 10px;
+	right: 0px;
+	width: 190px;
+	height: 480px;
+	margin-right: 15px;
+	margin-left: 10px;
+	background: $lblurple;
+	overflow-x: visible;
+	// overflow-y: scroll;
+	direction: ltr;
+	border-radius: 0px 10px 0px 0px;
+	// shadow Right, Top
+	box-shadow: inset -10px 0 10px -10px #000000, inset 0px 10px 10px -10px #000000;
+	transition: 200ms ease-in;
+
+	#orderInstructions {
 		position: absolute;
-		width: 50px;
-		right: 205px;
-		top: 10px;
-		height: 480px;
-		background: $blurple;
-		overflow: hidden;
-		z-index: 5;
-		-webkit-border-radius: 10px 0px 0px 0px;
-		   -moz-border-radius: 10px 0px 0px 0px;
-		        border-radius: 10px 0px 0px 0px;
-		// shadow Left, Top
-		-webkit-box-shadow: inset 10px 0 10px -10px #000000, inset 0px 10px 10px -10px #000000;
-		   -moz-box-shadow: inset 10px 0 10px -10px #000000, inset 0px 10px 10px -10px #000000;
-				box-shadow: inset 10px 0 10px -10px #000000, inset 0px 10px 10px -10px #000000;
+		top: 240px;
+		left: 20px;
+		width: 70%;
+		padding: 3px;
+		color: $blurple;
+		font-size: 14px;
+		text-align: center;
+		background: $light;
+		border-radius: 10px 10px;
+		opacity: 1;
+		-webkit-transition: 1s ease; 
+  		   -moz-transition: 1s ease;
+       		-ms-transition: 1s ease;
+        		transition: 1s ease;
 
-
-		.numbers {
+		&.hide {
 			opacity: 0;
-			color: $light;
-			text-align: center;
-			background: $titleblue;
-			float: top;
-			padding-top: 5px;
-			height: 32px;
-			margin: 20px 8px 33px 8px;
-			font-size: 25px;
-			font-family: sans-serif;
-			-webkit-border-radius: 50%;
-	  		   -moz-border-radius: 50%;
-	       			border-radius: 50%;
-	       
-	        &.show { 
-	        	opacity: 1;
-	        	-webkit-transition: 100ms ease;
-		  		   -moz-transition: 100ms ease;
-		       		-ms-transition: 100ms ease;
-		        		transition: 100ms ease;
-	        }
-
-		    &.highlight {
-		    	background: $hblurple;
-		    	color: $blurple;
-		    	-webkit-transition: 100ms ease; 
-		  		   -moz-transition: 100ms ease;
-		       		-ms-transition: 100ms ease;
-		        		transition: 100ms ease;
-		    }
 		}
 	}
 
-	#orderArea {
+	.tileSlot {
+		float: top;
+		margin: 10px 10px 0px 10px;	
+		height: 55px;
+		width: 164px;
+		font-family: sans-serif;
+		background: $light;
+		z-index: 500;
+	}
+}
+
+.placeholder {  
+	position: relative;
+	left: 0px;
+	margin-top: 15px;
+	border: 2px dashed #aaa;  
+	height: 65px;
+	width: 170px; 
+	background: #ccc;  
+	margin: 5px;
+	opacity: .7;
+	-webkit-transition: 50ms eas-out; 
+		   -moz-transition: 50ms ease-out;
+   		-ms-transition: 50ms ease-out;
+    		transition: 50ms ease-out;
+}
+
+#submitHolder {
+	position: absolute;
+	width: 240px;
+	height: 48px;
+	right: 0px;
+	bottom: 0px;
+	margin: -10px 15px 10px 10px;
+	background: $blurple;
+	z-index: 5;
+	//Shadow Left, Right, Bottom
+	-webkit-box-shadow: inset 10px 0 10px -10px #000000, inset -10px 0 10px -10px #000000, inset 0px -10px 10px -10px #000000;
+	   -moz-box-shadow: inset 10px 0 10px -10px #000000, inset -10px 0 10px -10px #000000, inset 0px -10px 10px -10px #000000;
+			box-shadow: inset 10px 0 10px -10px #000000, inset -10px 0 10px -10px #000000, inset 0px -10px 10px -10px #000000;
+	-webkit-border-radius: 0px 0px 10px 10px;
+	   -moz-border-radius: 0px 0px 10px 10px;
+	        border-radius: 0px 0px 10px 10px;
+
+	#submit {
 		position: absolute;
-		top: 10px;
-		right: 0px;
-		width: 190px;
-		height: 480px;
-		margin-right: 15px;
-		margin-left: 10px;
-		background: $lblurple;
-		overflow-x: visible;
-		// overflow-y: scroll;
-		direction: ltr;
-		border-radius: 0px 10px 0px 0px;
-		// shadow Right, Top
-		box-shadow: inset -10px 0 10px -10px #000000, inset 0px 10px 10px -10px #000000;
-		transition: 200ms ease-in;
-		
-		#orderInstructions {
-			position: absolute;
-			top: 240px;
-			left: 20px;
-			width: 70%;
-			padding: 3px;
-			color: $blurple;
-			font-size: 14px;
-			text-align: center;
+		cursor: auto;
+		width: 90%;
+		height: 25px;
+		left: 5%;
+		top: 5px;
+		padding: 5px 0px 2px 0px;
+		font-size:18px;
+		text-align: center;
+		color: $medgrey;
+		z-index: 300;
+		background: $light;
+		background: -webkit-linear-gradient(top, $light, $grey);
+		background: -moz-linear-gradient(top, $light, $grey);
+		background: -ms-linear-gradient(top, $light, $grey);
+		background: -o-linear-gradient(top, $light, $grey);
+		background:	linear-gradient(top, $light, $grey);
+		border: 1px solid $medgrey;
+		-webkit-border-radius: 10px;
+		   -moz-border-radius: 10px;
+		        border-radius: 10px;
+		-webkit-box-shadow: inset 0 3px 0 rgba(255,255,255,0.5);
+		   -moz-box-shadow: inset 0 3px 0 rgba(255,255,255,0.5);
+			    box-shadow: inset 0 3px 0 rgba(255,255,255,0.5);
+		-webkit-transition: all 300ms ease;
+		   -moz-transition: all 300ms ease;
+		    -ms-transition: all 300ms ease;
+		     -o-transition: all 300ms ease;
+	  		   	transition: all 300ms ease;
+		&.enabled {
+			cursor: pointer;
+			color: $blue;
 			background: $light;
-			border-radius: 10px 10px;
-			opacity: 1;
-			-webkit-transition: 1s ease; 
-	  		   -moz-transition: 1s ease;
-	       		-ms-transition: 1s ease;
-	        		transition: 1s ease;
-
-			&.hide {
-				opacity: 0;
-			}
-		}
-
-		.tileSlot {
-			float: top;
-			margin: 10px 10px 0px 10px;	
-			height: 55px;
-			width: 164px;
-			font-family: sans-serif;
-			background: $light;
-			z-index: 500;
-		}
-	}
-
-	.placeholder {  
-		position: relative;
-		left: 0px;
-		margin-top: 15px;
-		border: 2px dashed #aaa;  
-		height: 65px;
-		width: 170px; 
-		background: #ccc;  
-		margin: 5px;
-		opacity: .7;
-		-webkit-transition: 50ms eas-out; 
-  		   -moz-transition: 50ms ease-out;
-       		-ms-transition: 50ms ease-out;
-        		transition: 50ms ease-out;
-	}
-
-	#submitHolder {
-		position: absolute;
-		width: 240px;
-		height: 48px;
-		right: 0px;
-		bottom: 0px;
-		margin: -10px 15px 10px 10px;
-		background: $blurple;
-		z-index: 5;
-		//Shadow Left, Right, Bottom
-		-webkit-box-shadow: inset 10px 0 10px -10px #000000, inset -10px 0 10px -10px #000000, inset 0px -10px 10px -10px #000000;
-		   -moz-box-shadow: inset 10px 0 10px -10px #000000, inset -10px 0 10px -10px #000000, inset 0px -10px 10px -10px #000000;
-				box-shadow: inset 10px 0 10px -10px #000000, inset -10px 0 10px -10px #000000, inset 0px -10px 10px -10px #000000;
-		-webkit-border-radius: 0px 0px 10px 10px;
-		   -moz-border-radius: 0px 0px 10px 10px;
-		        border-radius: 0px 0px 10px 10px;
-
-		#submit {
-			position: absolute;
-			cursor: auto;
-			width: 90%;
-			height: 25px;
-			left: 5%;
-			top: 5px;
-			padding: 5px 0px 2px 0px;
-			font-size:18px;
-			text-align: center;
-			color: $medgrey;
-			z-index: 300;
-			background: $light;
-			background: -webkit-linear-gradient(top, $light, $grey);
-			background: -moz-linear-gradient(top, $light, $grey);
-			background: -ms-linear-gradient(top, $light, $grey);
-			background: -o-linear-gradient(top, $light, $grey);
-			background:	linear-gradient(top, $light, $grey);
+			background: -webkit-linear-gradient(bottom, $light, $grey);
+			background: -moz-linear-gradient(bottom, $light, $grey);
+			background: -ms-linear-gradient(bottom, $light, $grey);
+			background: -o-linear-gradient(bottom, $light, $grey);
+			background:	linear-gradient(bottom, $light, $grey);
 			border: 1px solid $medgrey;
 			-webkit-border-radius: 10px;
 			   -moz-border-radius: 10px;
 			        border-radius: 10px;
-			-webkit-box-shadow: inset 0 3px 0 rgba(255,255,255,0.5);
-			   -moz-box-shadow: inset 0 3px 0 rgba(255,255,255,0.5);
-				    box-shadow: inset 0 3px 0 rgba(255,255,255,0.5);
+			-webkit-box-shadow: inset 0 3px 0 rgba(255,255,255,0.5), 0px 0px 2px 2px rgba(0,0,0,0.05);
+			   -moz-box-shadow: inset 0 3px 0 rgba(255,255,255,0.5), 0px 0px 2px 2px rgba(0,0,0,0.05);
+				    box-shadow: inset 0 3px 0 rgba(255,255,255,0.5), 0px 0px 2px 2px rgba(0,0,0,0.05);
 			-webkit-transition: all 300ms ease;
 			   -moz-transition: all 300ms ease;
 			    -ms-transition: all 300ms ease;
 			     -o-transition: all 300ms ease;
 		  		   	transition: all 300ms ease;
-			&.enabled {
-				cursor: pointer;
-				color: $blue;
-				background: $light;
-				background: -webkit-linear-gradient(bottom, $light, $grey);
-				background: -moz-linear-gradient(bottom, $light, $grey);
-				background: -ms-linear-gradient(bottom, $light, $grey);
-				background: -o-linear-gradient(bottom, $light, $grey);
-				background:	linear-gradient(bottom, $light, $grey);
-				border: 1px solid $medgrey;
-				-webkit-border-radius: 10px;
-				   -moz-border-radius: 10px;
-				        border-radius: 10px;
-				-webkit-box-shadow: inset 0 3px 0 rgba(255,255,255,0.5), 0px 0px 2px 2px rgba(0,0,0,0.05);
-				   -moz-box-shadow: inset 0 3px 0 rgba(255,255,255,0.5), 0px 0px 2px 2px rgba(0,0,0,0.05);
-					    box-shadow: inset 0 3px 0 rgba(255,255,255,0.5), 0px 0px 2px 2px rgba(0,0,0,0.05);
-				-webkit-transition: all 300ms ease;
-				   -moz-transition: all 300ms ease;
-				    -ms-transition: all 300ms ease;
-				     -o-transition: all 300ms ease;
-			  		   	transition: all 300ms ease;
-				&:hover {
-					border: 1px solid transparent;
-					-webkit-box-shadow: inset 0 3px 0 rgba(255,255,255,0.5), 0px 0px 2px 2px $blue;
-					   -moz-box-shadow: inset 0 3px 0 rgba(255,255,255,0.5), 0px 0px 2px 2px $blue;
-						    box-shadow: inset 0 3px 0 rgba(255,255,255,0.5), 0px 0px 2px 2px $blue;
-				}
+			&:hover {
+				border: 1px solid transparent;
+				-webkit-box-shadow: inset 0 3px 0 rgba(255,255,255,0.5), 0px 0px 2px 2px $blue;
+				   -moz-box-shadow: inset 0 3px 0 rgba(255,255,255,0.5), 0px 0px 2px 2px $blue;
+					    box-shadow: inset 0 3px 0 rgba(255,255,255,0.5), 0px 0px 2px 2px $blue;
 			}
 		}
 	}
 }
+
 
 #clue-popup {
 	position: absolute;

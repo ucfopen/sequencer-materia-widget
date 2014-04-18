@@ -80,7 +80,7 @@ Namespace('Sequencer').Engine = do ->
 	_mouseMoveEvent = (e) ->
 		# if no term is being dragged, we don't care
 		return if not _curterm?
-		
+
 		e = window.event if not e?
 		
 		# if it's not a mouse move, it's probably touch
@@ -88,14 +88,14 @@ Namespace('Sequencer').Engine = do ->
 			e.clientX = e.changedTouches[0].clientX
 			e.clientY = e.changedTouches[0].clientY
 
-		x = (e.clientX - 560)
+		x = (e.clientX - 50)
 		# x boundaries
-		x = -475 if x < -475
-		x = 70 if x > 70
-		y = (e.clientY - 80)
+		x = 70 if x < 70
+		x = 615 if x > 615
+		y = (e.clientY)
 		# y boundaries
-		y = -30 if y < -30
-		y = 500 if y > 500
+		y = 45 if y < 45
+		y = 450 if y > 450
 		y = 70 if x < -20 and y < 70 
 		y = 385 if x < -20 and y > 385
 
@@ -111,7 +111,7 @@ Namespace('Sequencer').Engine = do ->
 		_curterm.style.webkitTransform = 'translate(' + x + 'px,' + y + 'px)'
 
 		# Drag tile into the order area
-		if x > -135
+		if x > 430
 			_insertAfter = 0
 
 			# Add an extra temporary number when you drag the tile into the tile area
@@ -156,7 +156,7 @@ Namespace('Sequencer').Engine = do ->
 		console.log "clientX is: " + e.clientX 			
 		_repositionOrderedTiles() 
 
-		if x <= -135
+		if x <= 430
 			for i in [0..._sequence.length]
 				if _sequence[i] is -1
 					_sequence.splice(i, 1)
@@ -183,6 +183,8 @@ Namespace('Sequencer').Engine = do ->
 			
 		console.log "clientX is: " + e.clientX 
 		if e.clientX > 426
+
+			_curterm.style.position = 'absolute'
 			# apply easing (for snap back animation)
 			#_curterm.className = 'tile ease'
 			if _numTiles is 0
@@ -206,8 +208,9 @@ Namespace('Sequencer').Engine = do ->
 					if _sequence[i] is ~~_curterm.id
 						_sequence.splice(i, 1)
 				_sequence.push ~~_curterm.id
+		# Drop in tile section
 		else 
-			console.log "dropping in normal area"
+			_curterm.style.position = 'fixed'
 
 		if _numTiles is 0
 			$('#numberBar').empty()
@@ -291,7 +294,7 @@ Namespace('Sequencer').Engine = do ->
 			score: 100
 			penalty: _qset.options.penalty
 
-		cWidth = 300
+		cWidth = 260
 		cHeight = 300
 
 		$('body').append _$board
@@ -318,8 +321,8 @@ Namespace('Sequencer').Engine = do ->
 			_revealClue $(this).data('id')
 
 		# Scroll the numberBar with the orderArea
-		$('#orderArea').on 'scroll', ->
-			$('#numberBar').scrollTop $('#orderArea').scrollTop()
+		$('#dragContainer').on 'scroll', ->
+			$('#numberBar').scrollTop $('#dragContainer').scrollTop()
 
 	_resizeTitle = (length) ->
 		if length > 50 
@@ -363,7 +366,7 @@ Namespace('Sequencer').Engine = do ->
 			curterm = document.getElementById id 
 			curterm.style.transform =
 			curterm.style.msTransform =
-			curterm.style.webkitTransform = 'translate(60px,' + (_ORDERHEIGHT * i - 20) + 'px)'
+			curterm.style.webkitTransform = 'translate(605px,' + (_ORDERHEIGHT * i - 20) + 'px)'
 
 			i++
 		
@@ -377,8 +380,8 @@ Namespace('Sequencer').Engine = do ->
 			textLength = _tiles[tile.id].name.length
 			tries = 1
 			
-			_tiles[tile.id].xpos = Math.floor (Math.random() * maxWidth) - 475
-			_tiles[tile.id].ypos =  Math.floor (Math.random() * maxHeight) + 90
+			_tiles[tile.id].xpos = Math.floor (Math.random() * maxWidth) + 100
+			_tiles[tile.id].ypos =  Math.floor (Math.random() * maxHeight) + 150
 			_tiles[tile.id].zInd = Math.floor (Math.random() * 4) + 8 
 			_tiles[tile.id].dropOrder = _tiles[tile.id].zInd
 			_tiles[tile.id].angle = Math.floor (Math.random() * 14) - 7 
@@ -402,6 +405,7 @@ Namespace('Sequencer').Engine = do ->
 			$('#'+tile.id).css
 				'transform': 'rotate('+_tiles[tile.id].angle+'deg) translate(' + _tiles[tile.id].xpos + 'px,' + _tiles[tile.id].ypos+ 'px)'
 				'z-index': ++_zIndex
+				'position': 'fixed'
 
 			# resize text to fit if needed
 			if textLength >= 30 
