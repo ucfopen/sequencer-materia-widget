@@ -301,7 +301,7 @@ Namespace('Sequencer').Engine = do ->
 		$('.tile').on 'mousedown', _mouseDownEvent
 
 		# Reveal the clue for clicked tile
-		$('#orderArea').on 'click', '.clue', ->
+		$('#dragContainer').on 'click', '.clue', ->
 			_revealClue $(this).data('id')
 
 		# Scroll the numberBar with the orderArea
