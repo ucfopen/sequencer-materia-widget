@@ -92,9 +92,9 @@ Namespace('Sequencer').Engine = do ->
 		# x boundaries
 		x = 70 if x < 70
 		x = 615 if x > 615
-		y = (e.clientY)
+		y = (e.clientY - 60)
 		# y boundaries
-		y = 45 if y < 45
+		y = -15 if y < -15
 		y = 450 if y > 450
 		y = 70 if x < -20 and y < 70 
 		y = 385 if x < -20 and y > 385
@@ -126,7 +126,7 @@ Namespace('Sequencer').Engine = do ->
 			_curterm.style.webkitTransform += ' rotate(' + 0 + 'deg)'
 			
 			for i in [0..._sequence.length]
-				if y > ((_ORDERHEIGHT * i) - 20)
+				if y > ((_ORDERHEIGHT * i) + 10)
 					_insertAfter = _sequence[i]
 			console.log _insertAfter
 			if _insertAfter is -1
@@ -211,6 +211,7 @@ Namespace('Sequencer').Engine = do ->
 		# Drop in tile section
 		else 
 			_curterm.style.position = 'fixed'
+			$('#message').remove()
 
 		if _numTiles is 0
 			$('#numberBar').empty()
@@ -295,7 +296,7 @@ Namespace('Sequencer').Engine = do ->
 			penalty: _qset.options.penalty
 
 		cWidth = 260
-		cHeight = 300
+		cHeight = 250
 
 		$('body').append _$board
 		$('.tile').addClass 'noShow'
@@ -381,7 +382,7 @@ Namespace('Sequencer').Engine = do ->
 			tries = 1
 			
 			_tiles[tile.id].xpos = Math.floor (Math.random() * maxWidth) + 100
-			_tiles[tile.id].ypos =  Math.floor (Math.random() * maxHeight) + 150
+			_tiles[tile.id].ypos =  Math.floor (Math.random() * maxHeight) + 100
 			_tiles[tile.id].zInd = Math.floor (Math.random() * 4) + 8 
 			_tiles[tile.id].dropOrder = _tiles[tile.id].zInd
 			_tiles[tile.id].angle = Math.floor (Math.random() * 14) - 7 
@@ -590,8 +591,6 @@ Namespace('Sequencer').Engine = do ->
 
 	# All tiles have been moved to the orderArea. No tiles left on the board
 	_tilesSequenced = ->
-		console.log "all tiles added"
-
 		newMessage = _.template $('#message-window').html()
 		message = $(newMessage title: 'You\'re Done', messageText: 'Make sure you have the right sequence and press the \"Submit Sequence\" button.')
 		$('#tileSection').append message
