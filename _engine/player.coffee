@@ -57,10 +57,23 @@ Namespace('Sequencer').Engine = do ->
 		if _curterm.className == "clue"
 			_curterm = _curterm.parentNode
 		_curterm.style.zIndex = ++_zIndex
-
+		_curterm.style.position = 'fixed'
 		# disable easing while it drags
 		#e.target.className = 'tile'
 		
+		x = (e.clientX - 50)
+		# x boundaries
+		x = 70 if x < 70
+		x = 615 if x > 615
+		y = (e.clientY - 60)
+		# y boundaries
+		y = -15 if y < -15
+		y = 500 if y > 500
+
+		_curterm.style.transform = 
+		_curterm.style.msTransform =
+		_curterm.style.webkitTransform = 'translate(' + x + 'px,' + y + 'px)'
+
 		# if its been placed, pull it out of the sequence array
 		if (i = _sequence.indexOf(~~_curterm.id)) != -1
 			_sequence.splice(i,1)
@@ -69,11 +82,13 @@ Namespace('Sequencer').Engine = do ->
 		_insertAfter = -1
 
 		# don't scroll the page on an iPad
-		e.preventDefault()
-		e.stopPropagation() if e.stopPropagation?
+		# e.preventDefault()
+		# e.stopPropagation() if e.stopPropagation?
 		
 		_addTempNum = true
 		_updateTileNums()
+
+		_mouseMoveEvent(e)
 
 	# when the widget area has a cursor or finger move
 	_mouseMoveEvent = (e) ->
@@ -94,15 +109,13 @@ Namespace('Sequencer').Engine = do ->
 		y = (e.clientY - 60)
 		# y boundaries
 		y = -15 if y < -15
-		y = 450 if y > 450
-		y = 70 if x < -20 and y < 70 
-		y = 385 if x < -20 and y > 385
+		y = 500 if y > 500
 
 		for i in [0..._sequence.length]
 			if _sequence[i] is -1
 				_sequence.splice(i, 1)
 				i--
-
+		console.log 'X: '+x + ' Y:'+y
 		# move the current term
 		_curterm.style.transform = 
 		_curterm.style.msTransform =
@@ -123,7 +136,7 @@ Namespace('Sequencer').Engine = do ->
 			_curterm.style.webkitTransform += ' rotate(' + 0 + 'deg)'
 			
 			for i in [0..._sequence.length]
-				if y > ((_ORDERHEIGHT * i) + 10)
+				if y > ((_ORDERHEIGHT * i) + 10) - $('#dragContainer').scrollTop()
 					_insertAfter = _sequence[i]
 			if _insertAfter is -1
 				# dont do it
@@ -156,14 +169,18 @@ Namespace('Sequencer').Engine = do ->
 			_curterm.style.webkitTransform += ' rotate(' + _tiles[_curterm.id].angle + 'deg)'
 
 		# don't scroll on iPad
-		e.preventDefault()
-		e.stopPropagation() if e.stopPropagation?
+		# e.preventDefault()
+		# e.stopPropagation() if e.stopPropagation?
 
 	# when we let go of a term
 	_mouseUpEvent = (e) ->
 		# we don't care if nothing is selected
 		return if not _curterm?
 		_addTempNum = true
+
+		x = (e.clientX - 50)
+		y = (e.clientY - 60)
+
 		# Remove the empty slots
 		for i in [0..._sequence.length]
 				if _sequence[i] is -1
@@ -173,8 +190,7 @@ Namespace('Sequencer').Engine = do ->
 			e.clientX = e.changedTouches[0].clientX
 			e.clientY = e.changedTouches[0].clientY
 			
-		if e.clientX > 426
-
+		if x > 430
 			_curterm.style.position = 'absolute'
 			# apply easing (for snap back animation)
 			#_curterm.className = 'tile ease'
@@ -200,8 +216,18 @@ Namespace('Sequencer').Engine = do ->
 				_sequence.push ~~_curterm.id
 		# Drop in tile section
 		else 
-			_curterm.style.position = 'fixed'
+			# Prevent unwanted tile drops
+			y = 80 if x < 520 and y < 80
+			x = 70 if x < 70
+			y = -15 if y < -15
+			y = 400 if y > 400
+			_curterm.style.transform = 
+			_curterm.style.msTransform =
+			_curterm.style.webkitTransform = 'translate(' + x + 'px,' + y + 'px) rotate(' + _tiles[_curterm.id].angle + 'deg)'
+			
 			$('#message').remove()
+			$('#tileSection').removeClass 'fade'
+			$('#submit').removeClass 'enabled'
 
 		if _numTiles is 0
 			$('#numberBar').empty()
@@ -278,8 +304,8 @@ Namespace('Sequencer').Engine = do ->
 			score: 100
 			penalty: _qset.options.penalty
 
-		cWidth = 260
-		cHeight = 250
+		cWidth = 250
+		cHeight = 220
 
 		$('body').append _$board
 		$('.tile').addClass 'noShow'
@@ -301,12 +327,17 @@ Namespace('Sequencer').Engine = do ->
 		$('.tile').on 'mousedown', _mouseDownEvent
 
 		# Reveal the clue for clicked tile
-		$('#dragContainer').on 'click', '.clue', ->
+		$('#dragContainer').on 'mousedown', '.clue', ->
 			_revealClue $(this).data('id')
+			console.log 'cluing'
 
 		# Scroll the numberBar with the orderArea
 		$('#dragContainer').on 'scroll', ->
 			$('#numberBar').scrollTop $('#dragContainer').scrollTop()
+
+		# On submit sequence clicked
+		$('#submit').on 'click', ->
+			_submitSequence()
 
 	_resizeTitle = (length) ->
 		if length > 50 
@@ -361,8 +392,8 @@ Namespace('Sequencer').Engine = do ->
 			textLength = _tiles[tile.id].name.length
 			tries = 1
 			
-			_tiles[tile.id].xpos = Math.floor (Math.random() * maxWidth) + 100
-			_tiles[tile.id].ypos =  Math.floor (Math.random() * maxHeight) + 100
+			_tiles[tile.id].xpos = Math.floor (Math.random() * maxWidth) + 95
+			_tiles[tile.id].ypos =  Math.floor (Math.random() * maxHeight) + 120
 			_tiles[tile.id].zInd = Math.floor (Math.random() * 4) + 8 
 			_tiles[tile.id].dropOrder = _tiles[tile.id].zInd
 			_tiles[tile.id].angle = Math.floor (Math.random() * 14) - 7 
@@ -493,68 +524,6 @@ Namespace('Sequencer').Engine = do ->
 		$tileC.addClass 'show'
 		_clueOpen = true
 
-		$('.close').on 'click', ->
-			$('#clue-popup').remove()
-			_clueOpen = false
-
-	# _dragTile = (event, ui) ->
-	# 	if $('#clue-popup').length
-	# 		$('#clue-popup').remove()
-	# 		_clueOpen = false
-	# 	_currActiveTile = this.id
-	# 	# console.log "Currently active tile is: " + _currActiveTile
-
-	# _dropTileInSequenceArea = (event, ui) ->
-	# 	console.log "dropping tile " + _currActiveTile + " to the orderbar"
-		
-	# 	if _numTiles is 0 
-	# 		console.log "adding show"
-	# 		$('#orderInstructions').addClass 'show'
-
-	# 	_tilesInSequence++
-	# 	console.log "number in the dropTile section " + _tilesInSequence + " of " + _numTiles
-		
-
-	# 	$('.tile[data-id='+_currActiveTile+']').css
-	# 		'position': 'relative'
-	# 		'transform': 'rotate(0deg)'
-	# 		'bottom': 'auto'
-	# 		'left': 50+'px'
-	# 		'margin': '-10px 10px 0px 10px'
-
-	# 	# Fix the font alignment when drop in the order area
-	# 	$('.tile[data-id='+_currActiveTile+']', 'tileText').css
-	# 		'display': 'table-cell'
-	# 		'vertical-align': 'middle'
-
-	# 	$('#orderArea').append $('.tile[data-id='+_currActiveTile+']')
-
-	# 	newNumbers = _.template $('#numberBar-numbers').html()
-	# 	number = $(newNumbers number: _tilesInSequence)
-	# 	$('#numberBar').append number
-	# 	number.addClass 'show'
-
-	# 	if _tilesInSequence == _numTiles
-	# 		_tilesSequenced()
-
-	# 	if _numTiles > 0 
-	# 		console.log "adding hide"
-	# 		$('#orderInstructions').addClass 'hide'			
-
-	# _dropTilesInTileSection = (event, ui) ->
-	# 	console.log 'dropping tile in tile seciton'
-	# 	$('#tileSection').append $('.tile[data-id='+_currActiveTile+']')
-	# 	$('#orderArea').removeChild $('.tile[data-id='+_currActiveTile+']')
-		
-	# 	$('.tile[data-id='+_currActiveTile+']').css
-	# 		'position': 'relative'
-	# 		'transform': 'rotate('+_tiles[i].angle+'deg)'
-	# 		'bottom': 'auto'
-	# 		'left': _tiles[i].xpos +'px'
-	# 		'margin': '-10px 10px 0px 10px'
-
-	# 	_tilesInSequence--
-
 	# Updates the numbers in the number bar when a tile is dropped or dragged in/out
 	_updateTileNums = () ->
 		$('#numberBar').empty()
@@ -570,15 +539,12 @@ Namespace('Sequencer').Engine = do ->
 		newMessage = _.template $('#message-window').html()
 		message = $(newMessage title: 'You\'re Done', messageText: 'Make sure you have the right sequence and press the \"Submit Sequence\" button.')
 		$('#tileSection').append message
-		# $('#tileSection').addClass 'fade'
 		message.addClass 'show'
-
+		$('#tileSection').addClass 'fade'
 		$('#submit').addClass 'enabled'
-		$('#submit').on 'click', ->
-			_submitSequence()
 
 	# Answer submitted by user
-	_submitSequence = ->
+	_submitSequence = () ->
 		$('.fade').addClass 'active'
 
 		# Get order of the tiles for grading
@@ -607,6 +573,8 @@ Namespace('Sequencer').Engine = do ->
 			penalty: _qset.options.penalty
 
 		$('body').append $results
+		console.log results + "is the results"
+		# Only if not 100%
 		unless results == _numTiles
 			# Update the score based on the new results
 			scoreString =  "100 - " + _qset.options.penalty * _attempts + " = " + (100 - _qset.options.penalty * _attempts)
@@ -760,6 +728,7 @@ Namespace('Sequencer').Engine = do ->
 
 	_end = () ->
 		Materia.Engine.end yes
+		# Go to Materia score page
 
 	#public
 	manualResize: true
