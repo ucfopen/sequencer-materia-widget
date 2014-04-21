@@ -5,9 +5,6 @@ Namespace('Sequencer').Engine = do ->
 	_tiles            		= [] 		# Array of tile object information
 	_numTiles        		= 0 		# Total number of tiles in the qset
 	_ids 					= []		# Array which holds random numbers for the tile Id's
-	_currentScore           = 0 		# 
-	_finalScore             = 0 		# 
-	_clueOpen				= false 	# Boolean to help determine if a clue is already open
 	_positions 				= [] 		# Array to keep track of the div
 	_tilesInSequence		= 0 		# Count for the number of tiles in the OrderArea div
 	_sequence 				= [] 		# Order of the submitted tiles
@@ -115,7 +112,6 @@ Namespace('Sequencer').Engine = do ->
 			if _sequence[i] is -1
 				_sequence.splice(i, 1)
 				i--
-		console.log 'X: '+x + ' Y:'+y
 		# move the current term
 		_curterm.style.transform = 
 		_curterm.style.msTransform =
@@ -194,6 +190,7 @@ Namespace('Sequencer').Engine = do ->
 			_curterm.style.position = 'absolute'
 			# apply easing (for snap back animation)
 			#_curterm.className = 'tile ease'
+			console.log _numTiles + "numtiles " + _tiles.length + " is tiles.length"
 			if _numTiles is 0
 				$('#orderInstructions').addClass 'show'
 
@@ -201,6 +198,8 @@ Namespace('Sequencer').Engine = do ->
 
 			if _tilesInSequence == _numTiles
 				_tilesSequenced()
+			else 
+				$('#message').remove()
 
 			if _numTiles > 0 
 				$('#orderInstructions').addClass 'hide'
@@ -328,8 +327,8 @@ Namespace('Sequencer').Engine = do ->
 
 		# Reveal the clue for clicked tile
 		$('#dragContainer').on 'mousedown', '.clue', ->
+			$('header').addClass 'slideUp'
 			_revealClue $(this).data('id')
-			console.log 'cluing'
 
 		# Scroll the numberBar with the orderArea
 		$('#dragContainer').on 'scroll', ->
@@ -338,6 +337,11 @@ Namespace('Sequencer').Engine = do ->
 		# On submit sequence clicked
 		$('#submit').on 'click', ->
 			_submitSequence()
+
+		$('.board').on 'click', '#clueHeader', ->
+			console.log 'removing clue'
+			$('header').removeClass 'slideUp'
+			$('#clueHeader').transition({height: 0}, 500);
 
 	_resizeTitle = (length) ->
 		if length > 50 
@@ -509,20 +513,34 @@ Namespace('Sequencer').Engine = do ->
 
 	# Show the clue from the id of the tile clicked
 	_revealClue = (id) -> 
-		# Removes the old clue if it is hidden on the page
-		if _clueOpen
-			$('#clue-popup').remove()
-
-		# Set up the tile template
+		# Get data for new clue
 		tileClue = _.template $('#tile-clue-window').html()
 		$tileC = $ tileClue
 			name: _tiles[id].name,
 			clue: _tiles[id].clue
 
+		# Remove old clue
+		clueBox = $('#clueHeader')
+		clueBox.animate({height: 0}, 200);
+
 		# Add the clue to the page
+		# $('.board').append $tileC
+
+		# setTimeout ->
+		# 	$('#clueHeader').remove()
+		# 	$('.board').append $tileC
+		# 	$('#clueHeader').addClass 'slideDown'
+		# ,500
+		if $('#clueHeader')?
+			console.log 'it exists'
+
+		$('#clueHeader').remove()
 		$('.board').append $tileC
-		$tileC.addClass 'show'
-		_clueOpen = true
+
+		# Animate auto height
+		clueBox = $('#clueHeader')
+		autoHeight = clueBox.css('height', 'auto').height();
+		clueBox.height('0px').transition({height: autoHeight}, 300);
 
 	# Updates the numbers in the number bar when a tile is dropped or dragged in/out
 	_updateTileNums = () ->
@@ -573,7 +591,6 @@ Namespace('Sequencer').Engine = do ->
 			penalty: _qset.options.penalty
 
 		$('body').append $results
-		console.log results + "is the results"
 		# Only if not 100%
 		unless results == _numTiles
 			# Update the score based on the new results
