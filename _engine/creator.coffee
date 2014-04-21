@@ -209,6 +209,7 @@ Namespace('Sequencer').Creator = do ->
 
 		tList = _loadingItemsForSave()
 		if tList is -1
+			console.log 'neglative'
 			okToSave = false
 		tList.assets = []
 		tList.options = {cid: 0}
@@ -218,25 +219,33 @@ Namespace('Sequencer').Creator = do ->
 
 	# Get each Tile's data from the appropriate info
 	_loadingItemsForSave = -> 
-		tileList = {items: {}}
-		items = {name: '', description: '', tileNum: ''} 
+		tileList = {items: []}
+		
+		i = 0
 
 		# Organize all tile names and tile clues
 		for t in $('.tileInfoSlider')
-			tileName = _validateTileString 'tile-text', t.getElementsByClassName('tile-text')[0].innerHTML
-			if tileName is null 
-				return -1
-			tileClue = _validateTileString 'clue-text', t.getElementsByClassName('clue-text').html()
+			tileName = _validateTileString 'tile-text', $(t).find('.title').val() #.$('.tile-text').val()
+			tileClue = _validateTileString 'clue-text', $(t).find('.cluetext').val()
 			console.log 'Clue for '+tileName+' is '+ tileClue
 
-			tileList.items.name.push tileName
-			tileList.items.description.push tileClue
-			tileList.items.tileNum.push t
-
-			console.log "=======creating qSet========"
-			console.log "\ttileNum: " + t
-			console.log "\ttileName: " + tileName
-			console.log "\ttileNum: " + tileClue
+			item = {
+				id: ''
+				type: 'QA'
+				materiaType: 'question'
+				questions: [{
+					id: ''
+					text: tileName
+				}]
+				answers: [{
+					id: ''
+					value: 100
+					text: i++
+				}]
+				options:
+					description: tileClue
+			}
+			tileList.items.push item
 
 		tileList
 
@@ -246,7 +255,7 @@ Namespace('Sequencer').Creator = do ->
 		if type is 'tile-text'
 			if text is _defaultTileString
 				Materia.CreatorCore.alert 'Unnamed Tile', 'You must enter a name for all tiles.'
-			text = null
+				text = null
 		
 		# Clue text
 		else 
