@@ -100,12 +100,12 @@ Namespace('Sequencer').Creator = do ->
 		$('body').delegate '.icon-close', 'click', -> 
 			console.log "removing..."
 			_numTiles--
-			$(this).parent().parent().removeClass 'appear'	
+			$(this).parent().removeClass 'appear'	
 			Elem = this
 			setTimeout -> 
-				$(Elem).parent().parent().remove()
+				$(Elem).parent().remove()
+				_updateTileNums()
 			, 200
-			_updateTileNums()
 		
 		$('body').delegate '.addInbetween', 'mouseover', ->
 				$(this).addClass 'show'
@@ -223,7 +223,7 @@ Namespace('Sequencer').Creator = do ->
 
 		# Organize all tile names and tile clues
 		for t in $('.tileInfoSlider')
-			tileName = _validateTileString 'tile-text', t.getElementsByClassName('tile-text').html()
+			tileName = _validateTileString 'tile-text', t.getElementsByClassName('tile-text')[0].innerHTML
 			if tileName is null 
 				return -1
 			tileClue = _validateTileString 'clue-text', t.getElementsByClassName('clue-text').html()
