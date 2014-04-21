@@ -273,16 +273,18 @@ Namespace('Sequencer').Engine = do ->
 
 			_numTiles++
 			_tiles[_ids[i]] =
-		 		id : _ids[i]
-		 		name : tile.questions[0].text
-		 		clue : tile.options.description
-		 		xpos : 200
-		 		ypos : 200
-		 		zInd : 0
-		 		angle : 0
-		 		dropOrder : 0
-		 		order : i
-		 	i++
+				id: _ids[i]
+				qid: tile.id
+				name: tile.questions[0].text
+				clue: tile.options.description
+				xpos: 200
+				ypos: 200
+				zInd: 0
+				angle: 0
+				dropOrder: 0
+				order: i
+
+			i++
 
 		_tiles
 
@@ -724,7 +726,7 @@ Namespace('Sequencer').Engine = do ->
 	_sendScores = () ->
 		answer = 0
 		for i in _sequence
-			Materia.Score.submitQuestionForScoring _tiles[i].order, ++answer
+			Materia.Score.submitQuestionForScoring _tiles[i].qid, _tiles[i].order, 100
 
 	_end = () ->
 		Materia.Engine.end yes
