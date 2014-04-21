@@ -131,13 +131,13 @@ header {
 		background: transparent;
 		top: 10px;
 		left: 10px;
-		text-align: center;
+		text-align: left;
 		font-size: 20px;
 		width: 50%;
 		font-family: "Lato","Arial",sans-serif;
 		color: $light;
 		font-size: 25px;
-		font-weight: normal;
+		font-weight: 300;
 	}
 
 	#verticalBar {
@@ -485,13 +485,6 @@ header {
 				position: relative;
 				top: 25px;
 				left: 10px;
-				.icon-close {
-					position: absolute;
-					transition: 200ms ease;
-					&:hover {
-						color: $red;
-					}
-				}
 			}
 
 			.peak {
@@ -509,6 +502,15 @@ header {
 					width: 164px;
 					height: 5px;
 				}
+			}
+
+			.icon-close {
+				float: right;
+				color: #333;
+				opacity: 0.5;
+				cursor: pointer;
+				margin-right: -20px;
+				margin-top: 22px;
 			}
 		}
 	}
@@ -687,8 +689,10 @@ header {
 		width: 70%;
 		margin-right: 10px;
 		padding: 0px 10px;
-		text-align: center;
+		text-align: left;
 		font-size: 16px;
+		font-family: 'Lato';
+		font-weight: 300;
 		background: transparent;
 		border: 3px solid $dgreen;
 	}
