@@ -529,9 +529,10 @@ header {
 
 .popup {
 	position: fixed; 
-	margin-left: 20%;
-	margin-right: 20%;
-	top: 100px;
+	margin-left: -360px;
+	margin-top: -200px;
+	top: 50%;
+	left: 50%;
 	max-width: 720px;
 	min-width: 615px;
 	background: $light;
