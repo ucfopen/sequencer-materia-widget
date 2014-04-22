@@ -21,9 +21,15 @@ Namespace('Sequencer').Engine = do ->
 	# zIndex of the terms, incremented so that the dragged term is always on top
 	_zIndex					= 11000
 
-	# the current dragging term
+	# the current dragging term and its position info
 	_curterm				= null
-
+	_relativeX				= 0
+	_relativeY				= 0
+	_deltaX 				= 0
+	_deltaY 				= 0
+	_curXstart				= 0
+	_curYstart				= 0
+	
 	# Called by Materia.Engine when your widget Engine should start the user experience.
 	start = (instance, qset, version = '1') ->
 		_qset = qset
@@ -55,21 +61,19 @@ Namespace('Sequencer').Engine = do ->
 			_curterm = _curterm.parentNode
 		_curterm.style.zIndex = ++_zIndex
 		_curterm.style.position = 'fixed'
+
 		# disable easing while it drags
 		#e.target.className = 'tile'
-		
-		x = (e.clientX - 50)
-		# x boundaries
-		x = 70 if x < 70
-		x = 615 if x > 615
-		y = (e.clientY - 60)
-		# y boundaries
-		y = -15 if y < -15
-		y = 500 if y > 500
 
-		_curterm.style.transform = 
-		_curterm.style.msTransform =
-		_curterm.style.webkitTransform = 'translate(' + x + 'px,' + y + 'px)'
+		_relativeX = (e.clientX - $('#'+_curterm.id).offset().left)
+		_relativeY = (e.clientY - $('#'+_curterm.id).offset().top)
+
+		_curXstart = (e.clientX)
+		_curYstart = (e.clientY-10)
+
+		# _curterm.style.transform = 
+		# _curterm.style.msTransform =
+		# _curterm.style.webkitTransform += 'translate(' + (x-_relativeX) + 'px,' + (_relativeY) + 'px)'
 
 		# if its been placed, pull it out of the sequence array
 		if (i = _sequence.indexOf(~~_curterm.id)) != -1
@@ -89,6 +93,7 @@ Namespace('Sequencer').Engine = do ->
 
 	# when the widget area has a cursor or finger move
 	_mouseMoveEvent = (e) ->
+		# console.log $('#'+_curterm.id).position()
 		# if no term is being dragged, we don't care
 		return if not _curterm?
 
@@ -98,27 +103,33 @@ Namespace('Sequencer').Engine = do ->
 		if not e.clientX
 			e.clientX = e.changedTouches[0].clientX
 			e.clientY = e.changedTouches[0].clientY
-
-		x = (e.clientX - 50)
+		
+		_deltaX = (e.clientX - _curXstart)
+		moveX = (_curXstart + _deltaX - _relativeX) 
 		# x boundaries
-		x = 70 if x < 70
-		x = 615 if x > 615
-		y = (e.clientY - 60)
+		moveX = 20 if moveX < 20
+		moveX = 565 if moveX > 565
+		
+		_deltaY = (e.clientY - _curYstart - 10)
+		moveY = (_curYstart + _deltaY - _relativeY)
 		# y boundaries
-		y = -15 if y < -15
-		y = 500 if y > 500
+		moveY = 5 if moveY < 5
+		moveY = 416 if moveY > 416
+
+		# console.log '\t\tmoving to ' + (_curXstart + _deltaX - _relativeX) + ', ' + (_curYstart + _deltaY - _relativeY)
 
 		for i in [0..._sequence.length]
 			if _sequence[i] is -1
 				_sequence.splice(i, 1)
 				i--
+
 		# move the current term
 		_curterm.style.transform = 
 		_curterm.style.msTransform =
-		_curterm.style.webkitTransform = 'translate(' + x + 'px,' + y + 'px)'
+		_curterm.style.webkitTransform = 'translate(' + moveX + 'px,' + moveY + 'px)'
 
 		# Drag tile into the order area
-		if x > 430
+		if moveX > 420
 			_insertAfter = 0
 
 			# Add an extra temporary number when you drag the tile into the tile area
@@ -132,7 +143,7 @@ Namespace('Sequencer').Engine = do ->
 			_curterm.style.webkitTransform += ' rotate(' + 0 + 'deg)'
 			
 			for i in [0..._sequence.length]
-				if y > ((_ORDERHEIGHT * i) + 10) - $('#dragContainer').scrollTop()
+				if moveY > ((_ORDERHEIGHT * i) + 10) - $('#dragContainer').scrollTop()
 					_insertAfter = _sequence[i]
 			if _insertAfter is -1
 				# dont do it
@@ -157,7 +168,7 @@ Namespace('Sequencer').Engine = do ->
 
 		_repositionOrderedTiles() 
 
-		if x <= 430
+		if moveX <= 420
 			for i in [0..._sequence.length]
 				if _sequence[i] is -1
 					_sequence.splice(i, 1)
@@ -169,13 +180,20 @@ Namespace('Sequencer').Engine = do ->
 		# e.stopPropagation() if e.stopPropagation?
 
 	# when we let go of a term
-	_mouseUpEvent = (e) ->
+	_mouseUpEvent = (e, moveY, moveX) ->
 		# we don't care if nothing is selected
 		return if not _curterm?
 		_addTempNum = true
 
-		x = (e.clientX - 50)
-		y = (e.clientY - 60)
+		moveX = (_curXstart + _deltaX - _relativeX) 
+		# x boundaries
+		# moveX = 20 if moveX < 20
+		# moveX = 565 if moveX > 565
+		
+		moveY = (_curYstart + _deltaY - _relativeY)
+		# y boundaries
+		# moveY = 85 if moveY < 85 and moveX < 420
+		# moveY = 416 if moveY > 416
 
 		# Remove the empty slots
 		for i in [0..._sequence.length]
@@ -186,11 +204,10 @@ Namespace('Sequencer').Engine = do ->
 			e.clientX = e.changedTouches[0].clientX
 			e.clientY = e.changedTouches[0].clientY
 			
-		if x > 430
+		if moveX > 420
 			_curterm.style.position = 'absolute'
 			# apply easing (for snap back animation)
 			#_curterm.className = 'tile ease'
-			console.log _numTiles + "numtiles " + _tiles.length + " is tiles.length"
 			if _numTiles is 0
 				$('#orderInstructions').addClass 'show'
 
@@ -213,17 +230,22 @@ Namespace('Sequencer').Engine = do ->
 					if _sequence[i] is ~~_curterm.id
 						_sequence.splice(i, 1)
 				_sequence.push ~~_curterm.id
+
 		# Drop in tile section
 		else 
 			# Prevent unwanted tile drops
-			y = 80 if x < 520 and y < 80
-			x = 70 if x < 70
-			y = -15 if y < -15
-			y = 400 if y > 400
-			_curterm.style.transform = 
-			_curterm.style.msTransform =
-			_curterm.style.webkitTransform = 'translate(' + x + 'px,' + y + 'px) rotate(' + _tiles[_curterm.id].angle + 'deg)'
+			if moveX < 420 and moveY < 90
+				moveY = 95
+				changed = true
+			if moveY > 400
+				moveY = 400 
+				changed = true
 			
+			if changed
+				_curterm.style.transform = 
+				_curterm.style.msTransform =
+				_curterm.style.webkitTransform = 'translate(' + moveX + 'px,' + moveY + 'px) rotate(' + _tiles[_curterm.id].angle + 'deg)'
+				
 			$('#message').remove()
 			$('#tileSection').removeClass 'fade'
 			$('#submit').removeClass 'enabled'
@@ -240,6 +262,7 @@ Namespace('Sequencer').Engine = do ->
 
 		# Prevent iPad/etc from scrolling
 		e.preventDefault()
+	
 	
 	_startDemo = ->
 		demoScreen = _.template $('#demo-window').html()
@@ -385,7 +408,7 @@ Namespace('Sequencer').Engine = do ->
 			curterm = document.getElementById id 
 			curterm.style.transform =
 			curterm.style.msTransform =
-			curterm.style.webkitTransform = 'translate(605px,' + (_ORDERHEIGHT * i - 20) + 'px)'
+			curterm.style.webkitTransform = 'translate(555px,' + (_ORDERHEIGHT * i + 10) + 'px)'
 
 			i++
 		
@@ -531,8 +554,6 @@ Namespace('Sequencer').Engine = do ->
 		# 	$('.board').append $tileC
 		# 	$('#clueHeader').addClass 'slideDown'
 		# ,500
-		if $('#clueHeader')?
-			console.log 'it exists'
 
 		$('#clueHeader').remove()
 		$('.board').append $tileC

@@ -394,7 +394,7 @@ header {
 					border-radius: 50%;
 				}
 				.addInbetween {
-					opacity: 0px;
+					opacity: 0;
 					position: absolute;
 					left: 8px;
 					top: -22px;
@@ -511,6 +511,10 @@ header {
 				cursor: pointer;
 				margin-right: -20px;
 				margin-top: 22px;
+				transition: 400ms;
+				&:hover {
+					color: red;
+				}
 			}
 		}
 	}
