@@ -155,6 +155,10 @@ Namespace('Sequencer').Creator = do ->
 	_addQuestion = (question) ->
 		console.log question
 
+		$('#arrow').removeClass 'show'
+		$('#startPopup').removeClass 'show'
+		$('#fader').removeClass 'dim'
+
 		_addNewTileSlider(null, question.questions[0].text, question.options.description)
 
 	# Change radio game modes
