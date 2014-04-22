@@ -98,7 +98,6 @@ Namespace('Sequencer').Creator = do ->
 
 		# Remove Slider
 		$('body').delegate '.icon-close', 'click', -> 
-			console.log "removing..."
 			_numTiles--
 			$(this).parent().removeClass 'appear'	
 			Elem = this
@@ -120,7 +119,6 @@ Namespace('Sequencer').Creator = do ->
 			$('#fader').addClass 'dim'
 
 		$('.closeWindow').on 'click', ->
-			console.log 'removing'
 			$(this).parent().removeClass 'show'
 			$('#fader').removeClass 'dim'
 
@@ -153,8 +151,6 @@ Namespace('Sequencer').Creator = do ->
 			_addQuestion question for question in questions
 	
 	_addQuestion = (question) ->
-		console.log question
-
 		$('#arrow').removeClass 'show'
 		$('#startPopup').removeClass 'show'
 		$('#fader').removeClass 'dim'
@@ -192,7 +188,6 @@ Namespace('Sequencer').Creator = do ->
 
 	# Change the number on the sliders 
 	_updateTileNums = () ->
-		console.log 'updating numbers'
 		i = 1
 		for slider in $('.tileInfoSlider')
 			$(slider).children('.block').children('.number').html(i)
@@ -218,7 +213,6 @@ Namespace('Sequencer').Creator = do ->
 
 		tList = _loadingItemsForSave()
 		if tList is -1
-			console.log 'neglative'
 			okToSave = false
 		tList.assets = []
 		tList.options = {cid: 0}
@@ -236,7 +230,6 @@ Namespace('Sequencer').Creator = do ->
 		for t in $('.tileInfoSlider')
 			tileName = _validateTileString 'tile-text', $(t).find('.title').val() #.$('.tile-text').val()
 			tileClue = _validateTileString 'clue-text', $(t).find('.cluetext').val()
-			console.log 'Clue for '+tileName+' is '+ tileClue
 
 			item = {
 				id: ''
