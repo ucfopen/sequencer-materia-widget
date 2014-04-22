@@ -47,7 +47,7 @@ Namespace('Sequencer').Creator = do ->
 	# This basic widget does not support media
 	onMediaImportComplete = (media) -> 
 		null
-
+	
 	# Set up page and listen
 	_buildDisplay = (title = 'Default test Title', widget, qset, version) ->
 		_version = version
@@ -151,6 +151,11 @@ Namespace('Sequencer').Creator = do ->
 		if _qset?
 			questions = _qset.items
 			_addQuestion question for question in questions
+	
+	_addQuestion = (question) ->
+		console.log question
+
+		_addNewTileSlider(null, question.questions[0].text, question.options.description)
 
 	# Change radio game modes
 	_updateGameMode = ->
@@ -162,7 +167,7 @@ Namespace('Sequencer').Creator = do ->
 			$('#freeBox').removeClass 'show'
 
 	# Add new slider
-	_addNewTileSlider = (position) ->
+	_addNewTileSlider = (position, tileString = '', clueString = '') ->
 		if _numTiles is _maxTiles 
 			Materia.CreatorCore.alert 'Maximum Tiles', 'You may only have up to '+ _maxTiles + ' tiles in this widget.'
 			return
@@ -172,7 +177,7 @@ Namespace('Sequencer').Creator = do ->
 		
 		# Add a new Slider
 		newTileSlot = _.template $('#t-slide-info').html()
-		tileSlot = $(newTileSlot tileNum: _numTiles, tileText: _defaultTileString, clueText: _defaultClueString)
+		tileSlot = $(newTileSlot tileNum: _numTiles, tileText: tileString, clueText: clueString)
 		
 		if position?
 			$(tileSlot).insertBefore (position)
