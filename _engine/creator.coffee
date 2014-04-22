@@ -47,7 +47,7 @@ Namespace('Sequencer').Creator = do ->
 	# This basic widget does not support media
 	onMediaImportComplete = (media) -> 
 		null
-
+	
 	# Set up page and listen
 	_buildDisplay = (title = 'Default test Title', widget, qset, version) ->
 		_version = version
@@ -98,7 +98,6 @@ Namespace('Sequencer').Creator = do ->
 
 		# Remove Slider
 		$('body').delegate '.icon-close', 'click', -> 
-			console.log "removing..."
 			_numTiles--
 			$(this).parent().removeClass 'appear'	
 			Elem = this
@@ -120,7 +119,6 @@ Namespace('Sequencer').Creator = do ->
 			$('#fader').addClass 'dim'
 
 		$('.closeWindow').on 'click', ->
-			console.log 'removing'
 			$(this).parent().removeClass 'show'
 			$('#fader').removeClass 'dim'
 
@@ -151,6 +149,13 @@ Namespace('Sequencer').Creator = do ->
 		if _qset?
 			questions = _qset.items
 			_addQuestion question for question in questions
+	
+	_addQuestion = (question) ->
+		$('#arrow').removeClass 'show'
+		$('#startPopup').removeClass 'show'
+		$('#fader').removeClass 'dim'
+
+		_addNewTileSlider(null, question.questions[0].text, question.options.description)
 
 	# Change radio game modes
 	_updateGameMode = ->
@@ -162,7 +167,7 @@ Namespace('Sequencer').Creator = do ->
 			$('#freeBox').removeClass 'show'
 
 	# Add new slider
-	_addNewTileSlider = (position) ->
+	_addNewTileSlider = (position, tileString = '', clueString = '') ->
 		if _numTiles is _maxTiles 
 			Materia.CreatorCore.alert 'Maximum Tiles', 'You may only have up to '+ _maxTiles + ' tiles in this widget.'
 			return
@@ -172,7 +177,7 @@ Namespace('Sequencer').Creator = do ->
 		
 		# Add a new Slider
 		newTileSlot = _.template $('#t-slide-info').html()
-		tileSlot = $(newTileSlot tileNum: _numTiles, tileText: _defaultTileString, clueText: _defaultClueString)
+		tileSlot = $(newTileSlot tileNum: _numTiles, tileText: tileString, clueText: clueString)
 		
 		if position?
 			$(tileSlot).insertBefore (position)
@@ -183,7 +188,6 @@ Namespace('Sequencer').Creator = do ->
 
 	# Change the number on the sliders 
 	_updateTileNums = () ->
-		console.log 'updating numbers'
 		i = 1
 		for slider in $('.tileInfoSlider')
 			$(slider).children('.block').children('.number').html(i)
@@ -218,25 +222,32 @@ Namespace('Sequencer').Creator = do ->
 
 	# Get each Tile's data from the appropriate info
 	_loadingItemsForSave = -> 
-		tileList = {items: {}}
-		items = {name: '', description: '', tileNum: ''} 
+		tileList = {items: []}
+		
+		i = 0
 
 		# Organize all tile names and tile clues
 		for t in $('.tileInfoSlider')
-			tileName = _validateTileString 'tile-text', t.getElementsByClassName('tile-text')[0].innerHTML
-			if tileName is null 
-				return -1
-			tileClue = _validateTileString 'clue-text', t.getElementsByClassName('clue-text').html()
-			console.log 'Clue for '+tileName+' is '+ tileClue
+			tileName = _validateTileString 'tile-text', $(t).find('.title').val() #.$('.tile-text').val()
+			tileClue = _validateTileString 'clue-text', $(t).find('.cluetext').val()
 
-			tileList.items.name.push tileName
-			tileList.items.description.push tileClue
-			tileList.items.tileNum.push t
-
-			console.log "=======creating qSet========"
-			console.log "\ttileNum: " + t
-			console.log "\ttileName: " + tileName
-			console.log "\ttileNum: " + tileClue
+			item = {
+				id: ''
+				type: 'QA'
+				materiaType: 'question'
+				questions: [{
+					id: ''
+					text: tileName
+				}]
+				answers: [{
+					id: ''
+					value: 100
+					text: i++
+				}]
+				options:
+					description: tileClue
+			}
+			tileList.items.push item
 
 		tileList
 
@@ -246,7 +257,7 @@ Namespace('Sequencer').Creator = do ->
 		if type is 'tile-text'
 			if text is _defaultTileString
 				Materia.CreatorCore.alert 'Unnamed Tile', 'You must enter a name for all tiles.'
-			text = null
+				text = null
 		
 		# Clue text
 		else 

@@ -507,13 +507,14 @@ header {
 			.icon-close {
 				float: right;
 				color: #333;
-				opacity: 0.5;
+				opacity: 0.3;
 				cursor: pointer;
 				margin-right: -20px;
 				margin-top: 22px;
 				transition: 400ms;
 				&:hover {
 					color: red;
+
 				}
 			}
 		}
