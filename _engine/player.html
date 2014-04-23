@@ -45,15 +45,7 @@
 			</div>
 		<% } %>
 	</div>
-	<section id="tileSection">
-		<!-- tiles
-		<% for(var t in tiles) { var tile = tiles[t]; %>
-			<div class="tile" data-id="<%= tile.id %>" id="<%= tile.id %>" tabindex="<%= parseInt(t, 10)+1+(tiles.length) %>">
-			<%= tile.name %>
-			<div class="clue" data-id="<%= tile.id %>"></div>
-			</div>
-		<% } %> -->
-	</section>
+	<section id="tileSection"></section>
 	<aside id="numberBar" class="nondraggable"></aside>
 	<section id="orderArea">
 		<div id="orderInstructions">Drag and organize tiles here</div>
@@ -62,9 +54,8 @@
 		<div id="submit" class="nondraggable">Submit Sequence</div>
 	</div>
 	<footer id="score-area">
-		<h4 id="score-text">
-			Score: <span id="score"><%= score %></span>
-		</h4>
+		<h4 id="score-text">Score: <span id="score"><%= score %></span></h4>
+		<h5><span id="practiceMode-info">(Practice Mode)</span></h5>
 		<h5><span id="score-info">(-<%= penalty %> for an incorrect sequence)</span></h5>
 		<h5><span id="attempts-info">(<span id="attemptsLeft"><%= freeAttempts %></span> free attempts)</span></h5>
 	</footer>
@@ -109,8 +100,8 @@
 			<div id="demoTitle"><%= demoTitle %></div>
 			<div id="demoFooter"></div>
 			<div class="demoTile move" id="dt1">1</div>
-			<div class="demoTile move" id="dt2">2</div> 
-			<div class="demoTile move" id="dt3">3</div> 
+			<div class="demoTile move" id="dt2">2</div>
+			<div class="demoTile move" id="dt3">3</div>
 			<div id="demoTileSection"></div>
 			<div id="demoOrderArea"></div>
 			<div id="demoNumberBar"></div>

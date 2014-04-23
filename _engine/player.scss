@@ -263,6 +263,7 @@ header {
 	bottom: auto;
 	border-radius: 5px;
 	box-shadow: 0 4px 3px -3px black;
+	transition: 120ms;
 
 	&.hover {
 		cursor: hand;
@@ -494,6 +495,15 @@ header {
 	}
 
 	#score-info {
+		font-family: sans-serif;
+		float: right;
+		color: $blue;
+		&.hidden {
+			display: none;
+		}
+	}
+
+	#practiceMode-info {
 		font-family: sans-serif;
 		float: right;
 		color: $blue;
