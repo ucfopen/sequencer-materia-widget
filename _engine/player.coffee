@@ -34,8 +34,12 @@ Namespace('Sequencer').Engine = do ->
 	# Called by Materia.Engine when your widget Engine should start the user experience.
 	start = (instance, qset, version = '1') ->
 		_qset = qset
-		_freeAttemptsLeft = _qset.options.freeAttempts
-	
+
+		if _qset.options.freeAttempts?
+			_freeAttemptsLeft = _qset.options.freeAttempts
+		else 
+			_freeAttemptsLeft = 0
+		
 		if _playDemo 
 			_startDemo()
 
@@ -267,7 +271,7 @@ Namespace('Sequencer').Engine = do ->
 		_$demo = $ demoScreen 
 			demoTitle: ''
 			penalty: _qset.options.penalty
-			freeAttempts : _qset.options.freeAttempts
+			freeAttempts : _freeAttemptsLeft
 		$('body').append _$demo
 		$('.demoButton').offset()
 		$('.demoButton').addClass 'show'
@@ -333,6 +337,11 @@ Namespace('Sequencer').Engine = do ->
 
 		$('body').append _$board
 		$('.tile').addClass 'noShow'
+
+		if _qset.options.freeAttempts?
+			$('#score-info').addClass 'hidden'
+		else
+			$('#attempts-info').addClass 'hidden'
 
 		# Resize the title if needed.
 		_resizeTitle _qset.name.length
