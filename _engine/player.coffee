@@ -477,10 +477,9 @@ Namespace('Sequencer').Engine = do ->
 			if textLength >= 20 
 				$('#'+tile.id).css
 					'font-size': 18+'px'
-
-		# Remove the clue symbol if there is no hint available
-		#unless _tiles[tile.id].clue
-			# TODO
+			# Remove the clue symbol if there is no hint available
+			if _tiles[tile.id].clue is ''
+				$('#'+tile.id).children('.clue').remove()
 
 	# Check potential position to see if there is already a tile in the area
 	_checkTilePosition = (w, h) ->
