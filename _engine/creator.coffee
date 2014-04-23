@@ -206,7 +206,7 @@ Namespace('Sequencer').Creator = do ->
 		console.log $('#penaltyAttempts').val()
 
 		_qset.options.penalty = $('#penaltyInput').val() 
-		_qset.options.freeAttempts = $('#numTriesInput').val() 
+		_qset.options.freeAttempts = $('#numTriesInput').val() if $('#numTriesInput').val() is not 0
 		_qset.name = 'test'
 
 		# update our values
