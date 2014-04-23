@@ -21,7 +21,7 @@ Namespace('Sequencer').Creator = do ->
 	tutorial2 = $('.tutorial.step2')
 	tutorial3 = $('.tutorial.step3')
 
-	_defaultTileString =  '' #[ Enter Tile Name ]'
+	_defaultTileString =  ''
 	_defaultClickString = 'Click to add tile'
 	_defaultClueString = 'Enter optional information here'
 
@@ -47,7 +47,10 @@ Namespace('Sequencer').Creator = do ->
 	# This basic widget does not support media
 	onMediaImportComplete = (media) -> 
 		null
-	
+	# # Adjust for scrolling
+	# 	if (_curXstart - _relativeX) > 420
+	# 		_relativeY += $('#dragContainer').scrollTop()
+	# 		_curYstart += $('#dragContainer').scrollTop()
 	# Set up page and listen
 	_buildDisplay = (title = 'Default test Title', widget, qset, version) ->
 		_version = version
