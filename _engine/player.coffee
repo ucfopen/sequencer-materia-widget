@@ -7,7 +7,7 @@ Namespace('Sequencer').Engine = do ->
 	_ids 					= []		# Array which holds random numbers for the tile Id's
 	_positions 				= [] 		# Array to keep track of the div
 	_tilesInSequence		= 0 		# Count for the number of tiles in the OrderArea div
-	_sequence 				= [] 		# Order of the submitted tiles
+	_sequence 				= [-1] 		# Order of the submitted tiles
 	_tileAngles				= [] 		# Array of tile angles
 	_currActiveTile			= null 		# Tile being dragged
 	_attempts				= 0			# Number of tries the current user has made
@@ -63,7 +63,7 @@ Namespace('Sequencer').Engine = do ->
 		_curterm.style.position = 'fixed'
 
 		# disable easing while it drags
-		#e.target.className = 'tile'
+		# e.target.className = 'tile'
 
 		_relativeX = (e.clientX - $('#'+_curterm.id).offset().left)
 		_relativeY = (e.clientY - $('#'+_curterm.id).offset().top)
@@ -71,9 +71,10 @@ Namespace('Sequencer').Engine = do ->
 		_curXstart = (e.clientX)
 		_curYstart = (e.clientY-10)
 
-		# _curterm.style.transform = 
-		# _curterm.style.msTransform =
-		# _curterm.style.webkitTransform += 'translate(' + (x-_relativeX) + 'px,' + (_relativeY) + 'px)'
+		# Adjust for scrolling
+		if (_curXstart - _relativeX) > 420
+			_relativeY += $('#dragContainer').scrollTop()
+			_curYstart += $('#dragContainer').scrollTop()
 
 		# if its been placed, pull it out of the sequence array
 		if (i = _sequence.indexOf(~~_curterm.id)) != -1
@@ -82,9 +83,9 @@ Namespace('Sequencer').Engine = do ->
 		
 		_insertAfter = -1
 
-		# don't scroll the page on an iPad
-		# e.preventDefault()
-		# e.stopPropagation() if e.stopPropagation?
+	#	don't scroll the page on an iPad
+	# 	e.preventDefault()
+	# 	e.stopPropagation() if e.stopPropagation?
 		
 		_addTempNum = true
 		_updateTileNums()
@@ -93,7 +94,6 @@ Namespace('Sequencer').Engine = do ->
 
 	# when the widget area has a cursor or finger move
 	_mouseMoveEvent = (e) ->
-		# console.log $('#'+_curterm.id).position()
 		# if no term is being dragged, we don't care
 		return if not _curterm?
 
@@ -114,9 +114,7 @@ Namespace('Sequencer').Engine = do ->
 		moveY = (_curYstart + _deltaY - _relativeY)
 		# y boundaries
 		moveY = 5 if moveY < 5
-		moveY = 416 if moveY > 416
-
-		# console.log '\t\tmoving to ' + (_curXstart + _deltaX - _relativeX) + ', ' + (_curYstart + _deltaY - _relativeY)
+		moveY = 420 if moveY > 420
 
 		for i in [0..._sequence.length]
 			if _sequence[i] is -1
@@ -143,13 +141,13 @@ Namespace('Sequencer').Engine = do ->
 			_curterm.style.webkitTransform += ' rotate(' + 0 + 'deg)'
 			
 			for i in [0..._sequence.length]
-				if moveY > ((_ORDERHEIGHT * i) + 10) - $('#dragContainer').scrollTop()
+				if moveY > ((_ORDERHEIGHT * i) + 50) - $('#dragContainer').scrollTop()
 					_insertAfter = _sequence[i]
 			if _insertAfter is -1
 				# dont do it
 			else if _insertAfter == 0
 				_sequence.splice(0, -1, -1)
-			else if _insertAfter is _sequence[_sequence.length-1]
+			# else if _insertAfter is _sequence[_sequence.length-1]
 				# also don't do it
 			else if _insertAfter
 				_sequence.splice(_sequence.indexOf(_insertAfter) + 1, 0, -1)
@@ -184,16 +182,8 @@ Namespace('Sequencer').Engine = do ->
 		# we don't care if nothing is selected
 		return if not _curterm?
 		_addTempNum = true
-
 		moveX = (_curXstart + _deltaX - _relativeX) 
-		# x boundaries
-		# moveX = 20 if moveX < 20
-		# moveX = 565 if moveX > 565
-		
 		moveY = (_curYstart + _deltaY - _relativeY)
-		# y boundaries
-		# moveY = 85 if moveY < 85 and moveX < 420
-		# moveY = 416 if moveY > 416
 
 		# Remove the empty slots
 		for i in [0..._sequence.length]
@@ -213,10 +203,9 @@ Namespace('Sequencer').Engine = do ->
 
 			_tilesInSequence++
 
+			$('#message').remove()
 			if _tilesInSequence == _numTiles
 				_tilesSequenced()
-			else 
-				$('#message').remove()
 
 			if _numTiles > 0 
 				$('#orderInstructions').addClass 'hide'
@@ -255,14 +244,12 @@ Namespace('Sequencer').Engine = do ->
 			$('#orderInstructions').addClass 'show'
 
 		_repositionOrderedTiles()
-
 		_updateTileNums()
-	
+
 		_curterm = null
 
 		# Prevent iPad/etc from scrolling
 		e.preventDefault()
-	
 	
 	_startDemo = ->
 		demoScreen = _.template $('#demo-window').html()
@@ -305,7 +292,6 @@ Namespace('Sequencer').Engine = do ->
 				angle: 0
 				dropOrder: 0
 				order: i
-
 			i++
 
 		_tiles
@@ -329,7 +315,7 @@ Namespace('Sequencer').Engine = do ->
 			penalty: _qset.options.penalty
 
 		cWidth = 250
-		cHeight = 220
+		cHeight = 280
 
 		$('body').append _$board
 		$('.tile').addClass 'noShow'
@@ -364,7 +350,6 @@ Namespace('Sequencer').Engine = do ->
 			_submitSequence()
 
 		$('.board').on 'click', '#clueHeader', ->
-			console.log 'removing clue'
 			$('header').removeClass 'slideUp'
 			$('#clueHeader').transition({height: 0}, 500);
 
@@ -411,7 +396,6 @@ Namespace('Sequencer').Engine = do ->
 			curterm.style.transform =
 			curterm.style.msTransform =
 			curterm.style.webkitTransform = 'translate(555px,' + (_ORDERHEIGHT * i + 10) + 'px)'
-
 			i++
 		
 	# Set random tile position, angle, and z-index
@@ -421,7 +405,7 @@ Namespace('Sequencer').Engine = do ->
 			textLength = _tiles[tile.id].name.length
 			tries = 1
 			
-			_tiles[tile.id].xpos = Math.floor (Math.random() * maxWidth) + 95
+			_tiles[tile.id].xpos = Math.floor (Math.random() * maxWidth) + 30
 			_tiles[tile.id].ypos =  Math.floor (Math.random() * maxHeight) + 120
 			_tiles[tile.id].zInd = Math.floor (Math.random() * 4) + 8 
 			_tiles[tile.id].dropOrder = _tiles[tile.id].zInd
