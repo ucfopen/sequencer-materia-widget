@@ -18,6 +18,7 @@ Namespace('Sequencer').Engine = do ->
 	_addTempNum 			= true
 	_tempNumber				= null
 	_freeAttemptsLeft 		= 0
+	_practiceMode 			= false
 
 	# zIndex of the terms, incremented so that the dragged term is always on top
 	_zIndex					= 11000
@@ -35,12 +36,13 @@ Namespace('Sequencer').Engine = do ->
 	start = (instance, qset, version = '1') ->
 		_qset = qset
 
-		if _qset.options.freeAttempts?
+		if _qset.options.freeAttempts is ''
 			_freeAttemptsLeft = _qset.options.freeAttempts
-		else 
-			_freeAttemptsLeft = 0
+
+		# Determine the play modes
+		_practiceMode = _qset.options.practiceMode if _qset.options.practiceMode?
 		
-		if _playDemo 
+		if _playDemo
 			_startDemo()
 
 		# attach document listeners
@@ -68,6 +70,7 @@ Namespace('Sequencer').Engine = do ->
 			_curterm = _curterm.parentNode
 		_curterm.style.zIndex = ++_zIndex
 		_curterm.style.position = 'fixed'
+		_curterm.style.transition = 'none'
 
 		# disable easing while it drags
 		# e.target.className = 'tile'
@@ -180,7 +183,6 @@ Namespace('Sequencer').Engine = do ->
 				_addTempNum = true 
 
 		_repositionOrderedTiles() 
-		console.log _sequence
 
 		if moveX <= 420
 			for i in [0..._sequence.length]
@@ -261,6 +263,7 @@ Namespace('Sequencer').Engine = do ->
 		_repositionOrderedTiles()
 		_updateTileNums()
 
+		_curterm.style.transition = '120ms'
 		_curterm = null
 
 		# Prevent iPad/etc from scrolling
@@ -268,6 +271,12 @@ Namespace('Sequencer').Engine = do ->
 	
 	_startDemo = ->
 		demoScreen = _.template $('#demo-window').html()
+
+		if _practiceMode == true
+			console.log 'practicing...'
+			_freeAttemptsLeft = 'unlimited'
+			_qset.options.penalty = 0
+
 		_$demo = $ demoScreen 
 			demoTitle: ''
 			penalty: _qset.options.penalty
@@ -338,10 +347,16 @@ Namespace('Sequencer').Engine = do ->
 		$('body').append _$board
 		$('.tile').addClass 'noShow'
 
-		if _qset.options.freeAttempts?
+		if _practiceMode 
 			$('#score-info').addClass 'hidden'
+			$('#attempts-info').addClass 'hidden'
+
+		else if _qset.options.freeAttempts?
+			$('#score-info').addClass 'hidden'
+			$('#practiceMode-info').addClass 'hidden'
 		else
 			$('#attempts-info').addClass 'hidden'
+			$('#practiceMode-info').addClass 'hidden'
 
 		# Resize the title if needed.
 		_resizeTitle _qset.name.length

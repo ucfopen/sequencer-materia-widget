@@ -138,7 +138,6 @@ Namespace('Sequencer').Creator = do ->
 		$('#modeContainer').on 'click', ->
 			$('#modeSlider').toggleClass 'slide'
 			$('#assessmentOptions').toggleClass 'active'
-			$('#mode').html('Assessment Mode')
 			$('#practiceMode').toggleClass 'active'
 			$('#assessmentMode').toggleClass 'active'
 			$('#assessmentOptions').toggleClass 'show'
@@ -203,9 +202,12 @@ Namespace('Sequencer').Creator = do ->
 		_qset.options = {}
 		_qset.assets = []
 		_qset.rand = false
-		console.log $('#penaltyAttempts').val()
 
-		_qset.options.penalty = $('#penaltyInput').val() 
+		if $('#practiceMode').hasClass 'active'
+			_qset.options.practiceMode = true
+		else 
+			_qset.options.practiceMode = false
+		_qset.options.penalty = $('#penaltyInput').val()
 		_qset.options.freeAttempts = $('#numTriesInput').val() if $('#numTriesInput').val() is not 0
 		_qset.name = 'test'
 
