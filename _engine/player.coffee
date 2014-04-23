@@ -17,6 +17,7 @@ Namespace('Sequencer').Engine = do ->
 	_ORDERHEIGHT			= 70
 	_addTempNum 			= true
 	_tempNumber				= null
+	_freeAttemptsLeft 		= 0
 
 	# zIndex of the terms, incremented so that the dragged term is always on top
 	_zIndex					= 11000
@@ -33,6 +34,8 @@ Namespace('Sequencer').Engine = do ->
 	# Called by Materia.Engine when your widget Engine should start the user experience.
 	start = (instance, qset, version = '1') ->
 		_qset = qset
+		_freeAttemptsLeft = _qset.options.freeAttempts
+	
 		if _playDemo 
 			_startDemo()
 
@@ -264,6 +267,7 @@ Namespace('Sequencer').Engine = do ->
 		_$demo = $ demoScreen 
 			demoTitle: ''
 			penalty: _qset.options.penalty
+			freeAttempts : _qset.options.freeAttempts
 		$('body').append _$demo
 		$('.demoButton').offset()
 		$('.demoButton').addClass 'show'
@@ -271,7 +275,7 @@ Namespace('Sequencer').Engine = do ->
 		# Exit demo.
 		$('.demoButton').on 'click', ->
 			$('#demo').remove()
-			
+
 			_makeTilesFall 1, _generateDropOrder()
 
 	_makeRandomIdForTiles = (needed) ->
@@ -316,12 +320,13 @@ Namespace('Sequencer').Engine = do ->
 
 		# color each word in the title individually
 		colorTitle = _colorWordsInTitle title
-
+		
 		_$board = $ tBoard
 			title: colorTitle
 			tiles: theTiles
 			score: 100
 			penalty: _qset.options.penalty
+			freeAttempts: _qset.options.freeAttempts
 
 		cWidth = 250
 		cHeight = 280
@@ -598,28 +603,39 @@ Namespace('Sequencer').Engine = do ->
 
 	# Displays the results template after user has submitted a sequence
 	_showResults = (results) ->
-		_attempts++
-
 		# Results template window
 		tResults = _.template $('#results-popup').html()
 		$results = $ tResults 
 			total: _numTiles
-			penalty: _qset.options.penalty
+			penalty: _qset.options.penalty 
+			freeAttemptsLeft: --_freeAttemptsLeft
 
 		$('body').append $results
 		# Only if not 100%
 		unless results == _numTiles
-			# Update the score based on the new results
-			scoreString =  "100 - " + _qset.options.penalty * _attempts + " = " + (100 - _qset.options.penalty * _attempts)
 
-			$('#score').html scoreString
+			if _freeAttemptsLeft >= 0
+				$('#attemptsLeft').html _freeAttemptsLeft
+				if _freeAttemptsLeft is 0
+					$('#attempts-info').addClass 'hidden'
+					$('#score-info').removeClass 'hidden'
+
+			else
+				_attempts++
+				# Update the score based on the new results
+				scoreString =  "100 - " + _qset.options.penalty * _attempts + " = " + (100 - _qset.options.penalty * _attempts)
+				$('#score').html scoreString
+		
+		# Restore Free Attempts counter
+		else 
+			_freeAttemptsLeft++
 
 		# If 10 or more tiles in qset use the double-digit flipper
 		if _numTiles >= 10
 			_doubleDigitFlipCorrect 1, results
 
 		# If less than 10 tiles in qset use the single-digit flipper
-		else 
+		else
 			_singleDigitFlipCorrect 1, results
 
 	_showScoreMessage = (results) ->
@@ -639,7 +655,18 @@ Namespace('Sequencer').Engine = do ->
 		# Incorrect sequence
 		else
 			# Still have more attempts
-			if _attempts < 10
+			if _freeAttemptsLeft >= 0
+				# Change button function for retry
+				$('#resultsButton').html "Try Again!"
+				$('#resultsButton').addClass 'show'
+				$('#freeAttemptsLeftMessage').addClass 'show'
+				$('#resultsButton').on 'click', ->
+					$('#resultsOuter').remove()
+					$('.board').removeClass 'dim'
+					$('.fade').removeClass 'active'
+
+			# Still have more attempts
+			else if _attempts < 10
 				# Change button function for retry
 				$('#resultsButton').html "Try Again!"
 				$('#resultsButton').addClass 'show'
