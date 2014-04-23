@@ -155,44 +155,44 @@ qset:
             allies, and the government of South
             Vietnam, supported by the U.S. and other
             anti-communist nations.
-      # - 
-      #   materiaType: question
-      #   id: 10
-      #   type: QA
-      #   questions:
-      #     - 
-      #       text: Vietnam War
-      #   answers:
-      #     - 
-      #       value: 100
-      #       text: 10
-      #   options:
-      #     description: >
-      #       This war followed the First Indochina
-      #       War and was fought between North
-      #       Vietnam, supported by its communist
-      #       allies, and the government of South
-      #       Vietnam, supported by the U.S. and other
-      #       anti-communist nations.
-      # - 
-      #   materiaType: question
-      #   id: 11
-      #   type: QA
-      #   questions:
-      #     - 
-      #       text: Vietnam War
-      #   answers:
-      #     - 
-      #       value: 100
-      #       text: 11
-      #   options:
-      #     description: >
-      #       This war followed the First Indochina
-      #       War and was fought between North
-      #       Vietnam, supported by its communist
-      #       allies, and the government of South
-      #       Vietnam, supported by the U.S. and other
-      #       anti-communist nations.
+      - 
+        materiaType: question
+        id: 10
+        type: QA
+        questions:
+          - 
+            text: Vietnam War
+        answers:
+          - 
+            value: 100
+            text: 10
+        options:
+          description: >
+            This war followed the First Indochina
+            War and was fought between North
+            Vietnam, supported by its communist
+            allies, and the government of South
+            Vietnam, supported by the U.S. and other
+            anti-communist nations.
+      - 
+        materiaType: question
+        id: 11
+        type: QA
+        questions:
+          - 
+            text: Vietnam War
+        answers:
+          - 
+            value: 100
+            text: 11
+        options:
+          description: >
+            This war followed the First Indochina
+            War and was fought between North
+            Vietnam, supported by its communist
+            allies, and the government of South
+            Vietnam, supported by the U.S. and other
+            anti-communist nations.
       # - 
       #   materiaType: question
       #   id: 12

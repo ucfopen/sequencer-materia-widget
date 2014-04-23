@@ -47,10 +47,7 @@ Namespace('Sequencer').Creator = do ->
 	# This basic widget does not support media
 	onMediaImportComplete = (media) -> 
 		null
-	# # Adjust for scrolling
-	# 	if (_curXstart - _relativeX) > 420
-	# 		_relativeY += $('#dragContainer').scrollTop()
-	# 		_curYstart += $('#dragContainer').scrollTop()
+	
 	# Set up page and listen
 	_buildDisplay = (title = 'Default test Title', widget, qset, version) ->
 		_version = version
@@ -206,8 +203,10 @@ Namespace('Sequencer').Creator = do ->
 		_qset.options = {}
 		_qset.assets = []
 		_qset.rand = false
-		_qset.options.penalty = $('#penaltyAttempts').val()
-		_qset.options.freeAttempts = $('#freeAttempts').val()
+		console.log $('#penaltyAttempts').val()
+
+		_qset.options.penalty = $('#penaltyInput').val() 
+		_qset.options.freeAttempts = $('#numTriesInput').val() 
 		_qset.name = 'test'
 
 		# update our values
@@ -221,6 +220,7 @@ Namespace('Sequencer').Creator = do ->
 		tList.options = {cid: 0}
 
 		_qset.items = tList.items
+		console.log _qset
 		okToSave
 
 	# Get each Tile's data from the appropriate info

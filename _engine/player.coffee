@@ -12,7 +12,7 @@ Namespace('Sequencer').Engine = do ->
 	_currActiveTile			= null 		# Tile being dragged
 	_attempts				= 0			# Number of tries the current user has made
 	_dropOrder				= []		# Order to drop the tiles based on randomly calculated z-index
-	_playDemo				= false 	# Boolean for demo on/off
+	_playDemo				= true 		# Boolean for demo on/off
 	_insertAfter			= 0 		# Number to where to drop tile inbetween other tiles
 	_ORDERHEIGHT			= 70
 	_addTempNum 			= true
@@ -70,11 +70,19 @@ Namespace('Sequencer').Engine = do ->
 
 		_curXstart = (e.clientX)
 		_curYstart = (e.clientY-10)
-
+		
+		moveX = (_curXstart + _deltaX - _relativeX) 
+		moveY = (_curYstart + _deltaY - _relativeY)
+		
 		# Adjust for scrolling
 		if (_curXstart - _relativeX) > 420
 			_relativeY += $('#dragContainer').scrollTop()
 			_curYstart += $('#dragContainer').scrollTop()
+
+			# move the current term
+			_curterm.style.transform = 
+			_curterm.style.msTransform =
+			_curterm.style.webkitTransform = 'translate(' + moveX + 'px,' + moveY + 'px)'
 
 		# if its been placed, pull it out of the sequence array
 		if (i = _sequence.indexOf(~~_curterm.id)) != -1
@@ -165,6 +173,7 @@ Namespace('Sequencer').Engine = do ->
 				_addTempNum = true 
 
 		_repositionOrderedTiles() 
+		console.log _sequence
 
 		if moveX <= 420
 			for i in [0..._sequence.length]
@@ -206,7 +215,6 @@ Namespace('Sequencer').Engine = do ->
 			$('#message').remove()
 			if _tilesInSequence == _numTiles
 				_tilesSequenced()
-
 			if _numTiles > 0 
 				$('#orderInstructions').addClass 'hide'
 			if _insertAfter == 0
@@ -263,7 +271,8 @@ Namespace('Sequencer').Engine = do ->
 		# Exit demo.
 		$('.demoButton').on 'click', ->
 			$('#demo').remove()
-			_makeTilesFall 1
+			
+			_makeTilesFall 1, _generateDropOrder()
 
 	_makeRandomIdForTiles = (needed) ->
 		idArray = []
