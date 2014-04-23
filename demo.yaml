@@ -233,4 +233,4 @@ qset:
       # #       anti-communist nations.
     options:
       penalty: 10
-      freeAttempts: 5
+      # freeAttempts: 5
