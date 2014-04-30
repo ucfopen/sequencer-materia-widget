@@ -56,7 +56,7 @@ Namespace('Sequencer').Creator = do ->
 		_title   = title
 
 		$('#title').val _title
-		
+
 		# Fill the template objects
 		unless _qTemplate
 			_qTemplate = $('.template.question')
@@ -209,7 +209,7 @@ Namespace('Sequencer').Creator = do ->
 			_qset.options.practiceMode = false
 		_qset.options.penalty = $('#penaltyInput').val()
 		_qset.options.freeAttempts = $('#numTriesInput').val() if $('#numTriesInput').val() is not 0
-		_qset.name = 'test'
+		_qset.name = $('#title').val()
 
 		# update our values
 		_title = $('#title').val()
@@ -222,7 +222,6 @@ Namespace('Sequencer').Creator = do ->
 		tList.options = {cid: 0}
 
 		_qset.items = tList.items
-		console.log _qset
 		okToSave
 
 	# Get each Tile's data from the appropriate info

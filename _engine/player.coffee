@@ -370,18 +370,24 @@ Namespace('Sequencer').Engine = do ->
 			$('#clueHeader').transition({height: 0}, 500);
 
 	_resizeTitle = (length) ->
-		if length > 50 
+		if length < 20
 			$('.words').css
-				'font-size': 15+'px'
-		if length > 40
+				'font-size': 30+'px'
+		else if length < 25
 			$('.words').css
-				'font-size': 17+'px'
-		if length > 32 
-			$('.words').css
-				'font-size': 19+'px'
-		if length > 25 
+				'font-size': 23+'px'
+		else if length < 32
 			$('.words').css
 				'font-size': 21+'px'
+		else if length < 40
+			$('.words').css
+				'font-size': 19+'px'
+		else if length < 45
+			$('.words').css
+				'font-size': 17+'px'
+		else
+			$('.words').css
+				'font-size': 14+'px'
 
 	# Sets each word in the title to a different color
 	_colorWordsInTitle = (title) ->
