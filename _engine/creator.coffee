@@ -56,7 +56,7 @@ Namespace('Sequencer').Creator = do ->
 		_title   = title
 
 		$('#title').val _title
-
+		
 		# Fill the template objects
 		unless _qTemplate
 			_qTemplate = $('.template.question')
@@ -90,7 +90,7 @@ Namespace('Sequencer').Creator = do ->
 			_addNewTileSlider()
 
 		# Add a slider between two tiles
-		$('body').delegate '.addInbetween', 'click', ->
+		$('body').delegate '.addInbetween, .addTileDot', 'click', ->
 				_addNewTileSlider($(this).parent().parent())
 				_updateTileNums()
 				$(this).removeClass 'show'
