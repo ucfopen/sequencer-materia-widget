@@ -8,7 +8,7 @@ Namespace('Sequencer').Engine = do ->
 	_tilesInSequence		= 0 		# Count for the number of tiles in the OrderArea div
 	_sequence 				= [-1] 		# Order of the submitted tiles
 	_attempts				= 0			# Number of tries the current user has made
-	_playDemo				= false 	# Boolean for demo on/off
+	_playDemo				= true 		# Boolean for demo on/off
 	_insertAfter			= 0 		# Number to where to drop tile inbetween other tiles
 	_ORDERHEIGHT			= 70		# Specifies the height for translation offset
 	_freeAttemptsLeft 		= 0 		# Number of attempts before the penalty kicks in
@@ -22,9 +22,7 @@ Namespace('Sequencer').Engine = do ->
 	_deltaY 				= 0
 	_curXstart				= 0
 	_curYstart				= 0
-	_numRemoved				= false
 	_addedTempNum 			= false 		# Boolean for determining whether or not to add a number to the numberBar
-	# _tempNumber				= null 		#
 	_zIndex					= 11000
 
 	# Called by Materia.Engine when your widget Engine should start the user experience.
@@ -278,8 +276,6 @@ Namespace('Sequencer').Engine = do ->
 			$('#demo').remove()
 			$('.fade').removeClass 'active'
 
-			_makeTilesFall 1, _generateDropOrder()
-
 	_makeRandomIdForTiles = (needed) ->
 		idArray = []
 		i = 0
@@ -351,7 +347,7 @@ Namespace('Sequencer').Engine = do ->
 
 		# Set the positions for each tile.
 		_setInitialTilePosition cWidth, cHeight
-
+		
 		$('.tile').on 'touchstart', _mouseDownEvent
 		$('.tile').on 'MSPointerDown', _mouseDownEvent
 		$('.tile').on 'mousedown', _mouseDownEvent

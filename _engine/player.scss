@@ -15,7 +15,6 @@ $medblue: #AEBCD3;
 $blue: #507CBE;
 $dblue: #6A7A92;
 $titleblue: #4F7CBE;
-$lblue: #DCE2EB;
 $red: #F04931;
 $lgreen: #EAF5E7;
 $green: #A0D294;
@@ -23,7 +22,6 @@ $dgreen: #60BC4F;
 $orange: #E58D24;
 $blurple: #AEBCD3;
 $lblurple: #DCE2EB;
-$dblurple: #6A7A92;
 $hblurple: #73839B;
 
 @font-face {
@@ -262,42 +260,6 @@ header {
 	bottom: auto;
 	border-radius: 5px;
 	box-shadow: 0 4px 3px -3px black;
-
-	&.hover {
-		cursor: hand;
-		box-shadow: 0 8px 6px -6px black;
-		transition: 100ms;
-	}
-
-	&.noShow {
-		opacity: 0;
-	}
-
-	&.fall1 {
-		opacity: 1;
-		animation: tileFall1 150ms linear;
-	   	transition: 100ms;
-
-	}
-	
-	&.fall2 {
-		opacity: 1;
-		animation: tileFall2 150ms linear;
-	   	transition: 100ms;
-	}
-
-	&.fall3 {
-		opacity: 1;
-		animation: tileFall3 150ms linear;
-	   	transition: 100ms;
-
-	}
-
-	&.dragging {
-		z-index: 300;
-		box-shadow: 10px 5px 5px black;
-		transform: scale(1.2);
-	}
 
 	@include boxSizing();
 
@@ -1221,33 +1183,6 @@ header {
 	width: 10px;
 }
 
-/**********TILE FALL VERSIONS*********/
-@keyframes tileFall1 {
-	0% 	{transform: scale(1.18) translate(3px, -24px) skew(0deg, -1deg); box-shadow: 2px 8px 10px 0px rgba(0,0,0,.5);}
-	65% {transform: scale(1) translate(1px, -2px) skew(-1deg, -1deg); box-shadow: 0 4px 3px -3px rgba(0,0,0,1);}
-	75% {transform: scale(1.03); box-shadow: 0 5px 4px 0px rgba(0,0,0,.5);}
-	82% {transform: scale(1.05) translate(0px, 0px); box-shadow: 0 6px 5px -2px rgba(0,0,0,.6);}
-	90% {transform: scale(1.02); box-shadow: 0 5px 4px 0px rgba(0,0,0,.5);}
-	100%{transform: scale(1) skew(0deg, 0deg); box-shadow: 0 4px 3px -3px rgba(0,0,0,.8);}
-}
-
-@keyframes tileFall2 {
-	0% 	{transform: scale(1.16) translate(-1px, -22px) skew(-1deg, -2deg); box-shadow: 2px 8px 10px 0px rgba(0,0,0,.5);}
-	65% {transform: scale(1) translate(0px, -3px) skew(-1deg, 0deg); box-shadow: 0 4px 3px -3px rgba(0,0,0,1);}
-	75% {transform: scale(1.03); box-shadow: 0 5px 4px 0px rgba(0,0,0,.5);}
-	82% {transform: scale(1.02) translate(0px, 0px); box-shadow: 0 6px 5px -2px rgba(0,0,0,.6);}
-	90% {transform: scale(1); box-shadow: 0 5px 4px 0px rgba(0,0,0,.5);}
-	100%{transform: scale(1) skew(0deg, 0deg); box-shadow: 0 4px 3px -3px rgba(0,0,0,.8);}
-}
-
-@keyframes tileFall3 {
-	0% 	{transform: scale(1.14) translate(4px, -18px) skew(-2deg, 0deg); box-shadow: 2px 8px 10px 0px rgba(0,0,0,.5);}
-	65% {transform: scale(1) translate(1px, -2px) skew(-1deg, -1deg); box-shadow: 0 4px 3px -3px rgba(0,0,0,1);}
-	75% {transform: scale(1.03); box-shadow: 0 5px 4px 0px rgba(0,0,0,.5);}
-	82% {transform: scale(1.05) translate(0px, 2px); box-shadow: 0 6px 5px -2px rgba(0,0,0,.6);}
-	90% {transform: scale(1.02); box-shadow: 0 5px 4px 0px rgba(0,0,0,.5);}
-	100%{transform: scale(1) skew(0deg, 0deg); box-shadow: 0 4px 3px -3px rgba(0,0,0,.8);}
-}
 
 /**********CLUE SLIDE IN*********/
 @keyframes clueSlideIn {
