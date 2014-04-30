@@ -232,8 +232,11 @@ Namespace('Sequencer').Creator = do ->
 
 		# Organize all tile names and tile clues
 		for t in $('.tileInfoSlider')
-			tileName = _validateTileString 'tile-text', $(t).find('.title').val() #.$('.tile-text').val()
+			tileName = _validateTileString 'tile-text', $(t).find('.title').val()
 			tileClue = _validateTileString 'clue-text', $(t).find('.cluetext').val()
+
+			if tileName is -1 or tileClue is -1
+				return -1
 
 			item = {
 				id: ''
@@ -262,6 +265,7 @@ Namespace('Sequencer').Creator = do ->
 			if text is _defaultTileString
 				Materia.CreatorCore.alert 'Unnamed Tile', 'You must enter a name for all tiles.'
 				text = null
+				return -1
 		
 		# Clue text
 		else 
