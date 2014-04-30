@@ -5,25 +5,16 @@ Namespace('Sequencer').Engine = do ->
 	_tiles            		= [] 		# Array of tile object information
 	_numTiles        		= 0 		# Total number of tiles in the qset
 	_ids 					= []		# Array which holds random numbers for the tile Id's
-	_positions 				= [] 		# Array to keep track of the div
 	_tilesInSequence		= 0 		# Count for the number of tiles in the OrderArea div
 	_sequence 				= [-1] 		# Order of the submitted tiles
-	_tileAngles				= [] 		# Array of tile angles
-	_currActiveTile			= null 		# Tile being dragged
 	_attempts				= 0			# Number of tries the current user has made
-	_dropOrder				= []		# Order to drop the tiles based on randomly calculated z-index
 	_playDemo				= false 	# Boolean for demo on/off
 	_insertAfter			= 0 		# Number to where to drop tile inbetween other tiles
-	_ORDERHEIGHT			= 70
-	_addTempNum 			= true
-	_tempNumber				= null
-	_freeAttemptsLeft 		= 0
-	_practiceMode 			= false
+	_ORDERHEIGHT			= 70		# Specifies the height for translation offset
+	_freeAttemptsLeft 		= 0 		# Number of attempts before the penalty kicks in
+	_practiceMode 			= false 	# true = practice mode, false = assessment mode 
 
-	# zIndex of the terms, incremented so that the dragged term is always on top
-	_zIndex					= 11000
-
-	# the current dragging term and its position info
+	# The current dragging term and its position info
 	_curterm				= null
 	_relativeX				= 0
 	_relativeY				= 0
@@ -32,6 +23,9 @@ Namespace('Sequencer').Engine = do ->
 	_curXstart				= 0
 	_curYstart				= 0
 	_numRemoved				= false
+	_addedTempNum 			= false 		# Boolean for determining whether or not to add a number to the numberBar
+	# _tempNumber				= null 		#
+	_zIndex					= 11000
 
 	# Called by Materia.Engine when your widget Engine should start the user experience.
 	start = (instance, qset, version = '1') ->
@@ -48,7 +42,7 @@ Namespace('Sequencer').Engine = do ->
 		else 
 			$('.fade').removeClass 'active'
 
-		# attach document listeners
+		# Attach document listeners
 		document.addEventListener('touchend', _mouseUpEvent, false)
 		document.addEventListener('mouseup', _mouseUpEvent, false)
 		document.addEventListener('MSPointerUp', _mouseUpEvent, false)
@@ -62,7 +56,7 @@ Namespace('Sequencer').Engine = do ->
 		# Set player height.
 		Materia.Engine.setHeight()
 	
-	# when a term is mouse downed
+	# When a term is mouse downed
 	_mouseDownEvent = (e) ->
 		e = window.event if not e?
 
@@ -75,7 +69,7 @@ Namespace('Sequencer').Engine = do ->
 				e.clientX = e.changedTouches[0].clientX
 				e.clientY = e.changedTouches[0].clientY
 		
-		# set current dragging term
+		# Set current dragging term
 		_curterm = e.target
 	
 		if _curterm.className == "clue"
@@ -97,31 +91,24 @@ Namespace('Sequencer').Engine = do ->
 		if (_curXstart - _relativeX) > 420
 			_relativeY += $('#dragContainer').scrollTop()
 			_curYstart += $('#dragContainer').scrollTop()
-			_addTempNum = false
+			_addedTempNum = true
 		else 
-			# _numRemoved = false
-			_addTempNum = true
-			# move the current term
+			# Move the current term
 			_curterm.style.transform = 
 			_curterm.style.msTransform =
 			_curterm.style.webkitTransform = 'translate(' + moveX + 'px,' + moveY + 'px)'
 		
-		# if its been placed, pull it out of the sequence array
+		# If its been placed, pull it out of the sequence array
 		if (i = _sequence.indexOf(~~_curterm.id)) != -1
 			_sequence.splice(i,1) 
 			_tilesInSequence--
 		
 		_insertAfter = -1
-
-		#	don't scroll the page on an iPad
-		# e.preventDefault()
-		# e.stopPropagation() if e.stopPropagation?
-
 		_mouseMoveEvent(e)
 
 	# When the widget area has a cursor or finger move
 	_mouseMoveEvent = (e) ->
-		# if no term is being dragged, we don't care
+		# If no term is being dragged, we don't care
 		return if not _curterm?
 
 		e = window.event if not e?
@@ -137,6 +124,7 @@ Namespace('Sequencer').Engine = do ->
 		
 		_deltaX = (e.clientX - _curXstart)
 		moveX = (_curXstart + _deltaX - _relativeX) 
+		
 		# X boundaries
 		moveX = 20 if moveX < 20
 		moveX = 565 if moveX > 565
@@ -160,11 +148,15 @@ Namespace('Sequencer').Engine = do ->
 		# Drag tile into the order area
 		if moveX > 420
 			_insertAfter = 0
-			# Add an extra temporary number when you drag the tile into the tile area
-			if _addTempNum is true
-				$('#numberBar').children().last().addClass 'show'
-				_addTempNum = false
-			
+
+			# Add an extra number unless already added
+			unless _addedTempNum
+				newNumbers = _.template $('#numberBar-numbers').html()
+				number = $(newNumbers number: $('#numberBar').children().size()+1)
+				$('#numberBar').append number
+				$(number).addClass 'show'
+				_addedTempNum = true
+
 			_curterm.style.webkitTransform += ' rotate(' + 0 + 'deg)'
 			
 			for i in [0..._sequence.length]
@@ -176,23 +168,17 @@ Namespace('Sequencer').Engine = do ->
 			else if _insertAfter
 				_sequence.splice(_sequence.indexOf(_insertAfter) + 1, 0, -1)
 		
-			# Code for highlighting the numbers when hover in order spot
+			# Highlight the numbers when hover in order spot
 			numSpot = $('#numberBar').children()[_sequence.indexOf(-1)]
-			unless numSpot?
-				numSpot = _tempNumber
 			$('.highlight').removeClass 'highlight'
 			$(numSpot).addClass 'highlight'
 			$(numSpot).addClass 'show'
 
 		else
-			$('#numberBar').children().last().removeClass 'show'
-			if _addTempNum
-				$('#numberBar').children().last().removeClass 'show'
-				_addTempNum = true
-			else if _numRemoved is false
-				_addTempNum = true
+			if _addedTempNum
 				$('#numberBar').children().last().remove()
-				_numRemoved = true
+				_addedTempNum = false
+
 			for i in [0..._sequence.length]
 				if _sequence[i] is -1
 					_sequence.splice(i, 1)
@@ -200,14 +186,10 @@ Namespace('Sequencer').Engine = do ->
 			_curterm.style.webkitTransform += ' rotate(' + _tiles[_curterm.id].angle + 'deg)'
 
 		_repositionOrderedTiles()
-		
-		# don't scroll on iPad
-		# e.preventDefault()
-		# e.stopPropagation() if e.stopPropagation?
 
-	# when we let go of a term
+	# When we let go of a term
 	_mouseUpEvent = (e, moveY, moveX) ->
-		# we don't care if nothing is selected
+		# We don't care if nothing is selected
 		return if not _curterm?
 		# _addTempNum = true
 		moveX = (_curXstart + _deltaX - _relativeX) 
@@ -224,8 +206,7 @@ Namespace('Sequencer').Engine = do ->
 			
 		if moveX > 420
 			_curterm.style.position = 'absolute'
-			# apply easing (for snap back animation)
-			#_curterm.className = 'tile ease'
+
 			if _numTiles is 0
 				$('#orderInstructions').addClass 'show'
 
@@ -237,7 +218,7 @@ Namespace('Sequencer').Engine = do ->
 			if _numTiles > 0 
 				$('#orderInstructions').addClass 'hide'
 			if _insertAfter == 0
-				# insert at beginning
+				# Insert at beginning
 				_sequence.splice(0, 0, ~~_curterm.id)
 			else if _insertAfter and _insertAfter != -1 and _insertAfter != _sequence[_sequence.length-1]
 				_sequence.splice(_sequence.indexOf(_insertAfter)+1, 0, ~~_curterm.id)
@@ -275,9 +256,7 @@ Namespace('Sequencer').Engine = do ->
 
 		_curterm.style.transition = '120ms'
 		_curterm = null
-		
-		# Prevent iPad/etc from scrolling
-		# e.preventDefault()
+		_addedTempNum = false
 	
 	_startDemo = ->
 		demoScreen = _.template $('#demo-window').html()
@@ -294,7 +273,7 @@ Namespace('Sequencer').Engine = do ->
 		$('.demoButton').offset()
 		$('.demoButton').addClass 'show'
 
-		# Exit demo.
+		# Exit demo
 		$('.demoButton').on 'click', ->
 			$('#demo').remove()
 			$('.fade').removeClass 'active'
@@ -332,16 +311,16 @@ Namespace('Sequencer').Engine = do ->
 
 		_tiles
 
-	# Draw the main board.
+	# Draw the main board
 	_drawBoard = (title) ->
-		# Disables right click.
+		# Disables right click
 		document.oncontextmenu = -> false
 
 		theTiles = _makeTiles _qset.items
 
 		tBoard = _.template $('#t-board').html()
 
-		# color each word in the title individually
+		# Color each word in the title individually
 		colorTitle = _colorWordsInTitle title
 		
 		_$board = $ tBoard
@@ -355,7 +334,6 @@ Namespace('Sequencer').Engine = do ->
 		cHeight = 280
 
 		$('body').append _$board
-		$('.tile').addClass 'noShow'
 
 		if _practiceMode 
 			$('#score-info').addClass 'hidden'
@@ -373,12 +351,6 @@ Namespace('Sequencer').Engine = do ->
 
 		# Set the positions for each tile.
 		_setInitialTilePosition cWidth, cHeight
-
-		# Set the order of the tiles to be dropped based on their zIndex
-		dO = _generateDropOrder()
-
-		# Drop the tiles on the board.
-		_makeTilesFall 1, dO unless _playDemo
 
 		$('.tile').on 'touchstart', _mouseDownEvent
 		$('.tile').on 'MSPointerDown', _mouseDownEvent
@@ -461,31 +433,12 @@ Namespace('Sequencer').Engine = do ->
 			_tiles[tile.id].dropOrder = _tiles[tile.id].zInd
 			_tiles[tile.id].angle = Math.floor (Math.random() * 14) - 7 
 
-			_positions.push _tiles[tile.id].xpos 
-			_positions.push _tiles[tile.id].ypos 
-
-			# Get new position if tile is too close to another tile unless too many tries
-			# while ! _checkTilePosition _tiles[tile.id].xpos , _tiles[tile.id].ypos 
-			# 	if tries > 10
-			# 		_positions.push _tiles[tile.id].xpos 
-			# 		_positions.push _tiles[tile.id].ypos 
-			# 		break
-
-			# 	# Generates random placement for this tile
-			# 	x = Math.floor (Math.random() * maxWidth) + 20
-			# 	y = Math.floor (Math.random() * maxHeight) + 70
-				
-			# 	tries++
-			
-			_tiles[tile.id].xpos = _positions[_positions.length-2]
-			_tiles[tile.id].ypos = _positions[_positions.length-1]
-
 			$('#'+tile.id).css
 				'transform': 'rotate('+_tiles[tile.id].angle+'deg) translate(' + _tiles[tile.id].xpos + 'px,' + _tiles[tile.id].ypos+ 'px)'
 				'z-index': ++_zIndex
 				'position': 'fixed'
 
-			# resize text to fit if needed
+			# Resize text to fit if needed
 			if textLength >= 30 
 				$('#'+tile.id).css
 					'font-size': 16+'px'
@@ -495,82 +448,6 @@ Namespace('Sequencer').Engine = do ->
 			# Remove the clue symbol if there is no hint available
 			if _tiles[tile.id].clue is ''
 				$('#'+tile.id).children('.clue').remove()
-
-	# Check potential position to see if there is already a tile in the area
-	_checkTilePosition = (w, h) ->
-		# If found Ok spot
-		if ((_getClosestTileSpot w, 1) >= 80 or (_getClosestTileSpot h, 2) >= 50)
-			_positions.push w
-			_positions.push h
-			return true
-		# Bad spot try again
-		else 
-			return false
-
-	# Get the tile spot nearest to the potential spot. Start denotes the x or y component
-	_getClosestTileSpot = (target, start) ->
-		smallest = 1000
-
-		# Very first tile
-		if _positions.length == 0
-			return smallest
-		
-		for index in [start-1.._positions.length-1] by 2
-			if smallest > Math.abs(target - _positions[index])
-				smallest = Math.abs(target - _positions[index])
-				direct = if start is 2 then "y" else "x"
-		return smallest
-
-	# Runs after the demo is over. Drops all tiles with 3 slightly different drop animations
-	_makeTilesFall = (fallversion, dropOrder) ->
-
-		# Uncomment for the drop animation
-		# setTimeout -> 
-		nextTileID = dropOrder.shift()
-		# foundFlag = false
-		# for tile in $('.tile')
-		# 	if _tiles[tile.id].zInd == minZ
-		# 		nextTileID = tile.id
-		# 		foundFlag = true
-		# 		console.log "tiles: " + nextTileID + " " + _tiles[tile.id].name + "'s Z is: "+ _tiles[tile.id].zInd
-		# 		console.log "minZ is: " + minZ + " foundFlag is " + foundFlag
-		# 		# Udpdate for new drop order.
-		# 		_tiles[tile.id].zInd = 0
-		# 	if tile.id is 9 and foundflag is false and minZ >= 12
-		# 		console.log "foundflag is false incrememting minZ to " + minZ
-		# 		minZ++
-
-		$('#'+nextTileID).removeClass 'noShow'
-		# $('#'+nextTileID).addClass 'fall' + fallversion
-		if _dropOrder.length > 0
-			_makeTilesFall(fallversion%3+1, dropOrder)
-		# Remove the fall classes after the animation
-		# else 
-		# 	$('.tile').removeClass 'fall1'
-		# 	$('.tile').removeClass 'fall2'
-		# 	$('.tile').removeClass 'fall3'
-		# , 100
-
-	# Get the drop order for the tiles based on their zindex
-	_generateDropOrder = () ->
-		minZ = 99
-		maxZ = 0
-		for tile in $('.tile')
-			if _tiles[tile.id].zInd < minZ 
-				minZ = _tiles[tile.id].zInd
-			if _tiles[tile.id].zInd > maxZ 
-				maxZ = _tiles[tile.id].zInd
-
-		while minZ <= maxZ
-			for tile in $('.tile')
-				tileFound = false
-				if _tiles[tile.id].zInd is minZ
-					tileFound = true
-					_dropOrder.push tile.id
-					_tiles[tile.id].zInd = 0
-					
-			minZ++ 
-		_dropOrder
 
 	# Show the clue from the id of the tile clicked
 	_revealClue = (id) -> 
@@ -601,9 +478,9 @@ Namespace('Sequencer').Engine = do ->
 				number = $(newNumbers number: i)
 				$('#numberBar').append number
 				number.addClass 'show'
-			newNumbers = _.template $('#numberBar-numbers').html()
-			number = $(newNumbers number: i)
-			$('#numberBar').append number
+			# newNumbers = _.template $('#numberBar-numbers').html()
+			# number = $(newNumbers number: i)
+			# $('#numberBar').append number
 
 	# All tiles have been moved to the orderArea. No tiles left on the board
 	_tilesSequenced = ->
@@ -617,9 +494,7 @@ Namespace('Sequencer').Engine = do ->
 	# Answer submitted by user
 	_submitSequence = () ->
 		$('.fade').addClass 'active'
-
-		# Get order of the tiles for grading
-		# Grade the sequence based on order of tiles
+		# Get order of the tiles for grading and grade the sequence based on order of tiles
 		correct = _determineNumCorrect _sequence
 		_showResults correct
 
@@ -643,7 +518,7 @@ Namespace('Sequencer').Engine = do ->
 			freeAttemptsLeft: --_freeAttemptsLeft
 
 		$('body').append $results
-		# Only if not 100%
+		# Only if score is not 100%
 		unless results == _numTiles
 
 			if _freeAttemptsLeft >= 0
