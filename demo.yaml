@@ -106,54 +106,54 @@ qset:
           description: >
             More than 9 million combatants were
             killed in this conflict.
-      - 
-        materiaType: question
-        id: 7
-        type: QA
-        questions:
-          - 
-            text: World War II
-        answers:
-          - 
-            value: 100
-            text: 7
-        options:
-          description: >
-            Included two opposing military
-            alliances, the Allies and the Axis.
-      - 
-        materiaType: question
-        id: 8
-        type: QA
-        questions:
-          - 
-            text: Korean War
-        answers:
-          - 
-            value: 100
-            text: 8
-        options:
-          description: >
-            This war was the result of the physical
-            division of Korea.
-      - 
-        materiaType: question
-        id: 9
-        type: QA
-        questions:
-          - 
-            text: Vietnam War
-        answers:
-          - 
-            value: 100
-            text: 9
-        options:
-          description: >
-            This war followed the First Indochina
-            War and was fought between North
-            Vietnam, supported by its communist
-            allies, and the government of South
-            Vietnam, supported by the U.S. and other
-            anti-communist nations.
+      # - 
+      #   materiaType: question
+      #   id: 7
+      #   type: QA
+      #   questions:
+      #     - 
+      #       text: World War II
+      #   answers:
+      #     - 
+      #       value: 100
+      #       text: 7
+      #   options:
+      #     description: >
+      #       Included two opposing military
+      #       alliances, the Allies and the Axis.
+      # - 
+      #   materiaType: question
+      #   id: 8
+      #   type: QA
+      #   questions:
+      #     - 
+      #       text: Korean War
+      #   answers:
+      #     - 
+      #       value: 100
+      #       text: 8
+      #   options:
+      #     description: >
+      #       This war was the result of the physical
+      #       division of Korea.
+      # - 
+      #   materiaType: question
+      #   id: 9
+      #   type: QA
+      #   questions:
+      #     - 
+      #       text: Vietnam War
+      #   answers:
+      #     - 
+      #       value: 100
+      #       text: 9
+      #   options:
+      #     description: >
+      #       This war followed the First Indochina
+      #       War and was fought between North
+      #       Vietnam, supported by its communist
+      #       allies, and the government of South
+      #       Vietnam, supported by the U.S. and other
+      #       anti-communist nations.
     options:
       penalty: 10

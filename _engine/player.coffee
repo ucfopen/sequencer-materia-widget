@@ -12,7 +12,7 @@ Namespace('Sequencer').Engine = do ->
 	_currActiveTile			= null 		# Tile being dragged
 	_attempts				= 0			# Number of tries the current user has made
 	_dropOrder				= []		# Order to drop the tiles based on randomly calculated z-index
-	_playDemo				= false 		# Boolean for demo on/off
+	_playDemo				= false 	# Boolean for demo on/off
 	_insertAfter			= 0 		# Number to where to drop tile inbetween other tiles
 	_ORDERHEIGHT			= 70
 	_addTempNum 			= true
@@ -31,7 +31,8 @@ Namespace('Sequencer').Engine = do ->
 	_deltaY 				= 0
 	_curXstart				= 0
 	_curYstart				= 0
-	_curNumberBarNum 		= null
+	_numRemoved				= false
+
 	# Called by Materia.Engine when your widget Engine should start the user experience.
 	start = (instance, qset, version = '1') ->
 		_qset = qset
@@ -64,6 +65,15 @@ Namespace('Sequencer').Engine = do ->
 	# when a term is mouse downed
 	_mouseDownEvent = (e) ->
 		e = window.event if not e?
+
+		# If it's not a mouse move, it's probably touch
+		if not e.clientX
+			if not e.changedTouches
+				e.clientX = e.originalEvent.changedTouches[0].clientX
+				e.clientY = e.originalEvent.changedTouches[0].clientY
+			else
+				e.clientX = e.changedTouches[0].clientX
+				e.clientY = e.changedTouches[0].clientY
 		
 		# set current dragging term
 		_curterm = e.target
@@ -73,8 +83,6 @@ Namespace('Sequencer').Engine = do ->
 		_curterm.style.zIndex = ++_zIndex
 		_curterm.style.position = 'fixed'
 		_curterm.style.transition = 'none'
-		# disable easisng while it drags
-		# e.target.className = 'tile'
 
 		_relativeX = (e.clientX - $('#'+_curterm.id).offset().left)
 		_relativeY = (e.clientY - $('#'+_curterm.id).offset().top)
@@ -89,8 +97,10 @@ Namespace('Sequencer').Engine = do ->
 		if (_curXstart - _relativeX) > 420
 			_relativeY += $('#dragContainer').scrollTop()
 			_curYstart += $('#dragContainer').scrollTop()
-			_curNumberBarNum = $('#numberBar').children()[$('#numberBar').children().length-1]
-
+			_addTempNum = false
+		else 
+			# _numRemoved = false
+			_addTempNum = true
 			# move the current term
 			_curterm.style.transform = 
 			_curterm.style.msTransform =
@@ -103,34 +113,37 @@ Namespace('Sequencer').Engine = do ->
 		
 		_insertAfter = -1
 
-	#	don't scroll the page on an iPad
-	# 	e.preventDefault()
-	# 	e.stopPropagation() if e.stopPropagation?
-		
-		_addTempNum = true
+		#	don't scroll the page on an iPad
+		# e.preventDefault()
+		# e.stopPropagation() if e.stopPropagation?
+
 		_mouseMoveEvent(e)
 
-	# when the widget area has a cursor or finger move
+	# When the widget area has a cursor or finger move
 	_mouseMoveEvent = (e) ->
 		# if no term is being dragged, we don't care
 		return if not _curterm?
 
 		e = window.event if not e?
 		
-		# if it's not a mouse move, it's probably touch
+		# If it's not a mouse move, it's probably touch
 		if not e.clientX
-			e.clientX = e.changedTouches[0].clientX
-			e.clientY = e.changedTouches[0].clientY
+			if not e.changedTouches
+				e.clientX = e.originalEvent.changedTouches[0].clientX
+				e.clientY = e.originalEvent.changedTouches[0].clientY
+			else
+				e.clientX = e.changedTouches[0].clientX
+				e.clientY = e.changedTouches[0].clientY
 		
 		_deltaX = (e.clientX - _curXstart)
 		moveX = (_curXstart + _deltaX - _relativeX) 
-		# x boundaries
+		# X boundaries
 		moveX = 20 if moveX < 20
 		moveX = 565 if moveX > 565
 		
 		_deltaY = (e.clientY - _curYstart - 10)
 		moveY = (_curYstart + _deltaY - _relativeY)
-		# y boundaries
+		# Y boundaries
 		moveY = 5 if moveY < 5
 		moveY = 420 if moveY > 420
 
@@ -139,8 +152,8 @@ Namespace('Sequencer').Engine = do ->
 				_sequence.splice(i, 1)
 				i--
 
-		# move the current term
-		_curterm.style.transform = 
+		# Move the current term
+		_curterm.style.transform =
 		_curterm.style.msTransform =
 		_curterm.style.webkitTransform = 'translate(' + moveX + 'px,' + moveY + 'px)'
 
@@ -158,14 +171,11 @@ Namespace('Sequencer').Engine = do ->
 				if moveY > ((_ORDERHEIGHT * i) + 50) - $('#dragContainer').scrollTop()
 					_insertAfter = _sequence[i]
 			if _insertAfter is -1
-				# dont do it
 			else if _insertAfter == 0
 				_sequence.splice(0, -1, -1)
-			# else if _insertAfter is _sequence[_sequence.length-1]
-				# also don't do it
 			else if _insertAfter
 				_sequence.splice(_sequence.indexOf(_insertAfter) + 1, 0, -1)
-
+		
 			# Code for highlighting the numbers when hover in order spot
 			numSpot = $('#numberBar').children()[_sequence.indexOf(-1)]
 			unless numSpot?
@@ -174,21 +184,23 @@ Namespace('Sequencer').Engine = do ->
 			$(numSpot).addClass 'highlight'
 			$(numSpot).addClass 'show'
 
-		else 
-			if _addTempNum is false
-				$(_curNumberBarNum).remove()
-				_addTempNum = true 
+		else
+			$('#numberBar').children().last().removeClass 'show'
+			if _addTempNum
 				$('#numberBar').children().last().removeClass 'show'
-
-		_repositionOrderedTiles()
-
-		if moveX <= 420
+				_addTempNum = true
+			else if _numRemoved is false
+				_addTempNum = true
+				$('#numberBar').children().last().remove()
+				_numRemoved = true
 			for i in [0..._sequence.length]
 				if _sequence[i] is -1
 					_sequence.splice(i, 1)
 			# Rotate the tile back to the current tile object's stored angle
 			_curterm.style.webkitTransform += ' rotate(' + _tiles[_curterm.id].angle + 'deg)'
 
+		_repositionOrderedTiles()
+		
 		# don't scroll on iPad
 		# e.preventDefault()
 		# e.stopPropagation() if e.stopPropagation?
@@ -197,7 +209,7 @@ Namespace('Sequencer').Engine = do ->
 	_mouseUpEvent = (e, moveY, moveX) ->
 		# we don't care if nothing is selected
 		return if not _curterm?
-		_addTempNum = true
+		# _addTempNum = true
 		moveX = (_curXstart + _deltaX - _relativeX) 
 		moveY = (_curYstart + _deltaY - _relativeY)
 
@@ -265,7 +277,7 @@ Namespace('Sequencer').Engine = do ->
 		_curterm = null
 		
 		# Prevent iPad/etc from scrolling
-		e.preventDefault()
+		# e.preventDefault()
 	
 	_startDemo = ->
 		demoScreen = _.template $('#demo-window').html()
