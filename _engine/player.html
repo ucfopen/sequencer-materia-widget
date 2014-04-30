@@ -29,7 +29,7 @@
 	</head>
 
 <body>
-<div class='fade'></div>
+<div class='fade active'></div>
 <script type="text/template" id="t-board"><div class="board">
 	<header>
 		<h3>Sequence:</h3>
@@ -44,6 +44,7 @@
 			<div class="clue" data-id="<%= tile.id %>"></div>
 			</div>
 		<% } %>
+		<div id="tileFiller"></div>
 	</div>
 	<section id="tileSection"></section>
 	<aside id="numberBar" class="nondraggable"></aside>

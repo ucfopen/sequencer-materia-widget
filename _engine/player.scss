@@ -196,15 +196,6 @@ header {
 	padding: 0px 0px 0px 0px;
 	overflow: auto;
 	z-index: 10;
-	transition: 100ms;
-
-
-	&.dim {
-		background: rgba(0,0,0,.3);
-		z-index: 500;
-		pointer-events: none;
-		transition: 200ms;
-	}
 }
 
 #tileSection {
@@ -247,6 +238,14 @@ header {
 	}
 }
 
+#tileFiller {
+	height: 61px;
+	width: 164px;
+	position: absolute;
+	z-index: 10;
+	left: 555px;
+}
+
 .tile {
 	opacity: 1;
 	height: 61px;
@@ -263,7 +262,7 @@ header {
 	bottom: auto;
 	border-radius: 5px;
 	box-shadow: 0 4px 3px -3px black;
-	transition: 120ms;
+	// transition: 120ms;
 
 	&.hover {
 		cursor: hand;
@@ -330,9 +329,7 @@ header {
 	overflow: hidden;
 	z-index: 5;
 	border-radius: 10px 0px 0px 0px;
-	// shadow Left, Top
 	box-shadow: inset 10px 0 10px -10px #000000, inset 0px 10px 10px -10px #000000;
-
 
 	.numbers {
 		opacity: 0;
@@ -356,6 +353,9 @@ header {
 	    	background: $hblurple;
 	    	color: $blurple;
 	    	transition: 100ms ease;
+	    }
+	    &.green{
+	    	background: green;
 	    }
 	}
 }
@@ -1070,7 +1070,7 @@ header {
 			&.hover {
 				background: $blurple;
 				color: blue;
-				transition: all 200ms ease 4800ms;
+				transition: all 200ms ease 500ms;
 			}
 		}
 
@@ -1091,7 +1091,7 @@ header {
 			position: absolute;
 			top: 50px;
 			left: 35px;
-			transform: rotate(2deg);
+			transform: rotate(10deg);
 
 			&.move {
 				animation: demoTile1Movement 10000ms ease-out 300ms infinite;
@@ -1102,7 +1102,7 @@ header {
 			position: absolute;
 			top: 150px;
 			left: 45px;
-			transform: rotate(-1deg);
+			transform: rotate(-5deg);
 
 			&.move {
 				animation: demoTile2Movement 10000ms ease-out 300ms infinite;
@@ -1113,7 +1113,7 @@ header {
 			position: absolute;
 			top: 100px;
 			left: 75px;
-			transform: rotate(1deg);
+			transform: rotate(5deg);
 
 			&.move {
 				animation: demoTile3Movement 10000ms ease-out 300ms infinite;
@@ -1158,6 +1158,9 @@ header {
 			h3 {
 				margin-top: 0px;
 			}
+			p {
+				margin: 12px 0px;
+			}
 			.demoDeduction {
 				color: $orange;
 			}
@@ -1170,7 +1173,7 @@ header {
 			bottom: 10px;
 			height: 25px;
 			width: 180px;
-			margin: 25px 5px 5px 20px;
+			margin: 25px 5px 0px 20px;
 			padding: 5px 3px 0px 3px;
 			text-align: center;
 			color: $red;
@@ -1307,24 +1310,24 @@ header {
 
 /**********DEMO TILE1 MOVEMENT*********/
 @keyframes demoTile1Movement {
-	0%  {transform: translate(0px, 0px);}	
-	7%  {transform: translate(0px, 0px) rotate(-2deg);}
+	0%  {transform: translate(0px, 0px) rotate(-10deg);}	
+	7%  {transform: translate(0px, 0px) rotate(-10deg);}
 	12% {transform: translate(185px, -40px);}
 	100%{transform: translate(185px, -40px);}
 }
 
 /**********DEMO TILE2 MOVEMENT*********/
 @keyframes demoTile2Movement {
-	0%  {transform: translate(0px, 0px);}	
-	22% {transform: translate(0px, 0px) rotate(1deg);}
+	0%  {transform: translate(0px, 0px) rotate(5deg);}	
+	22% {transform: translate(0px, 0px) rotate(5deg);}
 	27% {transform: translate(175px, -95px);}
 	100%{transform: translate(175px, -95px);}
 }
 
 /**********DEMO TILE3 MOVEMENT*********/
 @keyframes demoTile3Movement {
-	0%  {transform: translate(0px, 0px);}
-	37% {transform: translate(0px, 0px) rotate(-1deg);}
+	0%  {transform: translate(0px, 0px) rotate(-5deg);}
+	37% {transform: translate(0px, 0px) rotate(-5deg);}
 	42% {transform: translate(145px, 0px);}
 	100%{transform: translate(145px, 0px);}
 }
