@@ -255,7 +255,7 @@ Namespace('Sequencer').Engine = do ->
 
 		_repositionOrderedTiles()
 		_updateTileNums()
-
+		
 		_curterm.style.transition = '120ms'
 		_curterm = null
 		_addedTempNum = false
