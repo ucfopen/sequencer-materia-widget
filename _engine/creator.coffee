@@ -75,15 +75,6 @@ Namespace('Sequencer').Creator = do ->
 		$('#startPopup').addClass 'show'
 		$('#fader').addClass 'dim'
 
-		# Sortable TileInfoSliders
-		$('#creatorArea').sortable
-		 	helper: 'clone'
-		 	cursor: 'move'
-		 	containment: '#creatorArea' 
-		 	cancel: '.nondraggable'
-		 	axis: 'y'
-		 	stop: _updateTileNums
-
 		$('#addSliderButton').on 'click', -> 
 			$('#columnSection').removeClass 'hidden'
 			$('#arrow').removeClass 'show'
@@ -213,7 +204,7 @@ Namespace('Sequencer').Creator = do ->
 
 		# update our values
 		_title = $('#title').val()
-		okToSave = true if _title? && _title != ''
+		if _title? && _title != '' then okToSave = true else Materia.CreatorCore.alert 'Widget has no title', 'You must enter a title for this widget'
 
 		tList = _loadingItemsForSave()
 		if tList is -1
