@@ -291,9 +291,15 @@ header {
 	z-index: 5;
 	border-radius: 10px 0px 0px 0px;
 	box-shadow: inset 10px 0 10px -10px #000000, inset 0px 10px 10px -10px #000000;
-
+	
+	.numberFiller {
+		position: relative;
+		height: 61px;
+		opacity: 0;
+	}
+	
 	.numbers {
-		opacity: .2;
+		opacity: 0;
 		color: $light;
 		text-align: center;
 		background: $titleblue;
