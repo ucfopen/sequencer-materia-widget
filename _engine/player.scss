@@ -524,7 +524,6 @@ header {
 	background: $titleblue;
 	background-repeat: no-repeat;;
 	z-index: 150;
-	// background: url("assets/sequencer.png") 0 0;
 	border-radius: 10px;
     box-shadow: 0px 0px 10px 10px rgba(0,0,0,.1);
 
@@ -1244,24 +1243,24 @@ header {
 
 /**********DEMO TILE1 MOVEMENT*********/
 @keyframes demoTile1Movement {
-	0%  {transform: translate(0px, 0px) rotate(-10deg);}	
-	7%  {transform: translate(0px, 0px) rotate(-10deg);}
+	0%  {transform: translate(0px, 0px) rotate(10deg);}	
+	7%  {transform: translate(0px, 0px) rotate(10deg);}
 	12% {transform: translate(185px, -40px);}
 	100%{transform: translate(185px, -40px);}
 }
 
 /**********DEMO TILE2 MOVEMENT*********/
 @keyframes demoTile2Movement {
-	0%  {transform: translate(0px, 0px) rotate(5deg);}	
-	22% {transform: translate(0px, 0px) rotate(5deg);}
+	0%  {transform: translate(0px, 0px) rotate(-5deg);}	
+	22% {transform: translate(0px, 0px) rotate(-5deg);}
 	27% {transform: translate(175px, -95px);}
 	100%{transform: translate(175px, -95px);}
 }
 
 /**********DEMO TILE3 MOVEMENT*********/
 @keyframes demoTile3Movement {
-	0%  {transform: translate(0px, 0px) rotate(-5deg);}
-	37% {transform: translate(0px, 0px) rotate(-5deg);}
+	0%  {transform: translate(0px, 0px) rotate(5deg);}
+	37% {transform: translate(0px, 0px) rotate(5deg);}
 	42% {transform: translate(145px, 0px);}
 	100%{transform: translate(145px, 0px);}
 }
