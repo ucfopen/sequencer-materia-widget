@@ -175,11 +175,7 @@ Namespace('Sequencer').Engine = do ->
 
 		else
 			if _addedTempNum
-				console.log $('#numberBar').children().length
-				console.log _tilesInSequence
-				console.log _addedTempNum
 				if $('#numberBar').children().length > _tilesInSequence+1
-					console.log 'removing'
 					$('#numberBar :last-child').remove()
 				$('.highlight').removeClass 'highlight'
 				$('#numberBar :last-child').removeClass 'show'
@@ -260,7 +256,7 @@ Namespace('Sequencer').Engine = do ->
 		_repositionOrderedTiles()
 		_updateTileNums()
 
-		# _curterm.style.transition = '120ms'
+		_curterm.style.transition = '120ms'
 		_curterm = null
 		_addedTempNum = false
 	
@@ -321,7 +317,6 @@ Namespace('Sequencer').Engine = do ->
 		document.oncontextmenu = -> false
 
 		theTiles = _makeTiles _qset.items
-
 		tBoard = _.template $('#t-board').html()
 
 		# Color each word in the title individually
@@ -460,7 +455,9 @@ Namespace('Sequencer').Engine = do ->
 				$('#'+tile.id).children('.clue').remove()
 
 	# Show the clue from the id of the tile clicked
-	_revealClue = (id) -> 
+	_revealClue = (id) ->
+
+
 		# Get data for new clue
 		tileClue = _.template $('#tile-clue-window').html()
 		$tileC = $ tileClue
@@ -488,18 +485,9 @@ Namespace('Sequencer').Engine = do ->
 				number = $(newNumbers number: i)
 				$('#numberBar').append number
 				number.addClass 'show'
-			# $('#numberBar').lastChildremoveClass 'numbers'
-			# $('#numberBar :last-child').removeClass 'numbers'
+
 			$('#numberBar :last-child').addClass 'numberFiller'
 			$('#numberBar :last-child').removeClass 'show'
-			# $('#numberBar').last().addClass 'numberFiller'
-			# numFiller = document.createElement('<div id="numberFiller"></div>')
-			# $('#numberBar').append numberFiller
-			# newNumbers = _.template $('#numberBar-numbers').html()
-			# number = $(newNumbers number: )
-			# $(number).addClass 'numberFiller'
-			# $(number).removeClass 'numbers'
-			# $('#numberBar').append number
 
 	# All tiles have been moved to the orderArea. No tiles left on the board
 	_tilesSequenced = ->
