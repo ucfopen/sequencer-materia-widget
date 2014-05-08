@@ -149,10 +149,11 @@ Namespace('Sequencer').Engine = do ->
 
 			# Add an extra number unless already added
 			unless _addedTempNum
+				$('#numberBar :last-child').addClass 'highlight'
+				$('#numberBar :last-child').addClass 'show'
 				newNumbers = _.template $('#numberBar-numbers').html()
 				number = $(newNumbers number: $('#numberBar').children().size()+1)
 				$('#numberBar').append number
-				$(number).addClass 'show'
 				_addedTempNum = true
 
 			_curterm.style.webkitTransform += ' rotate(' + 0 + 'deg)'
@@ -174,7 +175,14 @@ Namespace('Sequencer').Engine = do ->
 
 		else
 			if _addedTempNum
-				$('#numberBar').children().last().remove()
+				console.log $('#numberBar').children().length
+				console.log _tilesInSequence
+				console.log _addedTempNum
+				if $('#numberBar').children().length > _tilesInSequence+1
+					console.log 'removing'
+					$('#numberBar :last-child').remove()
+				$('.highlight').removeClass 'highlight'
+				$('#numberBar :last-child').removeClass 'show'
 				_addedTempNum = false
 
 			for i in [0..._sequence.length]
@@ -240,7 +248,7 @@ Namespace('Sequencer').Engine = do ->
 				_curterm.style.transform = 
 				_curterm.style.msTransform =
 				_curterm.style.webkitTransform = 'translate(' + moveX + 'px,' + moveY + 'px) rotate(' + _tiles[_curterm.id].angle + 'deg)'
-				
+
 			$('#message').remove()
 			$('#tileSection').removeClass 'fade'
 			$('#submit').removeClass 'enabled'
@@ -252,7 +260,7 @@ Namespace('Sequencer').Engine = do ->
 		_repositionOrderedTiles()
 		_updateTileNums()
 
-		_curterm.style.transition = '120ms'
+		# _curterm.style.transition = '120ms'
 		_curterm = null
 		_addedTempNum = false
 	
@@ -475,13 +483,22 @@ Namespace('Sequencer').Engine = do ->
 	_updateTileNums = () ->
 		$('#numberBar').empty()
 		if _tilesInSequence > 0
-			for i in [1.._tilesInSequence]
+			for i in [1.._tilesInSequence+1]
 				newNumbers = _.template $('#numberBar-numbers').html()
 				number = $(newNumbers number: i)
 				$('#numberBar').append number
 				number.addClass 'show'
+			# $('#numberBar').lastChildremoveClass 'numbers'
+			# $('#numberBar :last-child').removeClass 'numbers'
+			$('#numberBar :last-child').addClass 'numberFiller'
+			$('#numberBar :last-child').removeClass 'show'
+			# $('#numberBar').last().addClass 'numberFiller'
+			# numFiller = document.createElement('<div id="numberFiller"></div>')
+			# $('#numberBar').append numberFiller
 			# newNumbers = _.template $('#numberBar-numbers').html()
-			# number = $(newNumbers number: i)
+			# number = $(newNumbers number: )
+			# $(number).addClass 'numberFiller'
+			# $(number).removeClass 'numbers'
 			# $('#numberBar').append number
 
 	# All tiles have been moved to the orderArea. No tiles left on the board
