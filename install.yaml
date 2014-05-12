@@ -22,7 +22,6 @@ meta_data:
   features:
     - Customizable
     - Scorable
-    - HTML5
     - Mobile Friendly
   supported_data:
     - Question/Answer
