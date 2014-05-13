@@ -1,29 +1,29 @@
 Namespace('Sequencer').Engine = do ->
-	_qset                   = null
-	_$board                 = null
-	_$tile 					= null
-	_tiles            		= [] 		# Array of tile object information
-	_numTiles        		= 0 		# Total number of tiles in the qset
-	_ids 					= []		# Array which holds random numbers for the tile Id's
-	_tilesInSequence		= 0 		# Count for the number of tiles in the OrderArea div
-	_sequence 				= [-1] 		# Order of the submitted tiles
-	_attempts				= 0			# Number of tries the current user has made
-	_playDemo				= true 		# Boolean for demo on/off
-	_insertAfter			= 0 		# Number to where to drop tile inbetween other tiles
-	_ORDERHEIGHT			= 70		# Specifies the height for translation offset
-	_freeAttemptsLeft 		= 0 		# Number of attempts before the penalty kicks in
-	_practiceMode 			= false 	# true = practice mode, false = assessment mode 
+	_qset             = null
+	_$board           = null
+	_$tile            = null
+	_tiles            = []    # Array of tile object information
+	_numTiles         = 0     # Total number of tiles in the qset
+	_ids              = []    # Array which holds random numbers for the tile Id's
+	_tilesInSequence  = 0     # Count for the number of tiles in the OrderArea div
+	_sequence         = [-1]  # Order of the submitted tiles
+	_attempts         = 0     # Number of tries the current user has made
+	_playDemo         = true  # Boolean for demo on/off
+	_insertAfter      = 0     # Number to where to drop tile inbetween other tiles
+	_ORDERHEIGHT      = 70    # Specifies the height for translation offset
+	_freeAttemptsLeft = 0     # Number of attempts before the penalty kicks in
+	_practiceMode     = false # true = practice mode, false = assessment mode 
 
 	# The current dragging term and its position info
-	_curterm				= null
-	_relativeX				= 0
-	_relativeY				= 0
-	_deltaX 				= 0
-	_deltaY 				= 0
-	_curXstart				= 0
-	_curYstart				= 0
-	_addedTempNum 			= false 		# Boolean for determining whether or not to add a number to the numberBar
-	_zIndex					= 11000
+	_curterm      = null
+	_relativeX    = 0
+	_relativeY    = 0
+	_deltaX       = 0
+	_deltaY       = 0
+	_curXstart    = 0
+	_curYstart    = 0
+	_addedTempNum = false  # Boolean for determining whether or not to add a number to the numberBar
+	_zIndex       = 11000
 
 	# Called by Materia.Engine when your widget Engine should start the user experience.
 	start = (instance, qset, version = '1') ->
@@ -243,7 +243,7 @@ Namespace('Sequencer').Engine = do ->
 			if changed
 				_curterm.style.transform = 
 				_curterm.style.msTransform =
-				_curterm.style.webkitTransform = 'translate(' + moveX + 'px,' + moveY + 'px) rotate(' + _tiles[_curterm.id].angle + 'deg)'
+				_curterm.style.webkitTransform = "translate(#{moveX}px,#{moveY}px) rotate(#{_tiles[_curterm.id].angle}deg)"
 
 			$('#message').remove()
 			$('#tileSection').removeClass 'fade'
@@ -256,9 +256,14 @@ Namespace('Sequencer').Engine = do ->
 		_repositionOrderedTiles()
 		_updateTileNums()
 		
-		_curterm.style.transition = '120ms'
+		_curterm.style.transition = '0ms'
+		_clearStyle = _curterm
 		_curterm = null
 		_addedTempNum = false
+
+		setTimeout ->
+			_clearStyle.style.transition = '120ms'
+		, 0
 	
 	_startDemo = ->
 		demoScreen = _.template $('#demo-window').html()
@@ -313,9 +318,6 @@ Namespace('Sequencer').Engine = do ->
 
 	# Draw the main board
 	_drawBoard = (title) ->
-		# Disables right click
-		document.oncontextmenu = -> false
-
 		theTiles = _makeTiles _qset.items
 		tBoard = _.template $('#t-board').html()
 
