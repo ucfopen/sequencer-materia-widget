@@ -4,12 +4,13 @@
 		<title>HTML Widget Engine</title>
 		<meta charset="utf-8" />
 		<style type="text/css"></style>
-		<script type="text/javascript" src="/js/materia.require.js"></script>
 		<link rel="stylesheet" type="text/css" href="css/widget.css">
-		<script type="text/javascript">
-			require(['materia', 'score', 'underscore', 'js/widget'], function(util) {
+		<script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.2/underscore-min"></script>
+		<script src="materia.enginecore.js"></script>
+		<script src="materia.score.js"></script>
+		<script src="js/widget.js"></script>
+		<script>
 				Materia.start(Widget);
-			});
 		</script>
 	</head>
 	<body>
