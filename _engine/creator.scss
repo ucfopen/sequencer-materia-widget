@@ -161,6 +161,7 @@ header {
 		font-size: 25px;
 		font-weight: normal;
 		transition: 200ms;
+		cursor: pointer;
 		&:hover {
 			background: rgba(255,255,225,.1);
 		}
@@ -302,8 +303,11 @@ header {
 			background: $dgreen;
 			border-radius: 3px;
 	       	transition: 200ms ease;
+			cursor: pointer;
 			&:hover {
 		    	box-shadow: inset 0px 0px 3px 3px rgba(0,0,0,.1);
+				background: #78DD5E;
+				color: #000;
 			}
 			&.icon-plus {
 				position: absolute;
@@ -407,6 +411,8 @@ header {
 					border-radius: 15px 0px 15px 15px;
 			       	transform: rotate(45deg);
 			       	transition: 200ms 50ms;
+					cursor: pointer;
+
 			       	.icon-plus {
 			       		top: 3px;
 			       		left: 6px;
@@ -675,8 +681,11 @@ header {
 		vertical-align: center;
 		border-radius: 3px;
 		transition: 200ms ease;
+		cursor: pointer;
 		&:hover {
 			box-shadow: inset 0px 0px 3px 3px rgba(0,0,0,.1);
+			background: #78DD5E;
+			color: #000;
 		}
 	}
 	.centeredButton {
