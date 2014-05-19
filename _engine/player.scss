@@ -436,8 +436,7 @@ header {
 			transition: all 300ms ease;
 			pointer-events: all;
 			&:hover {
-				border: 1px solid transparent;
-				box-shadow: inset 0 3px 0 rgba(255,255,255,0.5), 0px 0px 2px 2px $blue;
+				background:	linear-gradient(bottom, $light, $light);
 			}
 		}
 	}
@@ -798,6 +797,10 @@ header {
 			background: -o-linear-gradient(top, $light, $grey);
 			background:	linear-gradient(top, $light, $grey);
 		 	border-radius: 10px;
+
+			&:hover {
+				background:	linear-gradient(bottom, $light, $light);
+			}
 			
 			&.show {
 				pointer-events: auto;
@@ -1153,7 +1156,11 @@ header {
 			background-image: linear-gradient(top, $light, $grey);
 		 	border-radius: 10px;
 			transition: 200ms 1s;
-		
+
+			&:hover {
+				background:	linear-gradient(bottom, $light, $light);
+			}
+					
 			&.show {
 				pointer-events: auto;
 				cursor: pointer;
