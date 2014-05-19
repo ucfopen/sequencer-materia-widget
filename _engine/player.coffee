@@ -13,6 +13,7 @@ Namespace('Sequencer').Engine = do ->
 	_ORDERHEIGHT      = 70    # Specifies the height for translation offset
 	_freeAttemptsLeft = 0     # Number of attempts before the penalty kicks in
 	_practiceMode     = false # true = practice mode, false = assessment mode 
+	currentPenalty    = 0
 
 	# The current dragging term and its position info
 	_curterm      = null
@@ -538,8 +539,12 @@ Namespace('Sequencer').Engine = do ->
 
 			else
 				_attempts++
+				
+				# Tell Materia they had it wrong and their score should be docked
+				Materia.Score.submitInteractionForScoring(null, "attempt_penalty", -_qset.options.penalty)
+
 				# Update the score based on the new results
-				scoreString =  "100 - " + _qset.options.penalty * _attempts + " = " + (100 - _qset.options.penalty * _attempts)
+				scoreString =  "100 - " + currentPenalty + " = " + (100 - _qset.options.penalty * _attempts)
 				$('#score').html scoreString
 		
 		# Restore Free Attempts counter
@@ -700,7 +705,7 @@ Namespace('Sequencer').Engine = do ->
 	_sendScores = () ->
 		answer = 0
 		for i in _sequence
-			Materia.Score.submitQuestionForScoring _tiles[i].qid, _tiles[i].order, 100
+			Materia.Score.submitQuestionForScoring _tiles[i].qid, _tiles[i].order + 1, 100
 
 	_end = () ->
 		Materia.Engine.end yes
