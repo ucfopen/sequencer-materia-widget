@@ -135,6 +135,20 @@ Namespace('Sequencer').Creator = do ->
 			$('#practiceDetails').toggleClass 'show'
 			$('#assessmentDetails').toggleClass 'show'
 
+		if _qset.options.practiceMode
+			$('#modeSlider').toggleClass 'slide'
+			$('#assessmentOptions').toggleClass 'active'
+			$('#practiceMode').toggleClass 'active'
+			$('#assessmentMode').toggleClass 'active'
+			$('#assessmentOptions').toggleClass 'show'
+			$('#practiceDetails').toggleClass 'show'
+			$('#assessmentDetails').toggleClass 'show'
+
+		$('#penaltyInput').val(_qset.options.penalty)
+		$('#numTriesInput').val(_qset.options.freeAttempts)
+		$('#numTries').html($('#numTriesInput').val() + ' Free Tries')
+		$('#penalty').html($('#penaltyInput').val() + 'pt Penalty')
+
 		# Some set of questions already exists
 		if _qset?
 			questions = _qset.items
@@ -199,7 +213,7 @@ Namespace('Sequencer').Creator = do ->
 		else 
 			_qset.options.practiceMode = false
 		_qset.options.penalty = $('#penaltyInput').val()
-		_qset.options.freeAttempts = $('#numTriesInput').val() if $('#numTriesInput').val() is not 0
+		_qset.options.freeAttempts = $('#numTriesInput').val() or 0
 		_qset.name = $('#title').val()
 
 		# update our values
@@ -240,7 +254,7 @@ Namespace('Sequencer').Creator = do ->
 				answers: [{
 					id: ''
 					value: 100
-					text: i++
+					text: ++i
 				}]
 				options:
 					description: tileClue
