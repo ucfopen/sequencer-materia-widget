@@ -30,8 +30,7 @@ Namespace('Sequencer').Engine = do ->
 	start = (instance, qset, version = '1') ->
 		_qset = qset
 
-		if _qset.options.freeAttempts is ''
-			_freeAttemptsLeft = _qset.options.freeAttempts
+		_freeAttemptsLeft = _qset.options.freeAttempts or 0
 
 		# Determine the play modes
 		_practiceMode = _qset.options.practiceMode if _qset.options.practiceMode?
@@ -531,7 +530,7 @@ Namespace('Sequencer').Engine = do ->
 		# Only if score is not 100%
 		unless results == _numTiles
 
-			if _freeAttemptsLeft >= 0
+			if _freeAttemptsLeft >= 0 or _practiceMode
 				$('#attemptsLeft').html _freeAttemptsLeft
 				if _freeAttemptsLeft is 0
 					$('#attempts-info').addClass 'hidden'
