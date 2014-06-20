@@ -159,7 +159,7 @@ Namespace('Sequencer').Creator = do ->
 		$('#startPopup').removeClass 'show'
 		$('#fader').removeClass 'dim'
 
-		_addNewTileSlider(null, question.questions[0].text, question.options.description)
+		_addNewTileSlider(null, question.questions[0].text, question.options.description, question.id)
 
 	# Change radio game modes
 	_updateGameMode = ->
@@ -171,7 +171,7 @@ Namespace('Sequencer').Creator = do ->
 			$('#freeBox').removeClass 'show'
 
 	# Add new slider
-	_addNewTileSlider = (position, tileString = '', clueString = '') ->
+	_addNewTileSlider = (position, tileString = '', clueString = '', id = '') ->
 		if _numTiles is _maxTiles 
 			Materia.CreatorCore.alert 'Maximum Tiles', 'You may only have up to '+ _maxTiles + ' tiles in this widget.'
 			return
@@ -181,7 +181,7 @@ Namespace('Sequencer').Creator = do ->
 		
 		# Add a new Slider
 		newTileSlot = _.template $('#t-slide-info').html()
-		tileSlot = $(newTileSlot tileNum: _numTiles, tileText: tileString, clueText: clueString)
+		tileSlot = $(newTileSlot tileNum: _numTiles, tileText: tileString, clueText: clueString, id: id)
 		
 		if position?
 			$(tileSlot).insertBefore (position)
@@ -239,12 +239,13 @@ Namespace('Sequencer').Creator = do ->
 		for t in $('.tileInfoSlider')
 			tileName = _validateTileString 'tile-text', $(t).find('.title').val()
 			tileClue = _validateTileString 'clue-text', $(t).find('.cluetext').val()
+			id = $(t).attr('data-id')
 
 			if tileName is -1 or tileClue is -1
 				return -1
 
 			item = {
-				id: ''
+				id: id
 				type: 'QA'
 				materiaType: 'question'
 				questions: [{
