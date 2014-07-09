@@ -708,8 +708,10 @@ Namespace('Sequencer').Engine = do ->
 
 	_sendScores = () ->
 		answer = 0
+		j = 1
 		for i in _sequence
-			Materia.Score.submitQuestionForScoring _tiles[i].qid, _tiles[i].order + 1, 100
+			Materia.Score.submitQuestionForScoring _tiles[i].qid, j, 100
+			j++
 
 	_end = () ->
 		Materia.Engine.end yes
