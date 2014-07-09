@@ -135,7 +135,7 @@ Namespace('Sequencer').Creator = do ->
 			$('#practiceDetails').toggleClass 'show'
 			$('#assessmentDetails').toggleClass 'show'
 
-		if _qset.options.practiceMode
+		if _qset?.options?.practiceMode
 			$('#modeSlider').toggleClass 'slide'
 			$('#assessmentOptions').toggleClass 'active'
 			$('#practiceMode').toggleClass 'active'
@@ -143,9 +143,6 @@ Namespace('Sequencer').Creator = do ->
 			$('#assessmentOptions').toggleClass 'show'
 			$('#practiceDetails').toggleClass 'show'
 			$('#assessmentDetails').toggleClass 'show'
-
-		$('#penaltyInput').val(_qset.options.penalty)
-		$('#numTriesInput').val(_qset.options.freeAttempts)
 		$('#numTries').html($('#numTriesInput').val() + ' Free Tries')
 		$('#penalty').html($('#penaltyInput').val() + 'pt Penalty')
 
@@ -153,6 +150,9 @@ Namespace('Sequencer').Creator = do ->
 		if _qset?
 			questions = _qset.items
 			_addQuestion question for question in questions
+
+			$('#penaltyInput').val(_qset.options?.penalty)
+			$('#numTriesInput').val(_qset.options?.freeAttempts)
 	
 	_addQuestion = (question) ->
 		$('#arrow').removeClass 'show'
