@@ -28,6 +28,8 @@ Namespace('Sequencer').Engine = do ->
 
 	# Called by Materia.Engine when your widget Engine should start the user experience.
 	start = (instance, qset, version = '1') ->
+		if qset.items[0].items
+			qset.items = qset.items[0].items
 		_qset = qset
 
 		_freeAttemptsLeft = _qset.options.freeAttempts or 0
@@ -131,7 +133,7 @@ Namespace('Sequencer').Engine = do ->
 		moveY = (_curYstart + _deltaY - _relativeY)
 		# Y boundaries
 		moveY = 5 if moveY < 5
-		moveY = 420 if moveY > 420
+		moveY = 480 if moveY > 480
 
 		for i in [0..._sequence.length]
 			if _sequence[i] is -1
@@ -274,8 +276,8 @@ Namespace('Sequencer').Engine = do ->
 
 		_$demo = $ demoScreen 
 			demoTitle: ''
-			penalty: _qset.options.penalty
-			freeAttempts : _freeAttemptsLeft
+			penalty: ~~_qset.options.penalty
+			freeAttempts : ~~_freeAttemptsLeft
 		$('body').append _$demo
 		$('.demoButton').offset()
 		$('.demoButton').addClass 'show'
@@ -328,7 +330,7 @@ Namespace('Sequencer').Engine = do ->
 			title: colorTitle
 			tiles: theTiles
 			score: 100
-			penalty: _qset.options.penalty
+			penalty: ~~_qset.options.penalty
 			freeAttempts: _qset.options.freeAttempts
 
 		cWidth = 250
@@ -446,12 +448,15 @@ Namespace('Sequencer').Engine = do ->
 				'position': 'fixed'
 
 			# Resize text to fit if needed
-			if textLength >= 30 
-				$('#'+tile.id).css
-					'font-size': 16+'px'
 			if textLength >= 20 
 				$('#'+tile.id).css
 					'font-size': 18+'px'
+			if textLength >= 30 
+				$('#'+tile.id).css
+					'font-size': 16+'px'
+			if textLength >= 40 
+				$('#'+tile.id).css
+					'font-size': 13+'px'
 			# Remove the clue symbol if there is no hint available
 			if _tiles[tile.id].clue is ''
 				$('#'+tile.id).children('.clue').remove()
@@ -523,7 +528,7 @@ Namespace('Sequencer').Engine = do ->
 		tResults = _.template $('#results-popup').html()
 		$results = $ tResults 
 			total: _numTiles
-			penalty: _qset.options.penalty 
+			penalty: ~~_qset.options.penalty 
 			freeAttemptsLeft: --_freeAttemptsLeft
 
 		$('body').append $results
@@ -540,10 +545,10 @@ Namespace('Sequencer').Engine = do ->
 				_attempts++
 				
 				# Tell Materia they had it wrong and their score should be docked
-				Materia.Score.submitInteractionForScoring(null, "attempt_penalty", -_qset.options.penalty)
+				Materia.Score.submitInteractionForScoring(null, "attempt_penalty", -~~_qset.options.penalty)
 
 				# Update the score based on the new results
-				scoreString =  "100 - " + currentPenalty + " = " + (100 - _qset.options.penalty * _attempts)
+				scoreString =  "100 - " + currentPenalty + " = " + (100 - ~~_qset.options.penalty * _attempts)
 				$('#score').html scoreString
 		
 		# Restore Free Attempts counter
