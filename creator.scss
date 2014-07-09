@@ -543,21 +543,30 @@ header {
 }
 
 .popup {
-	position: fixed; 
-	margin-left: -360px;
-	margin-top: -200px;
-	top: 50%;
+	width: 635px;
 	left: 50%;
-	max-width: 720px;
-	min-width: 615px;
-	background: $light;
+	top: 50%;
+	margin-left: -317px;
+	margin-top: -210px;
+	padding: 15px;
+	position: fixed;
+	background: #fff;
+	border: solid 1px #777;
 	z-index: 100;
-	color: $dgrey;
-	padding: 20px;
-	border: 5px solid rgba(0,0,0,.1);
 
-	h2 {
-		margin: 0px;
+	text-align: left;
+	font-weight: 300;
+	font-size: 17px;
+
+	box-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+	color: #333;
+
+
+	h1 {
+		font-size: 30px;
+		font-weight: 300;
+		color: #333;
+		margin: 5px 0px;
 	}
 
 	.section {
@@ -581,6 +590,7 @@ header {
 			background: $medblue;
 			border-radius: 3px;
 			box-shadow: inset 0px 0px 3px 3px rgba(0,0,0,.1);
+			cursor: pointer;
 
 	        #modeSlider {
 	        	position: absolute; 
@@ -647,7 +657,7 @@ header {
 			input {
 				position: relative;
 				float: left;
-				top: 10px;
+				top: 17px;
 				left: 30px;
 				height: 30px;
 				width: 50px;
@@ -737,3 +747,4 @@ header {
 	10% { transform: translateX(0px) Scale(1);}
 	100%{ transform: translateX(0px) Scale(1);} 
 }
+
