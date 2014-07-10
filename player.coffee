@@ -131,7 +131,12 @@ Namespace('Sequencer').Engine = do ->
 		
 		_deltaY = (e.clientY - _curYstart - 10)
 		moveY = (_curYstart + _deltaY - _relativeY)
+
 		# Y boundaries
+		if moveY > 400
+			document.getElementById('dragContainer').scrollTop += 10
+		if moveY < 5
+			document.getElementById('dragContainer').scrollTop -= 10
 		moveY = 5 if moveY < 5
 		moveY = 480 if moveY > 480
 
@@ -419,15 +424,19 @@ Namespace('Sequencer').Engine = do ->
 		i = 0
 		for id in _sequence
 			if id is -1
-				i++ 
+				i++
 				continue
-			curterm = document.getElementById id 
+			curterm = document.getElementById id
 			curterm.style.transform =
 			curterm.style.msTransform =
 			curterm.style.webkitTransform = 'translate(555px,' + (_ORDERHEIGHT * i + 10) + 'px)'
-			i++ 
+			i++
 		
-		document.getElementById('tileFiller').style.webkitTransform = 'translate(0px,' + (_ORDERHEIGHT * i + 10) + 'px)'
+		transform = 'translate(0px,' + (_ORDERHEIGHT * i + 10) + 'px)'
+		s = document.getElementById('tileFiller').style
+		s.webkitTransform = transform
+		s.mozTransform = transform
+		s.transform = transform
 		
 	# Set random tile position, angle, and z-index
 	_setInitialTilePosition = (maxWidth, maxHeight) ->
