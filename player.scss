@@ -190,7 +190,7 @@ header {
 #dragContainer {
 	position: absolute;
 	width: 100%;
-	top: 10px;
+	top: 11px;
 	bottom: 58px;
 	padding: 0px 0px 0px 0px;
 	overflow: auto;
@@ -1022,9 +1022,11 @@ header {
 			top: 50px;
 			left: 140px;
 			z-index: 301;
-			background: url("assets/demoMouse.png");
-			background-repeat: no-repeat;
 			animation: demoMouseMovement 10000ms ease-out 300ms infinite;
+			img {
+			    width: 25px;
+			    height: 25px;
+			}
 		}
 
 		#demoSubmitButton {
