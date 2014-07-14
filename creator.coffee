@@ -77,7 +77,7 @@ Namespace('Sequencer').Creator = do ->
 
 		$('#addSliderButton').on 'click', -> 
 			$('#columnSection').removeClass 'hidden'
-			$('#arrow').removeClass 'show'
+			$('#first_step').removeClass 'show'
 			_addNewTileSlider()
 
 		# Add a slider between two tiles
@@ -116,7 +116,7 @@ Namespace('Sequencer').Creator = do ->
 			# Set the title
 			if $(this).parent().attr('id') is 'startPopup'
 				$('#title').val($('#inputTitle').val())
-				$('#arrow').addClass 'show'
+				$('#first_step').addClass 'show'
 			# #Set the penalty amount
 			else if $('#assessmentOptions').hasClass 'show'
 				$('#numTries').html($('#numTriesInput').val() + ' Free Tries')
@@ -155,7 +155,7 @@ Namespace('Sequencer').Creator = do ->
 			$('#numTriesInput').val(_qset.options?.freeAttempts)
 	
 	_addQuestion = (question) ->
-		$('#arrow').removeClass 'show'
+		$('#first_step').removeClass 'show'
 		$('#startPopup').removeClass 'show'
 		$('#fader').removeClass 'dim'
 
@@ -178,6 +178,7 @@ Namespace('Sequencer').Creator = do ->
 		_numTiles++
 
 		$('#addSliderButton').addClass 'slide'
+		$('#second_step').addClass 'show'
 		
 		# Add a new Slider
 		newTileSlot = _.template $('#t-slide-info').html()
@@ -189,6 +190,9 @@ Namespace('Sequencer').Creator = do ->
 			$(tileSlot).insertBefore ($('#addSliderButton'))
 		$(tileSlot).offset()
 		$(tileSlot).addClass 'appear'
+		$(tileSlot).find('.tile-text').focus().on('keyup', (e) ->
+			$('#second_step').css('display', 'none')
+		)
 
 	# Change the number on the sliders 
 	_updateTileNums = () ->
