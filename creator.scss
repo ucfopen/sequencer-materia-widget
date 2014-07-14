@@ -318,13 +318,13 @@ header {
 			}
 		}
 		
-		#arrow {
+		.arrow {
 			opacity: 0;
-			position: relative;
+			position: absolute;
 			width: 150px;
 			height: 70px;
-			top: -10px;
-			float: left;
+			top: 45px;
+			left: 190px;
 			text-align: right;
 			padding-right: 15px;
 			margin-left: 80px;
@@ -343,8 +343,49 @@ header {
 			}
 			&.show {
 				opacity: 1;
-				animation: Nudge 10s infinite;
+				animation: Nudge 1s infinite;
 			}
+		}
+
+		.smallarrow {
+			position: absolute;
+			width: 150px;
+			height: 50px;
+			background: #B944CC;
+			border: 2px solid #B944CC;
+			padding: 0px 5px;
+			text-align: center;
+			border-radius: 5px;
+			left: 20px;
+			top: 140px;
+			animation: upbump 1s infinite;
+			display: none;
+			&.show {
+				display: block;
+			}
+		}
+		.smallarrow:after, .smallarrow:before {
+			bottom: 100%;
+			left: 50%;
+			border: solid transparent;
+			content: " ";
+			height: 0;
+			width: 0;
+			position: absolute;
+			pointer-events: none;
+		}
+
+		.smallarrow:after {
+			border-color: rgba(185, 68, 204, 0);
+			border-bottom-color: #B944CC;
+			border-width: 20px;
+			margin-left: -20px;
+		}
+		.smallarrow:before {
+			border-color: rgba(185, 68, 204, 0);
+			border-bottom-color: #B944CC;
+			border-width: 23px;
+			margin-left: -23px;
 		}
 
 		.tileInfoSlider {
@@ -740,11 +781,14 @@ header {
 
 /***********ARROW NUDGE*************/
 @keyframes Nudge {
-	0% 	{ transform: translateX(0px) Scale(1);} 
-	4% 	{ transform: translateX(20px) Scale(1.02);} 
-	6%  { transform: translateX(0px) Scale(1);}
-	8%  { transform: translateX(10px) Scale(1.01);} 
-	10% { transform: translateX(0px) Scale(1);}
-	100%{ transform: translateX(0px) Scale(1);} 
+	0% 	{ transform: translateX(0px) } 
+	50% { transform: translateX(20px) }
+	100%{ transform: translateX(0px) } 
+}
+
+@keyframes upbump {
+	0% 	{ transform: translateY(0px) } 
+	50% { transform: translateY(20px) }
+	100%{ transform: translateY(0px) } 
 }
 
