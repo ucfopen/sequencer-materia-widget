@@ -319,7 +319,6 @@ header {
 		}
 		
 		.arrow {
-			opacity: 0;
 			position: absolute;
 			width: 150px;
 			height: 70px;
@@ -330,6 +329,7 @@ header {
 			margin-left: 80px;
 			background: $purple;
 	        transition: 200ms ease;
+			display: none;
 			&:before {
 				content: "";
 				position: absolute;
@@ -342,7 +342,7 @@ header {
 				border-right: 60px solid $purple;
 			}
 			&.show {
-				opacity: 1;
+				display: block;
 				animation: Nudge 1s infinite;
 			}
 		}
