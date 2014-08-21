@@ -508,7 +508,7 @@ Namespace('Sequencer').Engine = do ->
 	# All tiles have been moved to the orderArea. No tiles left on the board
 	_tilesSequenced = ->
 		newMessage = _.template $('#message-window').html()
-		message = $(newMessage title: 'You\'re Done', messageText: 'Make sure you have the right sequence and press the \"Submit Sequence\" button.')
+		message = $(newMessage title: 'Submit Your Sequence', messageText: 'Make sure you have the right sequence and press the \"Submit Sequence\" button.')
 		$('#tileSection').append message
 		message.addClass 'show'
 		$('#tileSection').addClass 'fade'
