@@ -12,7 +12,7 @@ Namespace('Sequencer').Engine = do ->
 	_insertAfter      = 0     # Number to where to drop tile inbetween other tiles
 	_ORDERHEIGHT      = 70    # Specifies the height for translation offset
 	_freeAttemptsLeft = 0     # Number of attempts before the penalty kicks in
-	_practiceMode     = false # true = practice mode, false = assessment mode 
+	_practiceMode     = false # true = practice mode, false = assessment mode
 	currentPenalty    = 0
 
 	# The current dragging term and its position info
@@ -36,10 +36,10 @@ Namespace('Sequencer').Engine = do ->
 
 		# Determine the play modes
 		_practiceMode = _qset.options.practiceMode if _qset.options.practiceMode?
-		
+
 		if _playDemo
 			_startDemo()
-		else 
+		else
 			$('.fade').removeClass 'active'
 
 		# Attach document listeners
@@ -52,10 +52,10 @@ Namespace('Sequencer').Engine = do ->
 		document.addEventListener('mousemove', _mouseMoveEvent, false)
 
 		_drawBoard(instance.name)
-		
+
 		# Set player height.
 		Materia.Engine.setHeight()
-	
+
 	# When a term is mouse downed
 	_mouseDownEvent = (e) ->
 		e = window.event if not e?
@@ -68,10 +68,10 @@ Namespace('Sequencer').Engine = do ->
 			else
 				e.clientX = e.changedTouches[0].clientX
 				e.clientY = e.changedTouches[0].clientY
-		
+
 		# Set current dragging term
 		_curterm = e.target
-	
+
 		if _curterm.className == "clue"
 			_curterm = _curterm.parentNode
 		_curterm.style.zIndex = ++_zIndex
@@ -83,26 +83,26 @@ Namespace('Sequencer').Engine = do ->
 
 		_curXstart = (e.clientX)
 		_curYstart = (e.clientY-10)
-		
-		moveX = (_curXstart + _deltaX - _relativeX) 
+
+		moveX = (_curXstart + _deltaX - _relativeX)
 		moveY = (_curYstart + _deltaY - _relativeY)
-		
+
 		# Adjust for scrolling
 		if (_curXstart - _relativeX) > 420
 			_relativeY += $('#dragContainer').scrollTop()
 			_curYstart += $('#dragContainer').scrollTop()
 			_addedTempNum = true
-		else 
+		else
 			# Move the current term
-			_curterm.style.transform = 
+			_curterm.style.transform =
 			_curterm.style.msTransform =
 			_curterm.style.webkitTransform = 'translate(' + moveX + 'px,' + moveY + 'px)'
-		
+
 		# If its been placed, pull it out of the sequence array
 		if (i = _sequence.indexOf(~~_curterm.id)) != -1
-			_sequence.splice(i,1) 
+			_sequence.splice(i,1)
 			_tilesInSequence--
-		
+
 		_insertAfter = -1
 		_mouseMoveEvent(e)
 
@@ -112,7 +112,7 @@ Namespace('Sequencer').Engine = do ->
 		return if not _curterm?
 
 		e = window.event if not e?
-		
+
 		# If it's not a mouse move, it's probably touch
 		if not e.clientX
 			if not e.changedTouches
@@ -121,14 +121,14 @@ Namespace('Sequencer').Engine = do ->
 			else
 				e.clientX = e.changedTouches[0].clientX
 				e.clientY = e.changedTouches[0].clientY
-		
+
 		_deltaX = (e.clientX - _curXstart)
-		moveX = (_curXstart + _deltaX - _relativeX) 
-		
+		moveX = (_curXstart + _deltaX - _relativeX)
+
 		# X boundaries
 		moveX = 20 if moveX < 20
 		moveX = 565 if moveX > 565
-		
+
 		_deltaY = (e.clientY - _curYstart - 10)
 		moveY = (_curYstart + _deltaY - _relativeY)
 
@@ -164,7 +164,7 @@ Namespace('Sequencer').Engine = do ->
 				_addedTempNum = true
 
 			_curterm.style.webkitTransform += ' rotate(' + 0 + 'deg)'
-			
+
 			for i in [0..._sequence.length]
 				if moveY > ((_ORDERHEIGHT * i) + 50) - $('#dragContainer').scrollTop()
 					_insertAfter = _sequence[i]
@@ -173,7 +173,7 @@ Namespace('Sequencer').Engine = do ->
 				_sequence.splice(0, -1, -1)
 			else if _insertAfter
 				_sequence.splice(_sequence.indexOf(_insertAfter) + 1, 0, -1)
-		
+
 			# Highlight the numbers when hover in order spot
 			numSpot = $('#numberBar').children()[_sequence.indexOf(-1)]
 			$('.highlight').removeClass 'highlight'
@@ -201,7 +201,7 @@ Namespace('Sequencer').Engine = do ->
 		# We don't care if nothing is selected
 		return if not _curterm?
 		# _addTempNum = true
-		moveX = (_curXstart + _deltaX - _relativeX) 
+		moveX = (_curXstart + _deltaX - _relativeX)
 		moveY = (_curYstart + _deltaY - _relativeY)
 
 		# Remove the empty slots
@@ -212,7 +212,7 @@ Namespace('Sequencer').Engine = do ->
 		if not e.clientX
 			e.clientX = e.changedTouches[0].clientX
 			e.clientY = e.changedTouches[0].clientY
-			
+
 		if moveX > 420
 			_curterm.style.position = 'absolute'
 
@@ -224,31 +224,31 @@ Namespace('Sequencer').Engine = do ->
 			$('#message').remove()
 			if _tilesInSequence == _numTiles
 				_tilesSequenced()
-			if _numTiles > 0 
+			if _numTiles > 0
 				$('#orderInstructions').addClass 'hide'
 			if _insertAfter == 0
 				# Insert at beginning
 				_sequence.splice(0, 0, ~~_curterm.id)
 			else if _insertAfter and _insertAfter != -1 and _insertAfter != _sequence[_sequence.length-1]
 				_sequence.splice(_sequence.indexOf(_insertAfter)+1, 0, ~~_curterm.id)
-			else 
+			else
 				for i in [0..._sequence.length]
 					if _sequence[i] is ~~_curterm.id
 						_sequence.splice(i, 1)
 				_sequence.push ~~_curterm.id
 
 		# Drop in tile section
-		else 
+		else
 			# Prevent unwanted tile drops
 			if moveX < 420 and moveY < 90
 				moveY = 95
 				changed = true
 			if moveY > 420
-				moveY = 420 
+				moveY = 420
 				changed = true
-			
+
 			if changed
-				_curterm.style.transform = 
+				_curterm.style.transform =
 				_curterm.style.msTransform =
 				_curterm.style.webkitTransform = "translate(#{moveX}px,#{moveY}px) rotate(#{_tiles[_curterm.id].angle}deg)"
 
@@ -262,7 +262,7 @@ Namespace('Sequencer').Engine = do ->
 
 		_repositionOrderedTiles()
 		_updateTileNums()
-		
+
 		_curterm.style.transition = '0ms'
 		_clearStyle = _curterm
 		_curterm = null
@@ -271,7 +271,7 @@ Namespace('Sequencer').Engine = do ->
 		setTimeout ->
 			_clearStyle.style.transition = '120ms'
 		, 0
-	
+
 	_startDemo = ->
 		demoScreen = _.template $('#demo-window').html()
 
@@ -279,7 +279,7 @@ Namespace('Sequencer').Engine = do ->
 			_freeAttemptsLeft = 'unlimited'
 			_qset.options.penalty = 0
 
-		_$demo = $ demoScreen 
+		_$demo = $ demoScreen
 			demoTitle: ''
 			penalty: ~~_qset.options.penalty
 			freeAttempts : ~~_freeAttemptsLeft
@@ -330,7 +330,7 @@ Namespace('Sequencer').Engine = do ->
 
 		# Color each word in the title individually
 		colorTitle = _colorWordsInTitle title
-		
+
 		_$board = $ tBoard
 			title: colorTitle
 			tiles: theTiles
@@ -343,7 +343,7 @@ Namespace('Sequencer').Engine = do ->
 
 		$('body').append _$board
 
-		if _practiceMode 
+		if _practiceMode
 			$('#score-info').addClass 'hidden'
 			$('#attempts-info').addClass 'hidden'
 
@@ -359,7 +359,7 @@ Namespace('Sequencer').Engine = do ->
 
 		# Set the positions for each tile.
 		_setInitialTilePosition cWidth, cHeight
-		
+
 		$('.tile').on 'touchstart', _mouseDownEvent
 		$('.tile').on 'MSPointerDown', _mouseDownEvent
 		$('.tile').on 'mousedown', _mouseDownEvent
@@ -414,11 +414,11 @@ Namespace('Sequencer').Engine = do ->
 				colorTitle += '<span h1 class="words color0">'+i+'</h1>'
 			else if rem is 1
 				colorTitle += '<span h1 class="words color1">'+i+'</h1>'
-			else if rem is 2 
+			else if rem is 2
 				colorTitle += '<span h1 class="words color2">'+i+'</h1>'
 			index++
 		return colorTitle
-	
+
 	# Reposition the tiles in the order area
 	_repositionOrderedTiles = () ->
 		i = 0
@@ -431,25 +431,25 @@ Namespace('Sequencer').Engine = do ->
 			curterm.style.msTransform =
 			curterm.style.webkitTransform = 'translate(555px,' + (_ORDERHEIGHT * i + 10) + 'px)'
 			i++
-		
+
 		transform = 'translate(0px,' + (_ORDERHEIGHT * i + 10) + 'px)'
 		s = document.getElementById('tileFiller').style
 		s.webkitTransform = transform
 		s.mozTransform = transform
 		s.transform = transform
-		
+
 	# Set random tile position, angle, and z-index
 	_setInitialTilePosition = (maxWidth, maxHeight) ->
 
 		for tile in $('.tile')
 			textLength = _tiles[tile.id].name.length
 			tries = 1
-			
+
 			_tiles[tile.id].xpos = Math.floor (Math.random() * maxWidth) + 30
 			_tiles[tile.id].ypos =  Math.floor (Math.random() * maxHeight) + 120
-			_tiles[tile.id].zInd = Math.floor (Math.random() * 4) + 8 
+			_tiles[tile.id].zInd = Math.floor (Math.random() * 4) + 8
 			_tiles[tile.id].dropOrder = _tiles[tile.id].zInd
-			_tiles[tile.id].angle = Math.floor (Math.random() * 14) - 7 
+			_tiles[tile.id].angle = Math.floor (Math.random() * 14) - 7
 
 			$('#'+tile.id).css
 				'transform': 'rotate('+_tiles[tile.id].angle+'deg) translate(' + _tiles[tile.id].xpos + 'px,' + _tiles[tile.id].ypos+ 'px)'
@@ -457,13 +457,13 @@ Namespace('Sequencer').Engine = do ->
 				'position': 'fixed'
 
 			# Resize text to fit if needed
-			if textLength >= 20 
+			if textLength >= 20
 				$('#'+tile.id).css
 					'font-size': 18+'px'
-			if textLength >= 30 
+			if textLength >= 30
 				$('#'+tile.id).css
 					'font-size': 16+'px'
-			if textLength >= 40 
+			if textLength >= 40
 				$('#'+tile.id).css
 					'font-size': 13+'px'
 			# Remove the clue symbol if there is no hint available
@@ -486,7 +486,7 @@ Namespace('Sequencer').Engine = do ->
 
 		$('#clueHeader').remove()
 		$('.board').append $tileC
-		
+
 		# Animate auto height
 		clueBox = $('#clueHeader')
 		autoHeight = clueBox.css('height', 'auto').height();
@@ -535,9 +535,9 @@ Namespace('Sequencer').Engine = do ->
 	_showResults = (results) ->
 		# Results template window
 		tResults = _.template $('#results-popup').html()
-		$results = $ tResults 
+		$results = $ tResults
 			total: _numTiles
-			penalty: ~~_qset.options.penalty 
+			penalty: ~~_qset.options.penalty
 			freeAttemptsLeft: --_freeAttemptsLeft
 
 		$('body').append $results
@@ -552,16 +552,16 @@ Namespace('Sequencer').Engine = do ->
 
 			else
 				_attempts++
-				
+
 				# Tell Materia they had it wrong and their score should be docked
 				Materia.Score.submitInteractionForScoring(null, "attempt_penalty", -~~_qset.options.penalty)
 
 				# Update the score based on the new results
 				scoreString =  "100 - " + currentPenalty + " = " + (100 - ~~_qset.options.penalty * _attempts)
 				$('#score').html scoreString
-		
+
 		# Restore Free Attempts counter
-		else 
+		else
 			_freeAttemptsLeft++
 
 		# If 10 or more tiles in qset use the double-digit flipper
@@ -577,6 +577,7 @@ Namespace('Sequencer').Engine = do ->
 		if results is _numTiles
 			# Change button function for end
 			_sendScores()
+			_end(no)
 			$('#resultsButton').html "Visit Score Screen"
 			$('#resultsButton').addClass 'show'
 			$('#correctMessage').addClass 'show'
@@ -623,9 +624,9 @@ Namespace('Sequencer').Engine = do ->
 					$('.fade').removeClass 'active'
 					_end()
 
-	# Flip the numbers until flip to number correct 
+	# Flip the numbers until flip to number correct
 	_singleDigitFlipCorrect = (ctr, results) ->
-		if ctr is 1 
+		if ctr is 1
 			$('#leftDigit').remove()
 
 			# Shift the numbers over since using 2 digits
@@ -649,7 +650,7 @@ Namespace('Sequencer').Engine = do ->
 				# Put correct numbers into the flip pages
 				$('#numberTop').html ctr - 1
 				$('#numberTopUnder').html ctr
-				$('#numberBottom').html ctr 
+				$('#numberBottom').html ctr
 				$('#numberBottomUnder').html ctr - 1
 
 				$('.flipResultNumberTop').addClass 'flip'
@@ -658,9 +659,9 @@ Namespace('Sequencer').Engine = do ->
 				_singleDigitFlipCorrect ++ctr, results
 		, 200
 
-	# Flip the numbers until flip to number correct 
+	# Flip the numbers until flip to number correct
 	_doubleDigitFlipCorrect = (ctr, results) ->
-		if ctr is 1 
+		if ctr is 1
 			# Shift the numbers over since using 2 digits
 			$('#flipNumberContainer').css
 				'margin-left': 10+'px'
@@ -688,7 +689,7 @@ Namespace('Sequencer').Engine = do ->
 				# Put correct numbers into the flip pages
 				$('#numberTop').html if rightDigit is 0 then 0 else rightDigit-1
 				$('#numberTopUnder').html rightDigit
-				$('#numberBottom').html rightDigit 
+				$('#numberBottom').html rightDigit
 				$('#numberBottomUnder').html if rightDigit is 0 then 0 else rightDigit-1
 
 				$('.flipResultNumberTop').addClass 'flip'
@@ -706,7 +707,7 @@ Namespace('Sequencer').Engine = do ->
 
 					$('#numberTopDouble').html leftDigit - 1
 					$('#numberTopUnderDouble').html leftDigit
-					$('#numberBottomDouble').html leftDigit 
+					$('#numberBottomDouble').html leftDigit
 					$('#numberBottomUnderDouble').html leftDigit - 1
 
 					$('.flipResultNumberTopDouble').addClass 'flip'
@@ -722,8 +723,8 @@ Namespace('Sequencer').Engine = do ->
 			Materia.Score.submitQuestionForScoring _tiles[i].qid, j, 100
 			j++
 
-	_end = () ->
-		Materia.Engine.end yes
+	_end = (gotoScoreScreen = yes) ->
+		Materia.Engine.end gotoScoreScreen
 		# Go to Materia score page
 
 	#public
