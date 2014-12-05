@@ -115,7 +115,9 @@ Namespace('Sequencer').Creator = do ->
 
 			# Set the title
 			if $(this).parent().attr('id') is 'startPopup'
-				$('#title').val($('#inputTitle').val())
+				title = $('#inputTitle').val()
+				title = 'My Sequencer Widget' if title == ''
+				$('#title').val(title)
 				$('#first_step').addClass 'show'
 			# #Set the penalty amount
 			else if $('#assessmentOptions').hasClass 'show'
