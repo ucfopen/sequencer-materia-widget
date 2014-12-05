@@ -178,7 +178,10 @@ Namespace('Sequencer').Creator = do ->
 		_numTiles++
 
 		$('#addSliderButton').addClass 'slide'
-		$('#second_step').addClass 'show'
+		if tileString == ''
+			$('#second_step').addClass 'show'
+		else
+			$('#second_step').css('display', 'none')
 		
 		# Add a new Slider
 		newTileSlot = _.template $('#t-slide-info').html()
