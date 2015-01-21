@@ -614,6 +614,7 @@ Namespace('Sequencer').Engine = do ->
 			# Used last attempt
 			else
 				_sendScores()
+				_end(no)
 				# Change button function for end
 				$('#resultsButton').html "Visit Score Screen"
 				$('#resultsButton').addClass 'show'
