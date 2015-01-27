@@ -121,8 +121,7 @@ Namespace('Sequencer').Creator = do ->
 				$('#first_step').addClass 'show'
 			# #Set the penalty amount
 			else if $('#assessmentOptions').hasClass 'show'
-				$('#numTries').html($('#numTriesInput').val() + ' Free Tries')
-				$('#penalty').html($('#penaltyInput').val() + 'pt Penalty')
+				$('#numTries').html($('#numTriesInput').val() + ' guesses')
 
 		$('#inputTitle').on 'keyup', (e) ->
 		    if e.which == 13 
@@ -145,7 +144,7 @@ Namespace('Sequencer').Creator = do ->
 			$('#assessmentOptions').toggleClass 'show'
 			$('#practiceDetails').toggleClass 'show'
 			$('#assessmentDetails').toggleClass 'show'
-		$('#numTries').html($('#numTriesInput').val() + ' Free Tries')
+		$('#numTries').html($('#numTriesInput').val() + ' guesses')
 		$('#penalty').html($('#penaltyInput').val() + 'pt Penalty')
 
 		# Some set of questions already exists

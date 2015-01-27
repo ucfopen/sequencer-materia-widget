@@ -26,13 +26,16 @@ Namespace('Sequencer').Engine = do ->
 	_addedTempNum = false  # Boolean for determining whether or not to add a number to the numberBar
 	_zIndex       = 11000
 
+	highestScore = 0
+	_highestSequence = []
+
 	# Called by Materia.Engine when your widget Engine should start the user experience.
 	start = (instance, qset, version = '1') ->
 		if qset.items[0].items
 			qset.items = qset.items[0].items
 		_qset = qset
 
-		_freeAttemptsLeft = _qset.options.freeAttempts or 0
+		_freeAttemptsLeft = _qset.options.freeAttempts or 10
 
 		# Determine the play modes
 		_practiceMode = _qset.options.practiceMode if _qset.options.practiceMode?
@@ -281,7 +284,6 @@ Namespace('Sequencer').Engine = do ->
 
 		_$demo = $ demoScreen
 			demoTitle: ''
-			penalty: ~~_qset.options.penalty
 			freeAttempts : ~~_freeAttemptsLeft
 		$('body').append _$demo
 		$('.demoButton').offset()
@@ -344,11 +346,9 @@ Namespace('Sequencer').Engine = do ->
 		$('body').append _$board
 
 		if _practiceMode
-			$('#score-info').addClass 'hidden'
 			$('#attempts-info').addClass 'hidden'
 
 		else if _qset.options.freeAttempts?
-			$('#score-info').addClass 'hidden'
 			$('#practiceMode-info').addClass 'hidden'
 		else
 			$('#attempts-info').addClass 'hidden'
@@ -544,25 +544,28 @@ Namespace('Sequencer').Engine = do ->
 		# Only if score is not 100%
 		unless results == _numTiles
 
-			if _freeAttemptsLeft >= 0 or _practiceMode
+			if _freeAttemptsLeft > 0 or _practiceMode
 				$('#attemptsLeft').html _freeAttemptsLeft
 				if _freeAttemptsLeft is 0
 					$('#attempts-info').addClass 'hidden'
-					$('#score-info').removeClass 'hidden'
-
-			else
-				_attempts++
-
-				# Tell Materia they had it wrong and their score should be docked
-				Materia.Score.submitInteractionForScoring(null, "attempt_penalty", -~~_qset.options.penalty)
-
-				# Update the score based on the new results
-				scoreString =  "100 - " + currentPenalty + " = " + (100 - ~~_qset.options.penalty * _attempts)
-				$('#score').html scoreString
+			_attempts++
 
 		# Restore Free Attempts counter
 		else
 			_freeAttemptsLeft++
+
+		# Update the score based on the new results
+		score = Math.round((results / _numTiles) * 100)
+
+		# Tell Materia they had it wrong and their score should be docked
+		#Materia.Score.submitInteractionForScoring(null, "score", score)
+
+		if score > highestScore
+			highestScore = score
+			_saveHighestScores()
+		scoreString = highestScore + "%"
+		$('#score').html scoreString
+
 
 		# If 10 or more tiles in qset use the double-digit flipper
 		if _numTiles >= 10
@@ -589,21 +592,21 @@ Namespace('Sequencer').Engine = do ->
 
 		# Incorrect sequence
 		else
-			# Still have more attempts
-			if _freeAttemptsLeft >= 0
-				# Change button function for retry
-				$('#resultsButton').html "Try Again!"
-				$('#resultsButton').addClass 'show'
-				$('#freeAttemptsLeftMessage').addClass 'show'
-				$('#resultsButton').on 'click', ->
-					$('#resultsOuter').remove()
-					$('.board').removeClass 'dim'
-					$('.fade').removeClass 'active'
+			$("#circle").html highestScore + "%"
+
+			$('#submitScoreButton').html "Finish with " + highestScore + "%"
+			$('#submitScoreButton').on 'click', ->
+				_sendScores()
+				_end(yes)
 
 			# Still have more attempts
-			else if _attempts < 10
+			if _freeAttemptsLeft > 0 or _practiceMode
 				# Change button function for retry
-				$('#resultsButton').html "Try Again!"
+				if _practiceMode
+					$('#resultsButton').html "Try Again!"
+				else
+					$('#resultsButton').html "Try Again!<div>(" + (_freeAttemptsLeft) + " more tries)</div>"
+
 				$('#resultsButton').addClass 'show'
 				$('#lostPointsMessage').addClass 'show'
 				$('#resultsButton').on 'click', ->
@@ -617,6 +620,8 @@ Namespace('Sequencer').Engine = do ->
 				_end(no)
 				# Change button function for end
 				$('#resultsButton').html "Visit Score Screen"
+				$('#submitScoreButton').hide()
+				$('#attempts-info').hide()
 				$('#resultsButton').addClass 'show'
 				$('#allAttemptsMessage').addClass 'show'
 				$('#resultsButton').on 'click', ->
@@ -720,9 +725,14 @@ Namespace('Sequencer').Engine = do ->
 	_sendScores = () ->
 		answer = 0
 		j = 1
-		for i in _sequence
+		for i in _highestSequence
 			Materia.Score.submitQuestionForScoring _tiles[i].qid, j, 100
 			j++
+
+	_saveHighestScores = ->
+		_highestSequence = []
+		for i in _sequence
+			_highestSequence.push i
 
 	_end = (gotoScoreScreen = yes) ->
 		Materia.Engine.end gotoScoreScreen
