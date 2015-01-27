@@ -68,8 +68,7 @@
 	<footer id="score-area">
 		<h4 id="score-text">Score: <span id="score"><%= score %></span></h4>
 		<h5><span id="practiceMode-info">(Practice Mode)</span></h5>
-		<h5><span id="score-info">(-<%= penalty %> for an incorrect sequence)</span></h5>
-		<h5><span id="attempts-info">(<span id="attemptsLeft"><%= freeAttempts %></span> free attempts)</span></h5>
+		<h5><span id="attempts-info">(<span id="attemptsLeft"><%= freeAttempts %></span> tries left)</span></h5>
 	</footer>
 </script>
 
@@ -124,8 +123,8 @@
 			<div id="playInstructions">
 				<h3>How to play:</h3>
 				<p>Order the tiles correctly in the sequence list.</p>
-				<p>You will be lose <span class="demoDeduction"><%= penalty %> points</span> for each incorrect sequence you submit.</p>
-				<p>You have <span class="demoDeduction"><%= freeAttempts %> free attempts</span>.</p>
+				<p>You have <span class="demoDeduction"><%= freeAttempts %> guesses</span>.</p>
+				<p>Your highest score will be saved.</p>
 			</div>	
 			<div class="demoButton">Play Sequencer</div>
 		</div>
@@ -184,11 +183,12 @@
 			</div>
 		</div>
 		<div id="resultsBox">
-			<span id="lostPointsMessage">You lost <span id="circle"><%= penalty %></span> points.</span>
+			<span id="lostPointsMessage">Your score is <span id="circle"><%= penalty %></span>.</span>
 			<span id="freeAttemptsLeftMessage">You have <span id="circle"><%= freeAttemptsLeft %></span> free attempts left.</span>
 			<div id="correctMessage">Great Job!</div>
-			<div id="allAttemptsMessage">You lost all points.</div>
+			<div id="allAttemptsMessage">You are out of tries.</div>
 			<div id="resultsButton"></div> 
+			<div id="submitScoreButton"></div> 
 		</div>
 	</section>
 </script>

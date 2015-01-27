@@ -47,9 +47,7 @@
 				<div id="assessmentDetails" class="show">
 					<h6 id="mode">Assessment Mode</h6>
 					<div class="optionsDot"></div>
-					<h6 id="numTries">10 free Tries</h6>
-					<div class="optionsDot"></div>
-					<h6 id="penalty">5pt Penalty</h6>
+					<h6 id="numTries">10 guesses</h6>
 				</div>
 				<div id="practiceDetails">
 					<h6 id="mode">Practice Mode</h6>
@@ -106,26 +104,20 @@
 		<div id="optionsPopup" class="popup">
 			<h2>Options</h2>
 			<div class="section">
-				<h4 id="gameModeTitle">Mode</h4>
+				<h4 id="gameModeTitle">Choose a mode:</h4>
 				<div id="modeContainer">
 					<div id="modeSlider"></div>
 					<div id="practiceMode">Practice</div>
 					<div id="assessmentMode" class="active">Assessment</div>
 				</div>
 			</div>
-			<p>In <b>practice mode</b>, students will have unlimited attempts to submit the correct sequence. Every student who submits the correct sequence will receive a perfect score.</p>
-			<p>In <b>assessment mode</b>, students will be pernalized for each incorrect sequence they submit. The instructor can allow a number of free attempts before penalties apply.</p>
+			<p>In <b>practice mode</b>, students will have unlimited tries to submit the correct sequence. Every student who submits the correct sequence will receive a perfect score.</p>
+			<p>In <b>assessment mode</b>, students will have a variable number of guesses to submit the correct sequence, after which the highest percentage of correct placements will be used as a score.</p>
 			<div id="assessmentOptions" class="show">
 				<div class="section">
-					<h4>Number of free tries</h4>
+					<h4>Number of guesses</h4>
 					<input type="number" id="numTriesInput" value="10" min="0" max="100">
-					<p>Students will have this many tries to submit their sequence before losing any points.</p>
-				</div>
-				<div class="section">
-					<h4>Incorrect submission penalty</h4>
-					<input type="number" id="penaltyInput" value="5" min="0" max="100">
-					<h4 class="after">Points</h4>
-					<p>Everyone starts with 100 points. Students will lose this amount of points when submitting an inorrect sequence.</p>
+					<p>Students will have this many tries to guess the correct sequence.</p>
 				</div>
 			</div>
 			<div class="closeWindow centeredButton">Close</div>
@@ -136,7 +128,7 @@
 			<aside class="textLeft">
 				<h1>Sequencer</h1>
 				<p>Create a sequence that students will put in order.</p>
-				<p>In practice mode students have unlimited attempts to get the correct sequence.</p>
+				<p>In practice mode students have unlimited tries to get the correct sequence.</p>
 				<p>In assessment mode you can define scoring options to determine their score.</p>
 			</aside>
 			<aside class="photoRight">
