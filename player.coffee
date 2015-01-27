@@ -336,7 +336,7 @@ Namespace('Sequencer').Engine = do ->
 		_$board = $ tBoard
 			title: colorTitle
 			tiles: theTiles
-			score: 100
+			score: "0%"
 			penalty: ~~_qset.options.penalty
 			freeAttempts: _qset.options.freeAttempts
 
@@ -592,7 +592,8 @@ Namespace('Sequencer').Engine = do ->
 
 		# Incorrect sequence
 		else
-			$("#circle").html highestScore + "%"
+			$("#bestcircle").html highestScore + "%"
+			$("#circle").html Math.round((results / _numTiles) * 100) + "%"
 
 			$('#submitScoreButton').html "Finish with " + highestScore + "%"
 			$('#submitScoreButton').on 'click', ->
@@ -609,6 +610,7 @@ Namespace('Sequencer').Engine = do ->
 
 				$('#resultsButton').addClass 'show'
 				$('#lostPointsMessage').addClass 'show'
+				$('#bestScoreMessage').addClass 'show'
 				$('#resultsButton').on 'click', ->
 					$('#resultsOuter').remove()
 					$('.board').removeClass 'dim'
