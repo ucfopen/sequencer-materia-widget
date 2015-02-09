@@ -526,7 +526,7 @@ header {
 	position: absolute;
 	margin-top: 80px;
 	left: 75px;
-	height: 380px;
+	height: 350px;
 	width: 320px;
 	padding: 10px;
 	background: $titleblue;
@@ -543,7 +543,6 @@ header {
 		margin: 50px 0px;
 		background: $medgrey;
 		color: $dgrey;
-		font-family: 'Lacurg';
 		padding: 10px 10px 15px 10px;
 		border-radius: 10px;
 		box-shadow: 0px 0px 20px 20px rgba(0,0,0,.1) inset;
@@ -779,6 +778,7 @@ header {
 		bottom: 15px;
 		width: 100%;
 		color: #fff;
+		font-family: sans-serif;
 
 		#resultsButton {
 			pointer-events: none;
@@ -788,7 +788,8 @@ header {
 			max-width: 200px;
 			min-width: 155px;
 			margin: 25px 5px 5px 20px;
-			padding: 5px 3px 3px 3px;
+			padding: 8px 5px 5px 5px;
+			font-weight: bold;
 			text-align: center;
 			color: $red;
 			z-index: 300;
@@ -823,9 +824,10 @@ header {
 			position: absolute;
 			width: 190px;
 			left: 55px;
-			bottom: 110px;
+			bottom: 83px;
 			margin: 10px;
 			color: $light;
+			text-align: center;
 
 			&.show {
 				opacity: 1;
@@ -843,6 +845,7 @@ header {
 			bottom: 80px;
 			margin: 10px;
 			color: $light;
+			text-align: center;
 
 			&.show {
 				opacity: 1;
@@ -856,7 +859,7 @@ header {
 			opacity: 0;
 			position: absolute;
 			width: 100%;
-			bottom: 95px;
+			bottom: 85px;
 			text-align: center;
 			margin-left: -10px;
 			color: $light;
@@ -892,7 +895,7 @@ header {
 			width: 100%;
 			margin-left: -10px;
 			text-align: center;
-			bottom: 80px;
+			bottom: 84px;
 			color: $light;
 			font-size: 20px;
 			transform: scale(.7);
@@ -1302,6 +1305,7 @@ header {
 	100%{opacity: 1;}
 }
 
+/*
 .circle {
     opacity: 1;
     background: $light;
@@ -1311,4 +1315,5 @@ header {
     padding: 2px;
     border-radius: 50%;
 }
+*/
 
