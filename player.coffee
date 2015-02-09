@@ -284,7 +284,7 @@ Namespace('Sequencer').Engine = do ->
 
 		_$demo = $ demoScreen
 			demoTitle: ''
-			freeAttempts : ~~_freeAttemptsLeft
+			freeAttempts : _freeAttemptsLeft or "unlimited"
 		$('body').append _$demo
 		$('.demoButton').offset()
 		$('.demoButton').addClass 'show'
