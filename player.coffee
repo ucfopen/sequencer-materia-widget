@@ -607,7 +607,7 @@ Namespace('Sequencer').Engine = do ->
 				if _practiceMode
 					$('#resultsButton').html "Try Again!"
 				else
-					$('#resultsButton').html "Try Again!<div>(" + (_freeAttemptsLeft) + " more tries)</div>"
+					$('#resultsButton').html "Try Again!<div>(" + (_freeAttemptsLeft) + " more guesses)</div>"
 
 				$('#resultsButton').addClass 'show'
 				$('#lostPointsMessage').addClass 'show'
