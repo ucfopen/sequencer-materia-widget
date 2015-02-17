@@ -915,6 +915,14 @@ header {
 		    text-align: center;
 		    position: relative;
 		    left: -10px;
+		    opacity: 0;
+		    transform: scale(0.7);
+		    &.show {
+			    opacity: 1;
+			    transform: scale(1);
+			    transition: 300ms;
+			    transition-delay: 1s;
+		    }
 		}
 	}
 }
