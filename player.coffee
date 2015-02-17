@@ -596,6 +596,7 @@ Namespace('Sequencer').Engine = do ->
 			$("#circle").html Math.round((results / _numTiles) * 100) + "%"
 
 			$('#submitScoreButton').html "Or finish with your best score of " + highestScore + "%"
+			$('#submitScoreButton').addClass "show"
 			$('#submitScoreButton').on 'click', ->
 				_sendScores()
 				_end(yes)
