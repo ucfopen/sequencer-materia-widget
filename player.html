@@ -187,12 +187,19 @@
 			<!--<span id="bestScoreMessage">Best score: <span class="circle" id="bestcircle"><%= penalty %></span></span>-->
 			<div id="correctMessage">Great Job!</div>
 			<div id="allAttemptsMessage">You are out of guesses.</div>
-			<div id="resultsButton"></div> 
+			<div id="resultsButton" class="resultsButton"></div> 
 			<div id="submitScoreButton"></div> 
 		</div>
 	</section>
 </script>
 
+<div class="confirmDialog">
+	<p>
+		Are you sure you want to stop with your best score of <span class="bestscore bold"></span>?
+	</p>
+	<div id="cancelBestScoreButton" class="resultsButton arial">No, keep trying</div>
+	<div id="confirmBestScoreButton" class="resultsButton arial">Yes, finish with <span class="bestscore"></span>.</div>
+</div>
 
 <!-- INITIALIZE -->
 	<script>

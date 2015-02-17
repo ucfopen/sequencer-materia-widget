@@ -598,8 +598,17 @@ Namespace('Sequencer').Engine = do ->
 			$('#submitScoreButton').html "Or finish with your best score of " + highestScore + "%"
 			$('#submitScoreButton').addClass "show"
 			$('#submitScoreButton').on 'click', ->
-				_sendScores()
-				_end(yes)
+				$('#resultsOuter').remove()
+				$('.bestscore').html highestScore + "%"
+				$('.confirmDialog').addClass 'show'
+				$('#confirmBestScoreButton').on 'click', ->
+					_sendScores()
+					_end(yes)
+				$('#cancelBestScoreButton').on 'click', ->
+					$('#resultsOuter').remove()
+					$('.board').removeClass 'dim'
+					$('.fade').removeClass 'active'
+					$('.confirmDialog').removeClass 'show'
 
 			# Still have more attempts
 			if _freeAttemptsLeft > 0 or _practiceMode
