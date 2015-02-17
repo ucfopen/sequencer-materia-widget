@@ -121,6 +121,7 @@ Namespace('Sequencer').Creator = do ->
 				$('#first_step').addClass 'show'
 			# #Set the penalty amount
 			else if $('#assessmentOptions').hasClass 'show'
+				$('#numTriesInput').val(~~$('#numTriesInput').val() or 1)
 				$('#numTries').html($('#numTriesInput').val() + ' guesses')
 
 		$('#inputTitle').on 'keyup', (e) ->
@@ -154,6 +155,7 @@ Namespace('Sequencer').Creator = do ->
 
 			$('#penaltyInput').val(_qset.options?.penalty)
 			$('#numTriesInput').val(_qset.options?.freeAttempts)
+			$('#numTries').html($('#numTriesInput').val() + ' guesses')
 	
 	_addQuestion = (question) ->
 		$('#first_step').removeClass 'show'
@@ -221,7 +223,7 @@ Namespace('Sequencer').Creator = do ->
 		else 
 			_qset.options.practiceMode = false
 		_qset.options.penalty = $('#penaltyInput').val()
-		_qset.options.freeAttempts = $('#numTriesInput').val() or 0
+		_qset.options.freeAttempts = $('#numTriesInput').val() or 1
 		_qset.name = $('#title').val()
 
 		# update our values
