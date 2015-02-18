@@ -42,6 +42,7 @@ Namespace('Sequencer').Creator = do ->
 
 	onQuestionImportComplete = (questions) -> 
 		for question in questions
+			question.questions[0].text = question.questions[0].text.substring(0, 40)
 			_addQuestion question 
 
 	# This basic widget does not support media
