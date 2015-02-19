@@ -25,7 +25,7 @@ meta_data:
     - Mobile Friendly
   supported_data:
     - Question/Answer
-  about: 'Sequencer is about teaching ordered events and sequences. Items are presented to students in a random for them to re-arrange.'
+  about: 'Sequencer is about teaching ordered events and sequences. Items are presented to students in a random order for them to re-arrange.'
   excerpt: >
     Students must order a random set of
     words or phrases in the correct order.
