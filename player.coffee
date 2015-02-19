@@ -11,7 +11,7 @@ Namespace('Sequencer').Engine = do ->
 	_playDemo         = true  # Boolean for demo on/off
 	_insertAfter      = 0     # Number to where to drop tile inbetween other tiles
 	_ORDERHEIGHT      = 70    # Specifies the height for translation offset
-	_freeAttemptsLeft = 0     # Number of attempts before the penalty kicks in
+	_freeAttempts	  = 0     # Number of attempts before the penalty kicks in
 	_practiceMode     = false # true = practice mode, false = assessment mode
 	currentPenalty    = 0
 
@@ -35,7 +35,7 @@ Namespace('Sequencer').Engine = do ->
 			qset.items = qset.items[0].items
 		_qset = qset
 
-		_freeAttemptsLeft = _qset.options.freeAttempts or 10
+		_freeAttempts = _qset.options.freeAttempts or 10
 
 		# Determine the play modes
 		_practiceMode = _qset.options.practiceMode if _qset.options.practiceMode?
@@ -279,12 +279,12 @@ Namespace('Sequencer').Engine = do ->
 		demoScreen = _.template $('#demo-window').html()
 
 		if _practiceMode == true
-			_freeAttemptsLeft = 'unlimited'
+			_freeAttempts = 'unlimited'
 			_qset.options.penalty = 0
 
 		_$demo = $ demoScreen
 			demoTitle: ''
-			freeAttempts : _freeAttemptsLeft or "unlimited"
+			freeAttempts : _freeAttempts or "unlimited"
 		$('body').append _$demo
 		$('.demoButton').offset()
 		$('.demoButton').addClass 'show'
@@ -338,7 +338,7 @@ Namespace('Sequencer').Engine = do ->
 			tiles: theTiles
 			score: "0%"
 			penalty: ~~_qset.options.penalty
-			freeAttempts: _qset.options.freeAttempts
+			freeAttempts: _freeAttempts
 
 		cWidth = 250
 		cHeight = 280
@@ -348,7 +348,7 @@ Namespace('Sequencer').Engine = do ->
 		if _practiceMode
 			$('#attempts-info').addClass 'hidden'
 
-		else if _qset.options.freeAttempts?
+		else if _freeAttempts?
 			$('#practiceMode-info').addClass 'hidden'
 		else
 			$('#attempts-info').addClass 'hidden'
@@ -538,21 +538,21 @@ Namespace('Sequencer').Engine = do ->
 		$results = $ tResults
 			total: _numTiles
 			penalty: ~~_qset.options.penalty
-			freeAttemptsLeft: --_freeAttemptsLeft
+			freeAttempts: --_freeAttempts
 
 		$('body').append $results
 		# Only if score is not 100%
 		unless results == _numTiles
 
-			if _freeAttemptsLeft > 0 or _practiceMode
-				$('#attemptsLeft').html _freeAttemptsLeft
-				if _freeAttemptsLeft is 0
+			if _freeAttempts > 0 or _practiceMode
+				$('#attemptsLeft').html _freeAttempts
+				if _freeAttempts is 0
 					$('#attempts-info').addClass 'hidden'
 			_attempts++
 
 		# Restore Free Attempts counter
 		else
-			_freeAttemptsLeft++
+			_freeAttempts++
 
 		# Update the score based on the new results
 		score = Math.round((results / _numTiles) * 100)
@@ -611,12 +611,12 @@ Namespace('Sequencer').Engine = do ->
 					$('.confirmDialog').removeClass 'show'
 
 			# Still have more attempts
-			if _freeAttemptsLeft > 0 or _practiceMode
+			if _freeAttempts > 0 or _practiceMode
 				# Change button function for retry
 				if _practiceMode
 					$('#resultsButton').html "Try Again!"
 				else
-					$('#resultsButton').html "Try Again!<div>(" + (_freeAttemptsLeft) + " more guesses)</div>"
+					$('#resultsButton').html "Try Again!<div>(" + (_freeAttempts) + " more guesses)</div>"
 
 				$('#resultsButton').addClass 'show'
 				$('#lostPointsMessage').addClass 'show'
