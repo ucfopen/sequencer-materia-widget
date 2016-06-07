@@ -403,6 +403,8 @@ Namespace('Sequencer').Engine = do ->
 
 	# Sets each word in the title to a different color
 	_colorWordsInTitle = (title) ->
+		if title is undefined or null
+			title = 'Widget Title Goes Here'
 		titleWords = title.split ' '
 		colorTitle = []
 		index = 0;
