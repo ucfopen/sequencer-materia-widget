@@ -138,10 +138,10 @@ Namespace('Sequencer').Engine = do ->
 		# Y boundaries
 		if moveY > 400
 			document.getElementById('dragContainer').scrollTop += 10
-		if moveY < 5
+		if moveY < 110
 			document.getElementById('dragContainer').scrollTop -= 10
-		moveY = 5 if moveY < 5
-		moveY = 480 if moveY > 480
+		moveY = 110 if moveY < 110
+		moveY = 400 if moveY > 400
 
 		for i in [0..._sequence.length]
 			if _sequence[i] is -1
@@ -243,11 +243,14 @@ Namespace('Sequencer').Engine = do ->
 		# Drop in tile section
 		else
 			# Prevent unwanted tile drops
-			if moveX < 420 and moveY < 90
-				moveY = 95
+			if moveY < 110
+				moveY = 110
 				changed = true
-			if moveY > 420
-				moveY = 420
+			if moveY > 400
+				moveY = 400
+				changed = true
+			if moveX < 20
+				moveX = 20
 				changed = true
 
 			if changed
