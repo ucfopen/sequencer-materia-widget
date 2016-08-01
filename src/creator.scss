@@ -118,7 +118,7 @@ header {
 	padding: 0;
 	width: 100%;
 	background: $dgrey;
-	
+
 	label {
 		position: relative;
 		float: left;
@@ -195,7 +195,7 @@ header {
 			&.show {
 				opacity: 1;
 				left: 20px;
-				
+
 			}
 			.optionsDot {
 				position: relative;
@@ -225,7 +225,7 @@ header {
 			}
 		}
 	}
-	
+
 	h5, h6 {
 		margin: 5px;
 		color: $light;
@@ -246,7 +246,7 @@ header {
 	transition: 500ms ease;
 	&.dim {
 		opacity: 1;
-		z-index: 99;		
+		z-index: 99;
 	}
 }
 
@@ -290,7 +290,7 @@ header {
 			}
 		}
 
-		
+
 		#addSliderButton {
 			clear: both;
 			position: relative;
@@ -317,7 +317,7 @@ header {
 				transform: translateY(0px);
 			}
 		}
-		
+
 		.arrow {
 			position: absolute;
 			width: 150px;
@@ -333,8 +333,8 @@ header {
 			&:before {
 				content: "";
 				position: absolute;
-				width: 0; 
-				height: 0; 
+				width: 0;
+				height: 0;
 				left: -59px;
 				top: -23px;
 				border-top: 60px solid transparent;
@@ -413,7 +413,7 @@ header {
 				height: 61px;
 				width: 60px;
 				margin-bottom: 14px;
-			
+
 				.number {
 					position: absolute;
 					top: 10px;
@@ -432,7 +432,7 @@ header {
 				}
 
 				.addTileDot {
-					position: absolute; 
+					position: absolute;
 					left: 24px;
 					top: -10px;
 					width: 5px;
@@ -515,11 +515,11 @@ header {
 					position: absolute;
 					left: -10px;
 					top: 13px;
-					width: 0; 
-					height: 0; 
+					width: 0;
+					height: 0;
 					border-top: 20px solid transparent;
-					border-bottom: 20px solid transparent; 
-					border-right: 20px solid $light; 
+					border-bottom: 20px solid transparent;
+					border-right: 20px solid $light;
 				}
 				textarea {
 					position: absolute;
@@ -611,7 +611,7 @@ header {
 	}
 
 	.section {
-		position: relative; 
+		position: relative;
 		float: left;
 		height: 50px;
 		width: 100%;
@@ -622,9 +622,9 @@ header {
 			height: 50px;
 			font-weight: 700;
 		}
-	
+
 		#modeContainer {
-			position: relative; 
+			position: relative;
 			float: right;
 			height: 40px;
 			width: 240px;
@@ -634,7 +634,7 @@ header {
 			cursor: pointer;
 
 	        #modeSlider {
-	        	position: absolute; 
+	        	position: absolute;
 				left: 120px;
 				height: 100%;
 				width: 50%;
@@ -648,7 +648,7 @@ header {
 		        }
 	        }
 			#practiceMode {
-				position: absolute; 
+				position: absolute;
 				left: 0px;
 				height: 100%;
 				width: 50%;
@@ -661,7 +661,7 @@ header {
 			}
 			#assessmentMode {
 				position: absolute;
-				right: 0px; 
+				right: 0px;
 				float: right;
 				height: 100%;
 				width: 50%;
@@ -677,15 +677,15 @@ header {
 	}
 	#assessmentOptions {
 		opacity: .3;
-		pointer-events: none;				
+		pointer-events: none;
 		transition: 400ms ease;
-		&.show { 
+		&.show {
 			opacity: 1;
 			pointer-events: auto;
 		}
 
 		.section {
-			position: relative; 
+			position: relative;
 			float: left;
 			height: 100px;
 			width: 100%;
@@ -716,7 +716,7 @@ header {
 			}
 			.after {
 				left: 40px;
-			}	
+			}
 		}
 	}
 
@@ -781,14 +781,14 @@ header {
 
 /***********ARROW NUDGE*************/
 @keyframes Nudge {
-	0% 	{ transform: translateX(0px) } 
+	0% 	{ transform: translateX(0px) }
 	50% { transform: translateX(20px) }
-	100%{ transform: translateX(0px) } 
+	100%{ transform: translateX(0px) }
 }
 
 @keyframes upbump {
-	0% 	{ transform: translateY(0px) } 
+	0% 	{ transform: translateY(0px) }
 	50% { transform: translateY(20px) }
-	100%{ transform: translateY(0px) } 
+	100%{ transform: translateY(0px) }
 }
 
