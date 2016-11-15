@@ -242,7 +242,9 @@ Namespace('Sequencer').Engine = do ->
 
 		# Drop in tile section
 		else
-			# Prevent unwanted tile drops
+			# Prevent unwanted tile drops...and out of board movements
+			if moveX < 20
+				moveX = 20
 			if moveX < 420 and moveY < 90
 				moveY = 95
 				changed = true
