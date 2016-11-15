@@ -113,7 +113,7 @@ header {
 		color: $medgrey;
 	}
 
-	h4 { 
+	h4 {
 		right: 10px;
 		font-size: 18px;
 	}
@@ -123,7 +123,7 @@ header {
 		border-top: 1px dashed $green;
 		height: 1px;
 		width: 88%;
-		top: 70px;	  
+		top: 70px;
 		margin-left: 20px;
 		margin-right: 10px;
 		overflow: hidden;
@@ -159,7 +159,7 @@ header {
 
 .fade {
 	position: absolute;
-	width: 100%; 
+	width: 100%;
 	height: 100%;
 	z-index: 0;
 	background: transparent;
@@ -273,7 +273,7 @@ header {
 		background: url("assets/Clue_fade.png") 0 0;
 		height: 22px;
 		width: 16px;
-		
+
 		&:hover {
 			background: url("assets/Clue_glow.png") 0 0;
 			height: 22px;
@@ -282,7 +282,7 @@ header {
 	}
 }
 
-#numberBar { 
+#numberBar {
 	position: absolute;
 	width: 50px;
 	right: 205px;
@@ -293,13 +293,13 @@ header {
 	z-index: 5;
 	border-radius: 10px 0px 0px 0px;
 	box-shadow: inset 10px 0 10px -10px #000000, inset 0px 10px 10px -10px #000000;
-	
+
 	.numberFiller {
 		position: relative;
 		height: 61px;
 		opacity: 0;
 	}
-	
+
 	.numbers {
 		opacity: 0;
 		color: $light;
@@ -312,8 +312,8 @@ header {
 		font-size: 25px;
 		font-family: sans-serif;
 		border-radius: 50%;
-       
-        &.show { 
+
+        &.show {
         	opacity: 1;
         	transition: 100ms ease;
         }
@@ -365,7 +365,7 @@ header {
 
 	.tileSlot {
 		float: top;
-		margin: 10px 10px 0px 10px;	
+		margin: 10px 10px 0px 10px;
 		height: 55px;
 		width: 164px;
 		font-family: sans-serif;
@@ -374,14 +374,14 @@ header {
 	}
 }
 
-.placeholder {  
+.placeholder {
 	position: relative;
 	left: 0px;
 	margin-top: 15px;
-	border: 2px dashed #aaa;  
+	border: 2px dashed #aaa;
 	height: 65px;
-	width: 170px; 
-	background: #ccc;  
+	width: 170px;
+	background: #ccc;
 	margin: 5px;
 	opacity: .7;
 	transition: 50ms ease-out;
@@ -513,14 +513,14 @@ header {
 		margin: 0px;
 		text-shadow: 0 0 3px $dgrey;
 	}
-	
+
 	h4 {
 		font-size: 15px;
 		color: $dgrey;
 		margin: -5px 0px 0px 95px;
 		text-shadow: 0 0 1px $light;
 	}
-}	
+}
 
 #resultsOuter {
 	position: absolute;
@@ -580,14 +580,14 @@ header {
 					z-index: 150;
 					border-radius: 5px 5px 0px 0px;
 
-					#numberTopUnder { 
+					#numberTopUnder {
 						color: $red;
 						font-size: 80px;
 						font-family: 'AmericanTypewriter';
 						margin: 0px 0px 0px 7px;
 					}
 				}
-				
+
 				.flipResultNumberTop {
 					opacity: 1;
 					position: absolute;
@@ -598,7 +598,7 @@ header {
 					overflow-y: hidden;
 					z-index: 151;
 					border-radius: 5px 5px 0px 0px;
-					
+
 					#numberTop {
 						color: $red;
 						font-size: 80px;
@@ -677,14 +677,14 @@ header {
 					z-index: 150;
 					border-radius: 5px 5px 0px 0px;
 
-					#numberTopUnderDouble { 
+					#numberTopUnderDouble {
 						color: $red;
 						font-size: 80px;
 						font-family: 'AmericanTypewriter';
 						margin: 0px 0px 0px 7px;
 					}
 				}
-				
+
 				.flipResultNumberTopDouble {
 					opacity: 1;
 					position: absolute;
@@ -695,7 +695,7 @@ header {
 					overflow-y: hidden;
 					z-index: 151;
 					border-radius: 5px 5px 0px 0px;
-					
+
 					#numberTopDouble {
 						color: $red;
 						font-size: 80px;
@@ -817,7 +817,7 @@ header {
 
 		}
 
-		#correctMessage { 
+		#correctMessage {
 			opacity: 0;
 			position: absolute;
 			width: 100%;
@@ -835,7 +835,7 @@ header {
 			}
 		}
 
-		#freeAttemptsLeftMessage { 
+		#freeAttemptsLeftMessage {
 			opacity: 0;
 			position: absolute;
 			width: 250px;
@@ -911,7 +911,7 @@ header {
 	}
 }
 
-#demo {	
+#demo {
 	position: absolute;
 	left: 50px;
 	top: 130px;
@@ -934,7 +934,7 @@ header {
 		z-index: 150;
 		border-radius: 10px;
 	   	box-shadow: 0px 0px 20px 20px rgba(0,0,0,.1) inset;
-		
+
 		#demoTileSection {
 			position: absolute;
 			top: 10px;
@@ -961,7 +961,7 @@ header {
 			z-index: 300;
 
 		}
-		
+
 		#demoFooter {
 			position: absolute;
 			bottom: 10px;
@@ -1065,7 +1065,7 @@ header {
 			&.move {
 				animation: demoTile2Movement 10000ms ease-out 300ms infinite;
 			}
-		}	
+		}
 
 		#dt3 {
 			position: absolute;
@@ -1106,9 +1106,9 @@ header {
 				animation: demoFinishScreen 10000ms ease-out 300ms infinite;
 			}
 		}
-		
-		#playInstructions { 
-			position: relative; 
+
+		#playInstructions {
+			position: relative;
 			float: right;
 			margin-left: 320px;
 			color: $light;
@@ -1149,7 +1149,7 @@ header {
 			&:hover {
 				background:	linear-gradient(bottom, $light, $light);
 			}
-					
+
 			&.show {
 				pointer-events: auto;
 				cursor: pointer;
@@ -1199,16 +1199,16 @@ header {
 
 /***********FLIP NUMBER*************/
 @keyframes flipNumberFromTop {
-	0% 	{ transform: rotateX(0deg); transform-origin: bottom; transform-style: preserve-3d; opacity:1;} 
-	99% { transform: rotateX(90deg); transform-origin: bottom; transform-style: preserve-3d; opacity:1;} 
-	100% { opacity: 0;} 
+	0% 	{ transform: rotateX(0deg); transform-origin: bottom; transform-style: preserve-3d; opacity:1;}
+	99% { transform: rotateX(90deg); transform-origin: bottom; transform-style: preserve-3d; opacity:1;}
+	100% { opacity: 0;}
 }
 
 /***********FLIP NUMBER*************/
 @keyframes flipNumberFromBottom {
-	0% 	{ opacity:0;} 
-	1% 	{ transform: rotateX(90deg); transform-origin: top; transform-style: preserve-3d; opacity: 1;} 
-	100% { transform: rotateX(0deg); transform-origin: top; transform-style: preserve-3d; opacity: 1;} 
+	0% 	{ opacity:0;}
+	1% 	{ transform: rotateX(90deg); transform-origin: top; transform-style: preserve-3d; opacity: 1;}
+	100% { transform: rotateX(0deg); transform-origin: top; transform-style: preserve-3d; opacity: 1;}
 }
 
 /**********SCORE SLIDE IN*********/
@@ -1228,24 +1228,24 @@ header {
 @keyframes demoMouseMovement {
 	0% 	{transform: translate(0px, 0px);}		//Initial
 	5%  {transform: translate(-60px, 20px);} 	//First Tile
-	7%  {transform: translate(-60px, 20px);}		
+	7%  {transform: translate(-60px, 20px);}
 	12% {transform: translate(110px, -20px);}	//OrderSpot
-	15% {transform: translate(110px, -20px);} 	
+	15% {transform: translate(110px, -20px);}
 	20% {transform: translate(-80px, 125px);} 	//Second tile
-	22% {transform: translate(-80px, 125px);} 	
+	22% {transform: translate(-80px, 125px);}
 	27% {transform: translate(100px, 20px);} 	//OrderSpot
-	30% {transform: translate(100px, 20px);} 	
+	30% {transform: translate(100px, 20px);}
 	35% {transform: translate(-50px, 70px);} 	//Third tile
-	37% {transform: translate(-50px, 70px);} 	
+	37% {transform: translate(-50px, 70px);}
 	42% {transform: translate(100px, 70px);} 	//OrderSpot
-	45% {transform: translate(100px, 70px);} 	
+	45% {transform: translate(100px, 70px);}
 	50% {transform: translate(100px, 170px);}
 	100%{transform: translate(100px, 170px);}	//Wait for Repeat
 }
 
 /**********DEMO TILE1 MOVEMENT*********/
 @keyframes demoTile1Movement {
-	0%  {transform: translate(0px, 0px) rotate(10deg);}	
+	0%  {transform: translate(0px, 0px) rotate(10deg);}
 	7%  {transform: translate(0px, 0px) rotate(10deg);}
 	12% {transform: translate(185px, -40px);}
 	100%{transform: translate(185px, -40px);}
@@ -1253,7 +1253,7 @@ header {
 
 /**********DEMO TILE2 MOVEMENT*********/
 @keyframes demoTile2Movement {
-	0%  {transform: translate(0px, 0px) rotate(-5deg);}	
+	0%  {transform: translate(0px, 0px) rotate(-5deg);}
 	22% {transform: translate(0px, 0px) rotate(-5deg);}
 	27% {transform: translate(175px, -95px);}
 	100%{transform: translate(175px, -95px);}
