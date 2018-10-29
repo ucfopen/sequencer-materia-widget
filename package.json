@@ -4,7 +4,6 @@
     "cleanName": "sequencer"
   },
   "version": "1.0.0",
-  "private": true,
   "scripts": {
     "start": "webpack-dev-server",
     "build-dev": "webpack",
@@ -12,16 +11,8 @@
     "pretest": "npm run build-dev",
     "test": "karma start ./karma.conf.js --no-auto-watch --single-run"
   },
-  "author": "University of Central Florida, Center for Distributed Learning",
   "devDependencies": {
-    "protractor": "^3.2.2",
-    "jasmine-core": "^2.4.1",
-    "karma": "^0.13.22",
-    "karma-coverage": "^0.5.5",
-    "karma-jasmine": "^0.3.8",
-    "karma-json-fixtures-preprocessor": "0.0.6",
-    "karma-mocha-reporter": "^2.1.0",
-    "karma-phantomjs-launcher": "^1.0.2",
-    "materia-widget-development-kit": "git+ssh://git@clu.cdl.ucf.edu:materia/materia-widget-development-kit#semver:>=1.0.6 <1.10.0"
-  }
+    "materia-widget-development-kit": "2.0.0"
+  },
+  "license": "AGPL-3.0"
 }
