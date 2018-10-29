@@ -7,9 +7,7 @@
   "scripts": {
     "start": "webpack-dev-server",
     "build-dev": "webpack",
-    "build": "webpack -p",
-    "pretest": "npm run build-dev",
-    "test": "karma start ./karma.conf.js --no-auto-watch --single-run"
+    "build": "webpack -p"
   },
   "devDependencies": {
     "materia-widget-development-kit": "2.0.0"
