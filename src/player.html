@@ -1,37 +1,20 @@
 <!DOCTYPE html>
-<!-- INJECTS IE CLASSES ONTO HTML TAG -->
-<!--[if IE 8 ]>    <html class="IE8"> <![endif]-->
-<!--[if IE 9 ]>    <html class="IE9"> <![endif]-->
-<!--[if (gt IE 9)|!(IE)]><!--> <html class=""> <!--<![endif]-->
+<html>
 	<head>
 		<title>Sequencer Widget Engine</title>
-
 		<meta charset="utf-8" />
 
 		<!-- STYLESHEETS -->
 		<link rel="stylesheet" type="text/css" href="player.css">
 
 		<!-- REQUIRED MATERIA JAVASCRIPT -->
-		<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-		<script>
-			window.Namespace = function(ns) {
-				var a = ns.split('.');
-				var o = window;
-				var len = a.length;
-				for (i = 0; i < len; i++) {
-					o[a[i]] = o[a[i]] || {};
-					o = o[a[i]];
-				}
-				return o;
-			}
-		</script>
 		<script src="materia.enginecore.js"></script>
 
-		<!-- OPTIONAL MATERIA JAVASCRIPT -->
-
 		<!-- YOUR PREREQUISITES -->
+		<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 		<script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.2/underscore-min.js"></script>
 		<script src="//cdnjs.cloudflare.com/ajax/libs/jquery.transit/0.1.3/jquery.transit.min.js"></script>
+
 		<!-- MAIN PLAYER SCRIPT -->
 		<script src="player.js"></script>
 	</head>
@@ -88,7 +71,7 @@
 
 <!-- tile slots -->
 <script type="text/template" id="slot"><div class="tileSlot">
-		<p>This text belongs to the tileSlot <%= number %></p>		
+		<p>This text belongs to the tileSlot <%= number %></p>
 	</div>
 </script>
 
@@ -124,7 +107,7 @@
 				<p>Order the tiles correctly in the sequence list.</p>
 				<p>You have <span class="demoDeduction"><%= freeAttempts %> guesses</span>.</p>
 				<p>Your highest score will be saved.</p>
-			</div>	
+			</div>
 			<div class="demoButton">Play Sequencer</div>
 		</div>
 	</div>
@@ -147,11 +130,11 @@
 					<div class="flipResultNumberTopUnder">
 						<div id="numberTopUnder">0</div>
 					</div>
-					
+
 					<div class="flipResultNumberBottom">
 						<div id="numberBottom">0</div>
 					</div>
-				
+
 					<div class="flipResultNumberBottomUnder">
 						<div id="numberBottomUnder">0</div>
 					</div>
@@ -165,17 +148,17 @@
 					<div class="flipResultNumberTopUnderDouble">
 						<div id="numberTopUnderDouble">0</div>
 					</div>
-					
+
 					<div class="flipResultNumberBottomDouble">
 						<div id="numberBottomDouble">0</div>
 					</div>
-				
+
 					<div class="flipResultNumberBottomUnderDouble">
 						<div id="numberBottomUnderDouble">0</div>
 					</div>
 				</div>
 			</div>
-		
+
 			<div id="textBelowNumbers">
 				<h5>items in the right spot</h5>
 				<h6>out of <%= total %>.</h6>
@@ -186,8 +169,8 @@
 			<!--<span id="bestScoreMessage">Best score: <span class="circle" id="bestcircle"><%= penalty %></span></span>-->
 			<div id="correctMessage">Great Job!</div>
 			<div id="allAttemptsMessage">You are out of guesses.</div>
-			<div id="resultsButton" class="resultsButton"></div> 
-			<div id="submitScoreButton"></div> 
+			<div id="resultsButton" class="resultsButton"></div>
+			<div id="submitScoreButton"></div>
 		</div>
 	</section>
 </script>
@@ -205,6 +188,6 @@
 		Materia.Engine.start(Sequencer.Engine);
 	</script>
 
-	
+
 	</body>
 </html>

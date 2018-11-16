@@ -3,20 +3,20 @@ Namespace('Sequencer').Creator = do ->
 	_qset    = null # Keep tack of the current qset
 	_title   = null # Hold on to this instance's title
 	_version = null # Holds the qset version, allows you to change your widget to support old versions of your own code
-	
+
 	# variables to contain templates for various page elements
-	_qTemplate 			= null
-	_qWindowTemplate 	= null
-	_aTemplate 			= null
-	_numTiles			= 0
-	_maxTiles			= 20
+	_qTemplate = null
+	_qWindowTemplate = null
+	_aTemplate = null
+	_numTiles = 0
+	_maxTiles = 20
 
 	# strings containing tutorial texts, boolean for tutorial mode
-	_tutorial_help 	= false
-	_openQ 			= null
-	_openQWindow	= null
-	
-	# creating the tutorial from HTML classes		
+	_tutorial_help = false
+	_openQ = null
+	_openQWindow = null
+
+	# creating the tutorial from HTML classes
 	tutorial1 = $('.tutorial.step1')
 	tutorial2 = $('.tutorial.step2')
 	tutorial3 = $('.tutorial.step3')
@@ -28,7 +28,7 @@ Namespace('Sequencer').Creator = do ->
 	initNewWidget = (widget, baseUrl) ->
 		_buildDisplay 'My Sequencer Widget', widget
 
-	initExistingWidget = (title, widget, qset, version, baseUrl) -> 
+	initExistingWidget = (title, widget, qset, version, baseUrl) ->
 		_buildDisplay title, widget, qset, version
 
 	onSaveClicked = (mode = 'save') ->
@@ -37,18 +37,18 @@ Namespace('Sequencer').Creator = do ->
 		else
 			Materia.CreatorCore.cancelSave 'Widget not ready to save.'
 
-	onSaveComplete = (title, widget, qset, version) -> 
+	onSaveComplete = (title, widget, qset, version) ->
 		true
 
-	onQuestionImportComplete = (questions) -> 
+	onQuestionImportComplete = (questions) ->
 		for question in questions
 			question.questions[0].text = question.questions[0].text.substring(0, 40)
-			_addQuestion question 
+			_addQuestion question
 
 	# This basic widget does not support media
-	onMediaImportComplete = (media) -> 
+	onMediaImportComplete = (media) ->
 		null
-	
+
 	# Set up page and listen
 	_buildDisplay = (title = 'Default test Title', widget, qset, version) ->
 		_version = version
@@ -76,7 +76,7 @@ Namespace('Sequencer').Creator = do ->
 		$('#startPopup').addClass 'show'
 		$('#fader').addClass 'dim'
 
-		$('#addSliderButton').on 'click', -> 
+		$('#addSliderButton').on 'click', ->
 			$('#columnSection').removeClass 'hidden'
 			$('#first_step').removeClass 'show'
 			_addNewTileSlider()
@@ -89,15 +89,15 @@ Namespace('Sequencer').Creator = do ->
 				$(this).parent().parent().children('.peak').removeClass 'show'
 
 		# Remove Slider
-		$('body').delegate '.icon-close', 'click', -> 
+		$('body').delegate '.icon-close', 'click', ->
 			_numTiles--
-			$(this).parent().removeClass 'appear'	
+			$(this).parent().removeClass 'appear'
 			Elem = this
-			setTimeout -> 
+			setTimeout ->
 				$(Elem).parent().remove()
 				_updateTileNums()
 			, 200
-		
+
 		$('body').delegate '.addInbetween', 'mouseover', ->
 				$(this).addClass 'show'
 				$(this).parent().parent().children('.peak').addClass 'show'
@@ -126,9 +126,9 @@ Namespace('Sequencer').Creator = do ->
 				$('#numTries').html($('#numTriesInput').val() + ' guesses')
 
 		$('#inputTitle').on 'keyup', (e) ->
-		    if e.which == 13 
+		    if e.which == 13
 		    	$('.closeWindow').click()
-	
+
 		$('#modeContainer').on 'click', ->
 			$('#modeSlider').toggleClass 'slide'
 			$('#assessmentOptions').toggleClass 'active'
@@ -157,7 +157,7 @@ Namespace('Sequencer').Creator = do ->
 			$('#penaltyInput').val(_qset.options?.penalty)
 			$('#numTriesInput').val(_qset.options?.freeAttempts)
 			$('#numTries').html($('#numTriesInput').val() + ' guesses')
-	
+
 	_addQuestion = (question) ->
 		$('#first_step').removeClass 'show'
 		$('#startPopup').removeClass 'show'
@@ -176,7 +176,7 @@ Namespace('Sequencer').Creator = do ->
 
 	# Add new slider
 	_addNewTileSlider = (position, tileString = '', clueString = '', id = '') ->
-		if _numTiles is _maxTiles 
+		if _numTiles is _maxTiles
 			Materia.CreatorCore.alert 'Maximum Tiles', 'You may only have up to '+ _maxTiles + ' tiles in this widget.'
 			return
 		_numTiles++
@@ -186,11 +186,11 @@ Namespace('Sequencer').Creator = do ->
 			$('#second_step').addClass 'show'
 		else
 			$('#second_step').css('display', 'none')
-		
+
 		# Add a new Slider
 		newTileSlot = _.template $('#t-slide-info').html()
 		tileSlot = $(newTileSlot tileNum: _numTiles, tileText: tileString, clueText: clueString, id: id)
-		
+
 		if position?
 			$(tileSlot).insertBefore (position)
 		else
@@ -201,12 +201,12 @@ Namespace('Sequencer').Creator = do ->
 			$('#second_step').css('display', 'none')
 		)
 
-	# Change the number on the sliders 
+	# Change the number on the sliders
 	_updateTileNums = () ->
 		i = 1
 		for slider in $('.tileInfoSlider')
 			$(slider).children('.block').children('.number').html(i)
-			i++ 
+			i++
 
 	# On preview/publish/save click
 	_buildSaveData = ->
@@ -221,7 +221,7 @@ Namespace('Sequencer').Creator = do ->
 
 		if $('#practiceMode').hasClass 'active'
 			_qset.options.practiceMode = true
-		else 
+		else
 			_qset.options.practiceMode = false
 		_qset.options.penalty = $('#penaltyInput').val()
 		_qset.options.freeAttempts = $('#numTriesInput').val() or 1
@@ -241,9 +241,9 @@ Namespace('Sequencer').Creator = do ->
 		okToSave
 
 	# Get each Tile's data from the appropriate info
-	_loadingItemsForSave = -> 
+	_loadingItemsForSave = ->
 		tileList = {items: []}
-		
+
 		i = 0
 
 		# Organize all tile names and tile clues
@@ -283,9 +283,9 @@ Namespace('Sequencer').Creator = do ->
 				Materia.CreatorCore.alert 'Unnamed Tile', 'You must enter a name for all tiles.'
 				text = null
 				return -1
-		
+
 		# Clue text
-		else 
+		else
 			if text is _defaultClueString
 				text = null
 		text
