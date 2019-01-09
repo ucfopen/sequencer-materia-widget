@@ -1,0 +1,29 @@
+language: node_js
+node_js:
+  - '6'
+cache:
+  yarn: true
+  directories:
+    - node_modules
+before_install:
+  - npm config set spin false
+  - npm install -g npm@^5
+script:
+  - yarn test-ci
+  - yarn build
+deploy:
+  skip_cleanup: true
+  provider: releases
+  api_key:
+    secure: "p/BQePc1gI7ZEj7UuM5hpv0l0PubyTaUKGXapTyPbzD2AXs0BGsUhwgMiLe0Qo+ZJLxVcMyq1OEzy1JkBSC6Aa/C7wo9JwBdSbt+e9bUu9ruBibbykF2b5sZOVcezsCmcO8H1KteYW6eNmgoHrw9SEYUgqy0HiATri1KdCz8sca1CUJwi4QFMGyaVSe0Ssenzh8YcMDkWJhEYDhFHuxo0jkJFrADlVb5gOdsgtHCCjkwme0qWnJB4WvkWWlWo0MxQeepOWiXM8ysgMY5KQ/F/6JtwzyZ9oNSH43zzLpSgloZ1EUsP9r6H8r7JPzKhe9zW5Hhc67GuzFFx4QGOdg9BAnCy9kItojMebgbAkvdAgI7N6kZJ/Z8//6WUGaiVKiSmCobyfGgRoOc0r6jdZowgnepdzDEJZqwGz2VPC9c1Q6k5Zzi4mhQxV6sLvpu0Jwhl3zl3Vta4m3Vzc1Q8IKGP0NsvDU22ZeaJd654LI9L+wZTSz7FicORynIYfjTN8gfYaa2an5SzWKJE3q+tO2IcJb8252Hu9kRO0oOQz/VK57aw1C6jbtoFvE4BcTspbBy1rviCQRdmzYcH5uzBvdwpve3HoUVoMZ6fIC8aXU85ndCtwTbXP7wmoSSPy6sceIrz0ZU1V3teICI6iU7SaOgQzt3VjEK9IZnQIx6uf4EVJI="
+  file:
+    - build/_output/sequencer.wigt
+    - build/_output/sequencer-build-info.yml
+  on:
+    tags: true
+    repo: ucfopen/sequencer-materia-widget
+notifications:
+  email: false
+  slack:
+    secure: "kVOSJHrTs8iBVadTmn3bF+WOn9oO7bcST0Ims4yD0sfzlfJszXjTo5V9SYlsT0aSvhPyfnPn2IdTYbM1Y9eIUGGFuqapkc3V2QJ+sFVBgMvsNVXk++PeI6SdnojBQ0toWvRTejv9GQBu2iw6TO02aW2l9ngwP/4mkpJAR1pkku+9poujd78FdxnhaCUxWUoZvtNZE1Duq3GUHIuDUE5wt/WpgcFG/4A+t7/4iUbaXxV8Q7oulXCdRJdSGEV3s09x+bKrAZDex8Hatjs5ZXLrMaoUJMsxehr470QrFXE/NbnmRQpwgLY95MSF1ABJ9HfJpdE2HLwjm+xSwgP0UZfG3Pr7mE977Nv+Qtmv8mXg87v166UTTsZWUdS+y9T8+NVZEyqj3X/+3xEvxL/iTYsdEdgs4uVg2xWSJJyiogkfTPH7hC+pJASu1O2llYHQ489du/WzVEAF7HO4RuA3fq9IxkYVlM9qYe+Ke3+lpqOMuuMwcBOx1oYDZltIE1bXIXeDPfR+VsmYaPRCEDaPp3dBGxKJuzRSoDLO3P8E+2lKnLNmip+dU/6rlff0ZfSGCIav6PCOjb1pLKSaIfJSb84loXbLAH6bU2AuW4LlZj312Egyc0PcJoY0K5i1QWs8OQOvMmF07Yxta43MEi3sPZ+i6aV8JrRUWa6ZaDhkFUE77TE="
+
