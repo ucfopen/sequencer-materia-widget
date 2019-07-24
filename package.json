@@ -3,7 +3,7 @@
   "materia": {
     "cleanName": "sequencer"
   },
-  "version": "1.0.3",
+  "version": "1.0.4",
   "scripts": {
     "start": "webpack-dev-server",
     "build": "webpack -p",
