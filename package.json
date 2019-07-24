@@ -12,7 +12,7 @@
     "test-ci": "echo 'tests not implemented'"
   },
   "dependencies": {
-    "materia-widget-development-kit": "^2.3.0"
+    "materia-widget-development-kit": "2.4.2"
   },
   "license": "AGPL-3.0",
   "description": "Sequencer is about teaching ordered events and sequences. Items are presented to students in a random order for them to re-arrange. Designed for use in Materia.",

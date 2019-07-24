@@ -126,8 +126,8 @@ Namespace('Sequencer').Creator = do ->
 				$('#numTries').html($('#numTriesInput').val() + ' guesses')
 
 		$('#inputTitle').on 'keyup', (e) ->
-		    if e.which == 13
-		    	$('.closeWindow').click()
+			if e.which == 13
+				$('.closeWindow').click()
 
 		$('#modeContainer').on 'click', ->
 			$('#modeSlider').toggleClass 'slide'
