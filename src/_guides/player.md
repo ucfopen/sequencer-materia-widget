@@ -1,26 +1,18 @@
 # Overview #
+Students are given a jumbled set of words or phrases and are tasked with placing them in the correct sequential order.
 
-Students must order a random set of words or phrases in the correct order.
+![sequencer screen](assets/play_widget_sequencer.png "sequencer screen")
 
-![sequencer screen](assets/widget_guides_sequencer.jpg "sequencer screen")
+1. Pile of unordered tiles
+2. Tiles placed in sequence
+3. Highest score received
+4. Number of guesses remaining
 
-1. Title of the widget
-2. Sequence list area
-3. Tile
-4. Description
-5. Current score
-6. Penalty information
-7. Submit button
+![sequencer submission screen](assets/play_widget_sequencer_submission.png "sequencer submission screen")
 
-<figure>
-	<img src="assets/widget_guides_sequencer_incorrect.jpg" alt="" class="screenshot first" />
-	<figcaption>Example of a failing sequence submission</figcaption>
-</figure>
-
-<figure>
-	<img src="assets/widget_guides_sequencer_correct.jpg" alt="" class="screenshot first" />
-	<figcaption>Example of a passing sequence submission</figcaption>
-</figure>
+1. Number of correctly ordered tiles
+2. Try again button, with remaining submission count
+3. Complete the widget with the current high score
 
 ## Details ##
 
@@ -30,4 +22,4 @@ Drag tiles from the game board to the **Sequence list area** in the correct orde
 
 ### Submitting ###
 
-When you've ordered the tiles to your liking click on the **Submit** button. This will show you how many items you have in the right sequence. If you don't have the correct sequence you may be deducted points based on the **Penalty information** (in this example every incorrect submission deducts 10 points). Once you've submitted the correct sequence or are deducted 100 points you'll be taken to the score screen.
+When you've ordered the tiles to your liking click on the **Submit Sequence** button. This will show you how many items you have in the right sequence. You can continue submitting sequences until you receive a 100% score or run out of guesses. The remaining guess count is displayed under the **Try Again** button. You can always complete the widget early, which will give you a score based on your highest scoring submission.
