@@ -277,6 +277,69 @@ Namespace('Sequencer').Engine = do ->
 			_clearStyle.style.transition = '120ms'
 		, 0
 
+	_keyDownEvent = (e) ->
+		_curterm = e.target
+		switch e.which 
+
+			when 13 # enter key - reveal clue if the tile has one
+				if _tiles[_curterm.id].clue.length > 0
+					$('header').addClass 'slideUp'
+					_revealClue _curterm.id
+
+			when 37 # left arrow - put it back in the tile pile
+				if (i = _sequence.indexOf(~~_curterm.id)) != -1
+					_sequence.splice(i,1)
+					_tilesInSequence--
+
+					console.log _curterm
+
+					_curterm.style.transform =
+					_curterm.style.msTransform =
+					_curterm.style.webkitTransform = "translate(#{_tiles[_curterm.id].xpos}px,#{_tiles[_curterm.id].ypos}px) rotate(#{_tiles[_curterm.id].angle}deg)"
+
+					_curterm.style.position = 'fixed'
+
+					$('#message').remove()
+					$('#tileSection').removeClass 'fade'
+					$('#submit').prop('disabled', true)
+					$('#submit').removeClass 'enabled'
+
+					_assistiveStatusUpdate(_tiles[_curterm.id].name + ' unsorted. ' + _tilesInSequence + ' of ' + _numTiles + ' tiles sorted.')
+
+			when 39 # right arrow - put it in the ordered list (at the bottom)
+				if _sequence.indexOf(~~_curterm.id) is -1
+					_sequence.push ~~_curterm.id
+					_tilesInSequence++
+
+					_curterm.style.position = 'absolute'
+
+					if _numTiles is 0 then $('#orderInstructions').addClass 'show'
+					else $('#orderInstructions').addClass 'hide'
+
+					$('#message').remove()
+					if _tilesInSequence == _numTiles
+						_tilesSequenced()
+
+					_assistiveStatusUpdate(_tiles[_curterm.id].name + ' sorted. '  + _tilesInSequence + ' of ' + _numTiles + ' tiles sorted.')
+
+			when 38 # up arrow - sort upwards
+				if (i = _sequence.indexOf(~~_curterm.id)) != -1 and i != 0
+					[_sequence[i - 1], _sequence[i]] = [_sequence[i], _sequence[i - 1]]
+
+			when 40 # down arrow - sort downwards
+				if (i = _sequence.indexOf(~~_curterm.id)) != -1 and i != _sequence.length - 1
+					[_sequence[i + 1], _sequence[i]] = [_sequence[i], _sequence[i + 1]]
+
+
+		# Remove the empty slots
+		for i in [0..._sequence.length]
+			if _sequence[i] is -1
+				_sequence.splice(i, 1)
+		
+		_curterm = null
+		_repositionOrderedTiles()
+		_updateTileNums()
+
 	_startDemo = ->
 		demoScreen = _.template $('#demo-window').html()
 
@@ -289,7 +352,7 @@ Namespace('Sequencer').Engine = do ->
 			freeAttempts : _freeAttempts or "unlimited"
 		$('body').append _$demo
 		$('.demoButton').offset()
-		$('.demoButton').addClass 'show'
+		$('.demoButton').addClass('show').focus()
 
 		# Exit demo
 		$('.demoButton').on 'click', ->
@@ -365,6 +428,7 @@ Namespace('Sequencer').Engine = do ->
 		$('.tile').on 'touchstart', _mouseDownEvent
 		$('.tile').on 'MSPointerDown', _mouseDownEvent
 		$('.tile').on 'mousedown', _mouseDownEvent
+		$('.tile').on 'keydown', _keyDownEvent
 
 		# Reveal the clue for clicked tile
 		$('#dragContainer').on 'mousedown', '.clue', ->
@@ -473,10 +537,12 @@ Namespace('Sequencer').Engine = do ->
 			# Remove the clue symbol if there is no hint available
 			if _tiles[tile.id].clue is ''
 				$('#'+tile.id).children('.clue').remove()
+				$('#'+tile.id).attr('aria-label', _tiles[tile.id].name)
+			else $('#'+tile.id).attr('aria-label', _tiles[tile.id].name + '. This tile has a clue, press enter to review it.')
+			# else $('#'+tile.id).prop('boop', 'bleh')
 
 	# Show the clue from the id of the tile clicked
 	_revealClue = (id) ->
-
 
 		# Get data for new clue
 		tileClue = _.template $('#tile-clue-window').html()
@@ -516,6 +582,7 @@ Namespace('Sequencer').Engine = do ->
 		$('#tileSection').append message
 		message.addClass 'show'
 		$('#tileSection').addClass 'fade'
+		$('#submit').prop('disabled', false)
 		$('#submit').addClass 'enabled'
 
 	# Answer submitted by user
@@ -558,6 +625,8 @@ Namespace('Sequencer').Engine = do ->
 		else
 			_freeAttempts++
 
+		# _assistiveStatusUpdate('You sorted ' + results + ' of ' + _numTiles + ' correctly.')
+
 		# Update the score based on the new results
 		score = Math.round((results / _numTiles) * 100)
 
@@ -578,6 +647,9 @@ Namespace('Sequencer').Engine = do ->
 		# If less than 10 tiles in qset use the single-digit flipper
 		else
 			_singleDigitFlipCorrect 1, results
+
+		$('#resultsButton').focus()
+		$('#submit').prop('disabled', true)
 
 	_showScoreMessage = (results) ->
 		# Correct sequence submitted
@@ -605,6 +677,7 @@ Namespace('Sequencer').Engine = do ->
 				$('#resultsOuter').remove()
 				$('.bestscore').html highestScore + "%"
 				$('.confirmDialog').addClass 'show'
+				$('.confirmDialog').children('button').attr('tabindex', 0)
 				$('#confirmBestScoreButton').on 'click', ->
 					_sendScores()
 					_end(yes)
@@ -613,6 +686,8 @@ Namespace('Sequencer').Engine = do ->
 					$('.board').removeClass 'dim'
 					$('.fade').removeClass 'active'
 					$('.confirmDialog').removeClass 'show'
+					$('#submit').prop('disabled', false)
+					$('.confirmDialog').children('button').attr('tabindex', -1)
 
 			# Still have more attempts
 			if _freeAttempts > 0 or _practiceMode
@@ -629,6 +704,8 @@ Namespace('Sequencer').Engine = do ->
 					$('#resultsOuter').remove()
 					$('.board').removeClass 'dim'
 					$('.fade').removeClass 'active'
+					$('#submit').prop('disabled', false)
+					$('.confirmDialog').children('button').attr('tabindex', -1)
 
 			# Used last attempt
 			else
@@ -737,6 +814,10 @@ Namespace('Sequencer').Engine = do ->
 
 				_doubleDigitFlipCorrect ++ctr, results
 		, 120
+
+	_assistiveStatusUpdate = (status) ->
+		$('.ariaLiveStatus').html status
+		# $('.ariaLiveAlert').html _tilesInSequence + ' of ' + _numTiles + ' sorted.'
 
 	_sendScores = () ->
 		answer = 0

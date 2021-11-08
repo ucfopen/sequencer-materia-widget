@@ -263,6 +263,10 @@ header {
 	border-radius: 5px;
 	box-shadow: 0 4px 3px -3px black;
 
+	&:focus {
+		border: solid 2px #4F7CBE;
+	}
+
 	@include boxSizing();
 
 	.clue {
@@ -273,6 +277,8 @@ header {
 		background: url("assets/Clue_fade.png") 0 0;
 		height: 22px;
 		width: 16px;
+
+		border: none;
 
 		&:hover {
 			background: url("assets/Clue_glow.png") 0 0;
@@ -404,10 +410,11 @@ header {
 		position: absolute;
 		cursor: auto;
 		width: 90%;
-		height: 25px;
+		height: 35px;
 		left: 5%;
 		top: 5px;
-		padding: 5px 0px 2px 0px;
+		padding: 3px 0px 2px 0px;
+		font-family: 'AmericanTypewriter';
 		font-size:18px;
 		text-align: center;
 		color: $medgrey;
@@ -420,8 +427,7 @@ header {
 		background:	linear-gradient(top, $light, $grey);
 		border: 1px solid $medgrey;
 		border-radius: 10px;
-		box-shadow: inset 0 3px 0 rgba(255,255,255,0.5);
-		transition: all 300ms ease;
+		transition: all 25ms ease;
 		pointer-events: none;
 		&.enabled {
 			cursor: pointer;
@@ -434,12 +440,17 @@ header {
 			background:	linear-gradient(bottom, $light, $grey);
 			border: 1px solid $medgrey;
 			border-radius: 10px;
-			box-shadow: inset 0 3px 0 rgba(255,255,255,0.5), 0px 0px 2px 2px rgba(0,0,0,0.05);
-			transition: all 300ms ease;
+			transition: all 25ms ease;
 			pointer-events: all;
 			&:hover {
-				background:	linear-gradient(bottom, $light, $light);
+				background:	$medblue;
 			}
+		}
+
+		&:focus {
+			border: solid 2px #4F7CBE;
+			color: #fff;
+			background: $blue;
 		}
 	}
 }
@@ -535,6 +546,8 @@ header {
 	border-radius: 10px;
 	box-shadow: 0px 0px 10px 10px rgba(0,0,0,.1);
 
+	text-align: center;
+
 	#resultsInner {
 		position: absolute;
 		width: 220px;
@@ -547,6 +560,8 @@ header {
 		border-radius: 10px;
 		box-shadow: 0px 0px 20px 20px rgba(0,0,0,.1) inset;
 		transition: 100ms;
+
+		text-align: left;
 
 
 		#textBelowNumbers {
@@ -775,8 +790,9 @@ header {
 
 	#resultsBox {
 		position: absolute;
+		// left: -10px;
 		bottom: 15px;
-		width: 100%;
+		width: calc(100% - 20px);
 		color: #fff;
 		font-family: sans-serif;
 
@@ -870,19 +886,34 @@ header {
 		}
 
 		#submitScoreButton {
+			// position: relative;
+			// left: -10px;
+			margin-left: auto;
+			margin-right: auto;
+			padding: 5px 10px;
+
+			opacity: 0;
+			background: none;
+			border: none;
+
 		    color: #fff;
 		    text-decoration: underline;
-		    cursor: pointer;
 		    text-align: center;
-		    position: relative;
-		    left: -10px;
-		    opacity: 0;
-		    transform: scale(0.7);
+			
+		    cursor: pointer;
+		    // transform: scale(0.7);
+
 		    &.show {
 			    opacity: 1;
 			    transform: scale(1);
-			    transition: 300ms;
-			    transition-delay: 1s;
+			    // transition: 300ms;
+			    // transition-delay: 1s;
+
+				&:focus {
+					border: solid 2px $medblue;
+				}
+
+				
 		    }
 		}
 	}
@@ -1129,10 +1160,10 @@ header {
 			position: absolute;
 			right: 30px;
 			bottom: 10px;
-			height: 25px;
+			height: 35px;
 			width: 180px;
 			margin: 25px 5px 0px 20px;
-			padding: 5px 3px 0px 3px;
+			padding: 5px 3px 5px 3px;
 			text-align: center;
 			color: $red;
 			z-index: 300;
@@ -1143,8 +1174,10 @@ header {
 			background-image: -ms-linear-gradient(top, $light, $grey);
 			background-image: -o-linear-gradient(top, $light, $grey);
 			background-image: linear-gradient(top, $light, $grey);
+			border-width: 1px;
 		 	border-radius: 10px;
-			transition: 200ms 1s;
+			font-family: 'AmericanTypewriter';
+			font-size: 16px;
 
 			&:hover {
 				background:	linear-gradient(bottom, $light, $light);
@@ -1154,8 +1187,10 @@ header {
 				pointer-events: auto;
 				cursor: pointer;
 				opacity: 1;
-				transition: 200ms 500ms;
-				animation: zoomBounce 300ms ease-out 500ms;
+			}
+
+			&:focus {
+				border: solid 3px $titleblue;
 			}
 		}
 	}
@@ -1293,11 +1328,15 @@ header {
     left: 59px;
     bottom: 30px;
     pointer-events: none;
+	border: solid 3px #fff;
+
     &.show {
-	pointer-events: auto;
-	opacity: 1;
-	animation: zoomBounce 300ms ease-out 300ms;
-	transition: 200ms 300ms;
+		pointer-events: auto;
+		opacity: 1;
+
+		&:focus {
+			border: solid 3px $medblue;
+		}
     }
 
 }
@@ -1305,7 +1344,7 @@ header {
     max-width: 200px;
     min-width: 155px;
     margin: 25px 5px 5px 20px;
-    padding: 8px 5px 5px 5px;
+    padding: 6px 5px 5px 6px;
     font-weight: bold;
     text-align: center;
     color: $red;
@@ -1320,9 +1359,15 @@ header {
     border-radius: 10px;
     cursor: pointer;
 
+	border: solid 3px #fff;
+
     &:hover {
 	background:	linear-gradient(bottom, $light, $light);
     }
+
+	&:focus {
+		border: solid 3px $medblue;
+	}
 
     div {
 	font-size: 12px;
@@ -1358,4 +1403,12 @@ header {
 
 .bestscore.bold {
     font-weight: bold;
+}
+
+.ariaLiveAlert, .ariaLiveStatus {
+	display: inline-block;
+	position: absolute;
+	left: -999;
+	z-index: -999;
+	opacity: 0;
 }

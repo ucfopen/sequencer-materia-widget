@@ -27,12 +27,12 @@
 		<section id="widgetTitle"><%= title %></section>
 		<hr>
 	</header>
-	<div id="dragContainer">
+	<div id="dragContainer" role="list">
 		<!-- tiles -->
 		<% for(var t in tiles) { var tile = tiles[t]; %>
-			<div class="tile" data-id="<%= tile.id %>" id="<%= tile.id %>" tabindex="<%= parseInt(t, 10)+1+(tiles.length) %>">
+			<div class="tile" data-id="<%= tile.id %>" id="<%= tile.id %>" tabindex="<%= parseInt(t, 10)+1+(tiles.length) %>" role="listitem">
 			<%= tile.name %>
-			<div class="clue" data-id="<%= tile.id %>"></div>
+				<button class="clue" data-id="<%= tile.id %>" tabindex="-1"></button>
 			</div>
 		<% } %>
 		<div id="tileFiller"></div>
@@ -45,7 +45,7 @@
 		<div id="orderInstructions">Drag and organize tiles here</div>
 	</section>
 	<div id="submitHolder" class="nondraggable">
-		<div id="submit" class="nondraggable">Submit Sequence</div>
+		<button id="submit" class="nondraggable" disabled="true">Submit Sequence</button>
 	</div>
 	<footer id="score-area">
 		<h4 id="score-text">Score: <span id="score"><%= score %></span></h4>
@@ -57,7 +57,7 @@
 <!-- clues -->
 <script type="text/template" id="tile-clue-window"><div id="clueHeader">
 		<h3 class="clueTitle"><%= name %></h3>
-		<aside class="tile-clue-text">
+		<aside role="definition" class="tile-clue-text" aria-live="polite">
 			<p class="clueDescription"><%= clue %></p>
 		</aside>
 	</div>
@@ -108,7 +108,7 @@
 				<p>You have <span class="demoDeduction"><%= freeAttempts %> guesses</span>.</p>
 				<p>Your highest score will be saved.</p>
 			</div>
-			<div class="demoButton">Play Sequencer</div>
+			<button class="demoButton">Play Sequencer</button>
 		</div>
 	</div>
 </script>
@@ -169,8 +169,8 @@
 			<!--<span id="bestScoreMessage">Best score: <span class="circle" id="bestcircle"><%= penalty %></span></span>-->
 			<div id="correctMessage">Great Job!</div>
 			<div id="allAttemptsMessage">You are out of guesses.</div>
-			<div id="resultsButton" class="resultsButton"></div>
-			<div id="submitScoreButton"></div>
+			<button id="resultsButton" class="resultsButton"></button>
+			<button id="submitScoreButton"></button>
 		</div>
 	</section>
 </script>
@@ -179,9 +179,11 @@
 	<p>
 		Are you sure you want to stop with your best score of <span class="bestscore bold"></span>?
 	</p>
-	<div id="cancelBestScoreButton" class="resultsButton arial">No, keep trying</div>
-	<div id="confirmBestScoreButton" class="resultsButton arial">Yes, finish with <span class="bestscore"></span>.</div>
+	<button id="cancelBestScoreButton" class="resultsButton" tabindex="-1">No, keep trying</button>
+	<button id="confirmBestScoreButton" class="resultsButton" tabindex="-1">Yes, finish with <span class="bestscore"></span>.</button>
 </div>
+
+<div role="status" class="ariaLiveStatus" aria-live="polite"></div>
 
 <!-- INITIALIZE -->
 	<script>
