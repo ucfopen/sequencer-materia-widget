@@ -326,9 +326,13 @@ Namespace('Sequencer').Engine = do ->
 				if (i = _sequence.indexOf(~~_curterm.id)) != -1 and i != 0
 					[_sequence[i - 1], _sequence[i]] = [_sequence[i], _sequence[i - 1]]
 
+					_assistiveStatusUpdate(_tiles[_curterm.id].name + ' moved to position   ' + i + ' of ' + _tilesInSequence)
+
 			when 40 # down arrow - sort downwards
 				if (i = _sequence.indexOf(~~_curterm.id)) != -1 and i != _sequence.length - 1
 					[_sequence[i + 1], _sequence[i]] = [_sequence[i], _sequence[i + 1]]
+
+					_assistiveStatusUpdate(_tiles[_curterm.id].name + ' moved to position   ' + (i + 2) + ' of ' + _tilesInSequence)
 
 
 		# Remove the empty slots
