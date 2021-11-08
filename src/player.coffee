@@ -543,7 +543,6 @@ Namespace('Sequencer').Engine = do ->
 				$('#'+tile.id).children('.clue').remove()
 				$('#'+tile.id).attr('aria-label', _tiles[tile.id].name)
 			else $('#'+tile.id).attr('aria-label', _tiles[tile.id].name + '. This tile has a clue, press enter to review it.')
-			# else $('#'+tile.id).prop('boop', 'bleh')
 
 	# Show the clue from the id of the tile clicked
 	_revealClue = (id) ->
@@ -628,8 +627,6 @@ Namespace('Sequencer').Engine = do ->
 		# Restore Free Attempts counter
 		else
 			_freeAttempts++
-
-		# _assistiveStatusUpdate('You sorted ' + results + ' of ' + _numTiles + ' correctly.')
 
 		# Update the score based on the new results
 		score = Math.round((results / _numTiles) * 100)
@@ -821,7 +818,6 @@ Namespace('Sequencer').Engine = do ->
 
 	_assistiveStatusUpdate = (status) ->
 		$('.ariaLiveStatus').html status
-		# $('.ariaLiveAlert').html _tilesInSequence + ' of ' + _numTiles + ' sorted.'
 
 	_sendScores = () ->
 		answer = 0
