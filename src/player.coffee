@@ -291,8 +291,6 @@ Namespace('Sequencer').Engine = do ->
 					_sequence.splice(i,1)
 					_tilesInSequence--
 
-					console.log _curterm
-
 					_curterm.style.transform =
 					_curterm.style.msTransform =
 					_curterm.style.webkitTransform = "translate(#{_tiles[_curterm.id].xpos}px,#{_tiles[_curterm.id].ypos}px) rotate(#{_tiles[_curterm.id].angle}deg)"
