@@ -3,6 +3,7 @@ Namespace('Sequencer').Engine = do ->
 	_$board           = null
 	_$tile            = null
 	_tiles            = []    # Array of tile object information
+	_tilesInVertOrder = []    # Array of tiles in top to bottom visual order
 	_numTiles         = 0     # Total number of tiles in the qset
 	_ids              = []    # Array which holds random numbers for the tile Id's
 	_tilesInSequence  = 0     # Count for the number of tiles in the OrderArea div
@@ -82,7 +83,7 @@ Namespace('Sequencer').Engine = do ->
 		_curterm.style.transition = 'none'
 
 		_relativeX = (e.clientX - $('#'+_curterm.id).offset().left)
-		_relativeY = (e.clientY - $('#'+_curterm.id).offset().top)
+		_relativeY = (e.clientY - $('#'+_curterm.id).offset().top + 15)
 
 		_curXstart = (e.clientX)
 		_curYstart = (e.clientY-10)
@@ -277,16 +278,92 @@ Namespace('Sequencer').Engine = do ->
 			_clearStyle.style.transition = '120ms'
 		, 0
 
+	_locateNextTile = (currentTile, backwards = false) ->
+		currentId = ~~currentTile.id
+		targetTile = null
+
+		# keep track of which tiles are still unordered to traverse them more easily
+		unorderedTiles = _tilesInVertOrder.filter (t) ->
+			return false unless t
+			_sequence.indexOf(t.id) < 0
+
+		# figure out if the current tile is ordered or not
+		indexInOrder = _sequence.indexOf(currentId)
+
+		# current tile is ordered
+		if indexInOrder > -1
+			if backwards
+				# current tile is not the first ordered tile
+				if indexInOrder > 0
+					# move to the previous ordered tile
+					targetTile = _tiles[_sequence[indexInOrder-1]]
+				else
+					# if there are remaining unordered tiles
+					if unorderedTiles.length
+						# move to the lowest unordered tile
+						targetTile = unorderedTiles[unorderedTiles.length-1]
+			else
+				# current tile is not the last ordered tile
+				if indexInOrder + 1 < _sequence.length
+					# move to the next ordered tile
+					targetTile = _tiles[_sequence[indexInOrder+1]]
+
+		else
+			# check all of the unordered tiles until we find the current one
+			for tile, index in unorderedTiles
+				# now get the next one based on the direction we're looking in
+				if tile.id == currentId
+					if backwards
+						# current tile is not the highest unordered tile
+						if index > 0
+							targetTile = unorderedTiles[index-1]
+					else
+						# current tile is the highest unordered tile
+						if index + 1 == unorderedTiles.length
+							# select the first organized tile instead, if there are any
+							if _sequence.length
+								targetTile = _tiles[_sequence[0]]
+						else
+							# select the next lowest unordered tile
+							targetTile = unorderedTiles[index+1]
+					break
+
+		unless targetTile
+			return false
+		return document.getElementById(targetTile.id)
+
 	_keyDownEvent = (e) ->
 		_curterm = e.target
-		switch e.which 
 
-			when 13 # enter key - reveal clue if the tile has one
+		switch e.key
+
+			when 'Tab' # select the next tile depending on position and sort status
+				e.stopPropagation()
+				e.preventDefault()
+
+				nextTile = _locateNextTile(_curterm, e.shiftKey)
+				if nextTile
+					nextTile.focus()
+					# also bring it up to the top of the pile so we can actually see it
+					nextTile.style.zIndex = ++_zIndex
+				else
+					# we're on the highest tile and have pressed shift+tab
+					if e.shiftKey
+						document.getElementById('keyboard-instructions').focus()
+					# we're on the lowest tile and have pressed tab
+					else
+						# if all tiles have been ordered, select the submit button
+						if _tilesInSequence == _numTiles
+							document.getElementById('submit').focus()
+						# otherwise select the wraparound button
+						document.getElementById('wraparound').focus()
+
+			when 'Enter' # reveal clue if the tile has one
 				if _tiles[_curterm.id].clue.length > 0
 					$('header').addClass 'slideUp'
 					_revealClue _curterm.id
 
-			when 37 # left arrow - put it back in the tile pile
+			when 'ArrowLeft' # put it back in the tile pile
 				if (i = _sequence.indexOf(~~_curterm.id)) != -1
 					_sequence.splice(i,1)
 					_tilesInSequence--
@@ -304,7 +381,7 @@ Namespace('Sequencer').Engine = do ->
 
 					_assistiveStatusUpdate(_tiles[_curterm.id].name + ' unsorted. ' + _tilesInSequence + ' of ' + _numTiles + ' tiles sorted.')
 
-			when 39 # right arrow - put it in the ordered list (at the bottom)
+			when 'ArrowRight' # put it in the ordered list (at the bottom)
 				if _sequence.indexOf(~~_curterm.id) is -1
 					_sequence.push ~~_curterm.id
 					_tilesInSequence++
@@ -320,13 +397,13 @@ Namespace('Sequencer').Engine = do ->
 
 					_assistiveStatusUpdate(_tiles[_curterm.id].name + ' sorted. '  + _tilesInSequence + ' of ' + _numTiles + ' tiles sorted.')
 
-			when 38 # up arrow - sort upwards
+			when 'ArrowUp' # sort upwards
 				if (i = _sequence.indexOf(~~_curterm.id)) != -1 and i != 0
 					[_sequence[i - 1], _sequence[i]] = [_sequence[i], _sequence[i - 1]]
 
 					_assistiveStatusUpdate(_tiles[_curterm.id].name + ' moved to position   ' + i + ' of ' + _tilesInSequence)
 
-			when 40 # down arrow - sort downwards
+			when 'ArrowDown' # sort downwards
 				if (i = _sequence.indexOf(~~_curterm.id)) != -1 and i != _sequence.length - 1
 					[_sequence[i + 1], _sequence[i]] = [_sequence[i], _sequence[i + 1]]
 
@@ -337,7 +414,7 @@ Namespace('Sequencer').Engine = do ->
 		for i in [0..._sequence.length]
 			if _sequence[i] is -1
 				_sequence.splice(i, 1)
-		
+
 		_curterm = null
 		_repositionOrderedTiles()
 		_updateTileNums()
@@ -360,6 +437,8 @@ Namespace('Sequencer').Engine = do ->
 		$('.demoButton').on 'click', ->
 			$('#demo').remove()
 			$('.fade').removeClass 'active'
+			$('.board').removeAttr 'inert'
+			document.getElementById(_tilesInVertOrder[0].id).focus()
 
 	_makeRandomIdForTiles = (needed) ->
 		idArray = []
@@ -448,6 +527,39 @@ Namespace('Sequencer').Engine = do ->
 		$('.board').on 'click', '#clueHeader', ->
 			$('header').removeClass 'slideUp'
 			$('#clueHeader').transition({height: 0}, 500);
+
+		$('#keyboard-instructions').on 'click', ->
+			console.log('THIS IS WHERE THE LOGIC TO OPEN THE KEYBOARD INSTRUCTIONS GOES')
+
+		$('#keyboard-instructions').on 'keydown', (e) ->
+			if e.key == 'Tab' and not e.shiftKey
+				e.preventDefault()
+				e.stopPropagation()
+				unorderedTiles = _tilesInVertOrder.filter (t) ->
+					return false unless t
+					_sequence.indexOf(t.id) < 0
+				document.getElementById(unorderedTiles[0].id).focus()
+
+		$('#wraparound').on 'click', ->
+			unorderedTiles = _tilesInVertOrder.filter (t) ->
+				return false unless t
+				_sequence.indexOf(t.id) < 0
+			document.getElementById(unorderedTiles[0].id).focus()
+		$('#wraparound').on 'keydown', (e) ->
+			if e.key == 'Tab' and e.shiftKey
+				e.preventDefault()
+				e.stopPropagation()
+				# this array has a lot of empty space in it, the last element isn't necessarily the last tile
+				# we have to traverse it backwards to find the last tile
+				highestTile = null
+				for i in [_tilesInVertOrder.length..0]
+					if _tilesInVertOrder[i] and not _sequence.includes[_tilesInVertOrder[i].id]
+						highestTile = _tilesInVertOrder[i]
+						break
+				if highestTile
+					document.getElementById(highestTile.id).focus()
+				else
+					document.getElementById(_sequence[0]).focus()
 
 	_resizeTitle = (length) ->
 		if length < 20
@@ -541,6 +653,15 @@ Namespace('Sequencer').Engine = do ->
 				$('#'+tile.id).children('.clue').remove()
 				$('#'+tile.id).attr('aria-label', _tiles[tile.id].name)
 			else $('#'+tile.id).attr('aria-label', _tiles[tile.id].name + '. This tile has a clue, press enter to review it.')
+
+		_tilesInVertOrder = _tiles.toSorted (a,b) ->
+			if a.ypos < b.ypos
+				return -1
+			if a.ypos == b.ypos
+				if a.xpos < b.xpos
+					return -1
+				return 0
+			return 1
 
 	# Show the clue from the id of the tile clicked
 	_revealClue = (id) ->
