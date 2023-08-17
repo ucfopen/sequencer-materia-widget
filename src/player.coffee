@@ -356,7 +356,8 @@ Namespace('Sequencer').Engine = do ->
 						if _tilesInSequence == _numTiles
 							document.getElementById('submit').focus()
 						# otherwise select the wraparound button
-						document.getElementById('wraparound').focus()
+						else
+							document.getElementById('wraparound').focus()
 
 			when 'Enter' # reveal clue if the tile has one
 				if _tiles[_curterm.id].clue.length > 0
@@ -396,6 +397,10 @@ Namespace('Sequencer').Engine = do ->
 						_tilesSequenced()
 
 					_assistiveStatusUpdate(_tiles[_curterm.id].name + ' sorted. '  + _tilesInSequence + ' of ' + _numTiles + ' tiles sorted.')
+					# approximate the y position of this tile within the drag area then scroll to that so it remains visible
+					# math: position in sequence * tile height + padding between tiles
+					sequencedYPos = _sequence.indexOf(~~_curterm.id) * 61 + 10
+					document.getElementById('dragContainer').scrollTop = sequencedYPos
 
 			when 'ArrowUp' # sort upwards
 				if (i = _sequence.indexOf(~~_curterm.id)) != -1 and i != 0
@@ -434,11 +439,18 @@ Namespace('Sequencer').Engine = do ->
 		$('.demoButton').addClass('show').focus()
 
 		# Exit demo
-		$('.demoButton').on 'click', ->
-			$('#demo').remove()
-			$('.fade').removeClass 'active'
-			$('.board').removeAttr 'inert'
-			document.getElementById(_tilesInVertOrder[0].id).focus()
+		# two listeners so we can handle mouse activation and keyboard activation separately
+		$('.demoButton').on 'mousedown', _closeDemo
+		# in the case of the keyboard, we want to auto-focus the highest tile after closing the demo
+		$('.demoButton').on 'keydown', (e) ->
+			if e.key == ' ' or e.key == 'Enter'
+				_closeDemo()
+				document.getElementById(_tilesInVertOrder[0].id).focus()
+
+	_closeDemo = () ->
+		$('#demo').remove()
+		$('.fade').removeClass 'active'
+		$('.board').removeAttr 'inert'
 
 	_makeRandomIdForTiles = (needed) ->
 		idArray = []
@@ -528,8 +540,13 @@ Namespace('Sequencer').Engine = do ->
 			$('header').removeClass 'slideUp'
 			$('#clueHeader').transition({height: 0}, 500);
 
-		$('#keyboard-instructions').on 'click', ->
-			console.log('THIS IS WHERE THE LOGIC TO OPEN THE KEYBOARD INSTRUCTIONS GOES')
+		$('#keyboard-instructions').on 'click', _openKeyboardInstructions
+
+		$('#keyboard-close').on 'mousedown', _closeKeyboardInstructions
+		$('#keyboard-close').on 'keypress', (e) ->
+			if e.key == ' ' or e.key == 'Enter'
+				_closeKeyboardInstructions()
+				document.getElementById('keyboard-instructions').focus()
 
 		$('#keyboard-instructions').on 'keydown', (e) ->
 			if e.key == 'Tab' and not e.shiftKey
@@ -538,7 +555,10 @@ Namespace('Sequencer').Engine = do ->
 				unorderedTiles = _tilesInVertOrder.filter (t) ->
 					return false unless t
 					_sequence.indexOf(t.id) < 0
-				document.getElementById(unorderedTiles[0].id).focus()
+				if unorderedTiles.length
+					document.getElementById(unorderedTiles[0].id).focus()
+				else
+					document.getElementById(_sequence[0]).focus()
 
 		$('#wraparound').on 'click', ->
 			unorderedTiles = _tilesInVertOrder.filter (t) ->
@@ -549,17 +569,28 @@ Namespace('Sequencer').Engine = do ->
 			if e.key == 'Tab' and e.shiftKey
 				e.preventDefault()
 				e.stopPropagation()
-				# this array has a lot of empty space in it, the last element isn't necessarily the last tile
-				# we have to traverse it backwards to find the last tile
-				highestTile = null
-				for i in [_tilesInVertOrder.length..0]
-					if _tilesInVertOrder[i] and not _sequence.includes[_tilesInVertOrder[i].id]
-						highestTile = _tilesInVertOrder[i]
-						break
-				if highestTile
-					document.getElementById(highestTile.id).focus()
+				if _sequence.length
+					document.getElementById(_sequence[_sequence.length-1]).focus()
 				else
-					document.getElementById(_sequence[0]).focus()
+					# this array has a lot of empty space in it, the last element isn't necessarily the last tile
+					# we have to traverse it backwards to find the last tile
+					highestTile = null
+					for i in [_tilesInVertOrder.length..0]
+						if _tilesInVertOrder[i] and not _sequence.includes[_tilesInVertOrder[i].id]
+							highestTile = _tilesInVertOrder[i]
+							break
+					if highestTile
+						document.getElementById(highestTile.id).focus()
+
+	_openKeyboardInstructions = () ->
+		$('#keyboard-instructions-window').show()
+		$('.fade').addClass 'active'
+		$('.board').attr 'inert', 'true'
+		document.getElementById('keyboard-close').focus()
+	_closeKeyboardInstructions = () ->
+		$('#keyboard-instructions-window').hide()
+		$('.fade').removeClass 'active'
+		$('.board').removeAttr 'inert'
 
 	_resizeTitle = (length) ->
 		if length < 20
@@ -769,6 +800,7 @@ Namespace('Sequencer').Engine = do ->
 			_singleDigitFlipCorrect 1, results
 
 		$('#resultsButton').focus()
+		$('.board').attr 'inert', 'true'
 		$('#submit').prop('disabled', true)
 
 	_showScoreMessage = (results) ->
@@ -784,6 +816,7 @@ Namespace('Sequencer').Engine = do ->
 				$('.fade').removeClass 'active'
 				$('#resultsOuter').remove()
 				$('.board').removeClass 'dim'
+				$('.board').removeAttr 'inert'
 				_end()
 
 		# Incorrect sequence
@@ -797,6 +830,7 @@ Namespace('Sequencer').Engine = do ->
 				$('#resultsOuter').remove()
 				$('.bestscore').html highestScore + "%"
 				$('.confirmDialog').addClass 'show'
+				$('.confirmDialog').removeAttr 'inert'
 				$('.confirmDialog').children('button').attr('tabindex', 0)
 				$('#confirmBestScoreButton').on 'click', ->
 					_sendScores()
@@ -806,6 +840,8 @@ Namespace('Sequencer').Engine = do ->
 					$('.board').removeClass 'dim'
 					$('.fade').removeClass 'active'
 					$('.confirmDialog').removeClass 'show'
+					$('.confirmDialog').attr 'inert', 'true'
+					$('.board').removeAttr 'inert'
 					$('#submit').prop('disabled', false)
 					$('.confirmDialog').children('button').attr('tabindex', -1)
 

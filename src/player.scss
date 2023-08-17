@@ -981,6 +981,25 @@ header {
 	}
 }
 
+#keyboard-instructions-window {
+	display: none;
+	position: absolute;
+	box-sizing: border-box;
+	left: 40px;
+	top: 90px;
+	width: 670px;
+	height: 380px;
+	background: $lblurple;
+	padding: 0 20px;
+	z-index: 150;
+	border-radius: 10px;
+	box-shadow: 0px 0px 10px 10px rgba(0,0,0,.1);
+
+	.big-button {
+		padding: 0 30px;
+	}
+}
+
 #demo {
 	position: absolute;
 	left: 50px;

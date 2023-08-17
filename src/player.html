@@ -87,11 +87,14 @@
 			<div id="orderInstructions">Drag and organize tiles here</div>
 		</section>
 		<div id="submitHolder" class="nondraggable">
-			<button id="submit" class="big-button nondraggable" disabled="true">Submit Sequence</button>
+			<button id="submit"
+				class="big-button nondraggable"
+				tabindex=0>
+				Submit Sequence
+			</button>
 		</div>
 		<button id="wraparound"
 			class="visible-on-focus big-button nondraggable"
-			role="button"
 			tabindex=0>
 			Select First Unsorted Item
 		</button>
@@ -192,6 +195,33 @@
 		</div>
 	</section>
 </script>
+
+<div id="keyboard-instructions-window">
+	<h3>Keyboard Instructions</h3>
+	<p>
+		Use the <strong>Tab</strong> key to navigate through the terms from top to bottom, left to right.
+	</p>
+	<p>
+		Hold the <strong>Shift</strong> key when pressing the <strong>Tab</strong> key to navigate in reverse.
+	</p>
+	<p>
+		You will reach the sequenced terms after navigating through all of the unsorted terms.
+	</p>
+	<p>
+		Press the <strong>Right Arrow</strong> key when an unsorted term is selected to move it to the end of the sequence.
+	</p>
+	<p>
+		Press the <strong>Left Arrow</strong> key when a sequenced term is selected to remove it from the sequence.
+	</p>
+	<p>
+		Press the <strong>Up Arrow</strong> or <strong>Down Arrow</strong> keys when a sequenced term is selected to move it up or down in the sequence.
+	</p>
+	<button id="keyboard-close"
+		class="big-button enabled"
+		tabindex=0>
+		Close Keyboard Instructions
+	</button>
+</div>
 
 <div class="confirmDialog" inert="true">
 	<p>
