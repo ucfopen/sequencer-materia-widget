@@ -16,6 +16,13 @@ Namespace('Sequencer').Engine = do ->
 	_practiceMode     = false # true = practice mode, false = assessment mode
 	currentPenalty    = 0
 
+	_keyboardInstructions = 'Use the Tab key to navigate through the terms from top to bottom, left to right. ' +
+		'Hold the Shift key when pressing the Tab key to navigate in reverse. ' +
+		'You will reach the sequenced terms after navigating through all of the unsorted terms. ' +
+		'Press the Right Arrow key when an unsorted term is selected to move it to the end of the sequence. ' +
+		'Press the Left Arrow key when a sequenced term is selected to remove it from the sequence. ' +
+		'Press the Up Arrow or Down Arrow keys when a sequenced term is selected to move it up or down in the sequence.'
+
 	# The current dragging term and its position info
 	_curterm      = null
 	_relativeX    = 0
@@ -380,6 +387,8 @@ Namespace('Sequencer').Engine = do ->
 					$('#submit').prop('disabled', true)
 					$('#submit').removeClass 'enabled'
 
+					_setAriaLabelForTile(_curterm.id)
+
 					_assistiveStatusUpdate(_tiles[_curterm.id].name + ' unsorted. ' + _tilesInSequence + ' of ' + _numTiles + ' tiles sorted.')
 
 			when 'ArrowRight' # put it in the ordered list (at the bottom)
@@ -396,6 +405,8 @@ Namespace('Sequencer').Engine = do ->
 					if _tilesInSequence == _numTiles
 						_tilesSequenced()
 
+					_setAriaLabelForTile(_curterm.id)
+
 					_assistiveStatusUpdate(_tiles[_curterm.id].name + ' sorted. '  + _tilesInSequence + ' of ' + _numTiles + ' tiles sorted.')
 					# approximate the y position of this tile within the drag area then scroll to that so it remains visible
 					# math: position in sequence * tile height + padding between tiles
@@ -406,11 +417,15 @@ Namespace('Sequencer').Engine = do ->
 				if (i = _sequence.indexOf(~~_curterm.id)) != -1 and i != 0
 					[_sequence[i - 1], _sequence[i]] = [_sequence[i], _sequence[i - 1]]
 
+					_setAriaLabelForTile(_curterm.id)
+
 					_assistiveStatusUpdate(_tiles[_curterm.id].name + ' moved to position   ' + i + ' of ' + _tilesInSequence)
 
 			when 'ArrowDown' # sort downwards
 				if (i = _sequence.indexOf(~~_curterm.id)) != -1 and i != _sequence.length - 1
 					[_sequence[i + 1], _sequence[i]] = [_sequence[i], _sequence[i + 1]]
+
+					_setAriaLabelForTile(_curterm.id)
 
 					_assistiveStatusUpdate(_tiles[_curterm.id].name + ' moved to position   ' + (i + 2) + ' of ' + _tilesInSequence)
 
@@ -431,9 +446,18 @@ Namespace('Sequencer').Engine = do ->
 			_freeAttempts = 'unlimited'
 			_qset.options.penalty = 0
 
+		_introInstructions = 'Welcome to the ' + _qset.name + ' Sequencer widget. ' +
+			'You will be presented with a number of terms. ' +
+			'Your objective is to order all of the terms correctly in the sequence list. ' +
+			'You have ' + _freeAttempts + ' attempts to find the correct order. ' +
+			'Your highest score will be saved. ' +
+			_keyboardInstructions + ' ' +
+			'Press the Space or Enter key to begin.'
+
 		_$demo = $ demoScreen
 			demoTitle: ''
-			freeAttempts : _freeAttempts or "unlimited"
+			freeAttempts: _freeAttempts or "unlimited"
+			introInstructions: _introInstructions
 		$('body').append _$demo
 		$('.demoButton').offset()
 		$('.demoButton').addClass('show').focus()
@@ -497,6 +521,7 @@ Namespace('Sequencer').Engine = do ->
 			score: "0%"
 			penalty: ~~_qset.options.penalty
 			freeAttempts: _freeAttempts
+			keyboardInstructions: 'Keyboard instructions: ' + _keyboardInstructions + ' Press the Tab key to return to the nearest tile.'
 
 		cWidth = 250
 		cHeight = 280
@@ -651,6 +676,18 @@ Namespace('Sequencer').Engine = do ->
 		s.mozTransform = transform
 		s.transform = transform
 
+	_setAriaLabelForTile = (tileId) ->
+		tileLabel = _tiles[tileId].name + '.'
+		if _tiles[tileId].clue is ''
+			$('#'+tileId).children('.clue').remove()
+		else
+			tileLabel = tileLabel + ' This tile has a clue, press enter to review it.'
+		if _sequence.indexOf(~~tileId) >= 0
+			tileLabel = tileLabel + ' This tile has been added to the sequence.'
+		else
+			tileLabel = tileLabel + ' This tile has not been added to the sequence.'
+		$('#'+tileId).attr('aria-label', tileLabel)
+
 	# Set random tile position, angle, and z-index
 	_setInitialTilePosition = (maxWidth, maxHeight) ->
 
@@ -680,10 +717,7 @@ Namespace('Sequencer').Engine = do ->
 				$('#'+tile.id).css
 					'font-size': 13+'px'
 			# Remove the clue symbol if there is no hint available
-			if _tiles[tile.id].clue is ''
-				$('#'+tile.id).children('.clue').remove()
-				$('#'+tile.id).attr('aria-label', _tiles[tile.id].name)
-			else $('#'+tile.id).attr('aria-label', _tiles[tile.id].name + '. This tile has a clue, press enter to review it.')
+			_setAriaLabelForTile tile.id
 
 		_tilesInVertOrder = _tiles.toSorted (a,b) ->
 			if a.ypos < b.ypos

@@ -49,7 +49,11 @@
 			<p>You have <span class="demoDeduction"><%= freeAttempts %> guesses</span>.</p>
 			<p>Your highest score will be saved.</p>
 		</div>
-		<button tabindex=0 class="demoButton">Play Sequencer</button>
+		<button tabindex=0
+			class="demoButton"
+			aria-label="<%= introInstructions %>">
+			Play Sequencer
+		</button>
 	</div>
 </div>
 </script>
@@ -62,7 +66,8 @@
 		</header>
 		<button id="keyboard-instructions"
 			class="big-button enabled"
-			tabindex=0>
+			tabindex=0
+			aria-label="<%= keyboardInstructions %>">
 			Keyboard Instructions
 		</button>
 		<div id="dragContainer" role="list">
@@ -95,7 +100,8 @@
 		</div>
 		<button id="wraparound"
 			class="visible-on-focus big-button nondraggable"
-			tabindex=0>
+			tabindex=0
+			aria-label='Press Space or Enter to select the first unsorted tile.'>
 			Select First Unsorted Item
 		</button>
 		<footer id="score-area">
