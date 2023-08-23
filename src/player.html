@@ -30,19 +30,21 @@
 		<h4>Put em in order</h4>
 	</div>
 	<div id="demoArea">
-		<div id="demoTitle"><%= demoTitle %></div>
-		<div id="demoFooter"></div>
-		<div class="demoTile move" id="dt1">1</div>
-		<div class="demoTile move" id="dt2">2</div>
-		<div class="demoTile move" id="dt3">3</div>
-		<div id="demoTileSection"></div>
-		<div id="demoOrderArea"></div>
-		<div id="demoNumberBar"></div>
-		<div id="demoSubmitButton" class="hover">Submit</div>
-		<div id="demoMouse"><img src="assets/cursor.svg"></div>
-		<div id="demoFinish" class="show">Score:
-			<div id="demoScore">100%</div>
-		</div>
+		<section id='demo-animation' aria-hidden="true">
+			<div id="demoTitle"><%= demoTitle %></div>
+			<div id="demoFooter"></div>
+			<div class="demoTile move" id="dt1">1</div>
+			<div class="demoTile move" id="dt2">2</div>
+			<div class="demoTile move" id="dt3">3</div>
+			<div id="demoTileSection"></div>
+			<div id="demoOrderArea"></div>
+			<div id="demoNumberBar"></div>
+			<div id="demoSubmitButton" class="hover">Submit</div>
+			<div id="demoMouse"><img src="assets/cursor.svg"></div>
+			<div id="demoFinish" class="show">Score:
+				<div id="demoScore">100%</div>
+			</div>
+		</section>
 		<div id="playInstructions">
 			<h3>How to play:</h3>
 			<p>Order the tiles correctly in the sequence list.</p>
@@ -146,7 +148,7 @@
 			<h3>Sequencer!</h3>
 			<h4>Put "em in order</h4>
 		</div>
-		<div id="resultsInner">
+		<div id="resultsInner" aria-hidden="true">
 			<h5>You have</h5>
 			<div id="flipNumberContainer">
 				<div id="rightDigit">
@@ -192,12 +194,14 @@
 			</div>
 		</div>
 		<div id="resultsBox">
-			<span id="lostPointsMessage">This score: <span class="circle" id="circle"><%= penalty %></span></span>
+			<span id="lostPointsMessage" aria-hidden="true">
+				This score: <span class="circle" id="circle"><%= penalty %></span>
+			</span>
 			<!--<span id="bestScoreMessage">Best score: <span class="circle" id="bestcircle"><%= penalty %></span></span>-->
-			<div id="correctMessage">Great Job!</div>
-			<div id="allAttemptsMessage">You are out of guesses.</div>
-			<button id="resultsButton" class="resultsButton"></button>
-			<button id="submitScoreButton"></button>
+			<div id="correctMessage" aria-hidden="true">Great Job!</div>
+			<div id="allAttemptsMessage" aria-hidden="true">You are out of guesses.</div>
+			<button id="resultsButton" class="resultsButton" aria-label=''></button>
+			<button id="submitScoreButton" aria-label=''></button>
 		</div>
 	</section>
 </script>

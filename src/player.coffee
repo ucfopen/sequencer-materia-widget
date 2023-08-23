@@ -387,6 +387,8 @@ Namespace('Sequencer').Engine = do ->
 					$('#submit').prop('disabled', true)
 					$('#submit').removeClass 'enabled'
 
+					$('#wraparound').removeAttr 'inert'
+
 					_setAriaLabelForTile(_curterm.id)
 
 					_assistiveStatusUpdate(_tiles[_curterm.id].name + ' unsorted. ' + _tilesInSequence + ' of ' + _numTiles + ' tiles sorted.')
@@ -404,6 +406,7 @@ Namespace('Sequencer').Engine = do ->
 					$('#message').remove()
 					if _tilesInSequence == _numTiles
 						_tilesSequenced()
+						$('#wraparound').attr 'inert', 'true'
 
 					_setAriaLabelForTile(_curterm.id)
 
@@ -561,6 +564,12 @@ Namespace('Sequencer').Engine = do ->
 		$('#submit').on 'click', ->
 			_submitSequence()
 
+		$('#submit').on 'keydown', (e) ->
+			if e.key == 'Tab' and e.shiftKey
+				e.preventDefault()
+				e.stopPropagation()
+				document.getElementById(_sequence[_sequence.length-1]).focus()
+
 		$('.board').on 'click', '#clueHeader', ->
 			$('header').removeClass 'slideUp'
 			$('#clueHeader').transition({height: 0}, 500);
@@ -678,14 +687,14 @@ Namespace('Sequencer').Engine = do ->
 
 	_setAriaLabelForTile = (tileId) ->
 		tileLabel = _tiles[tileId].name + '.'
-		if _tiles[tileId].clue is ''
-			$('#'+tileId).children('.clue').remove()
-		else
-			tileLabel = tileLabel + ' This tile has a clue, press enter to review it.'
 		if _sequence.indexOf(~~tileId) >= 0
 			tileLabel = tileLabel + ' This tile has been added to the sequence.'
 		else
 			tileLabel = tileLabel + ' This tile has not been added to the sequence.'
+		if _tiles[tileId].clue is ''
+			$('#'+tileId).children('.clue').remove()
+		else
+			tileLabel = tileLabel + ' This tile has a clue, press enter to review it.'
 		$('#'+tileId).attr('aria-label', tileLabel)
 
 	# Set random tile position, angle, and z-index
@@ -833,16 +842,18 @@ Namespace('Sequencer').Engine = do ->
 		else
 			_singleDigitFlipCorrect 1, results
 
-		$('#resultsButton').focus()
 		$('.board').attr 'inert', 'true'
 		$('#submit').prop('disabled', true)
 
 	_showScoreMessage = (results) ->
+		_resultsButtonAriaLabel = ''
+
 		# Correct sequence submitted
 		if results is _numTiles
 			# Change button function for end
 			_sendScores()
 			_end(no)
+			_resultsButtonAriaLabel = 'You have put all of the terms in the correct order. Press Space or Enter to visit the score screen.'
 			$('#resultsButton').html "Visit Score Screen"
 			$('#resultsButton').addClass 'show'
 			$('#correctMessage').addClass 'show'
@@ -858,6 +869,10 @@ Namespace('Sequencer').Engine = do ->
 			$("#bestcircle").html highestScore + "%"
 			$("#circle").html Math.round((results / _numTiles) * 100) + "%"
 
+			_resultsButtonAriaLabel = results + ' out of ' + _numTiles +
+				' tiles sorted correctly, highest score so far is ' + highestScore + '.'
+
+			$('#submitScoreButton').attr('aria-label', 'Press Space or Enter to finish with your best score of ' + highestScore + '%.')
 			$('#submitScoreButton').html "Or finish with your best score of " + highestScore + "%"
 			$('#submitScoreButton').addClass "show"
 			$('#submitScoreButton').on 'click', ->
@@ -883,9 +898,13 @@ Namespace('Sequencer').Engine = do ->
 			if _freeAttempts > 0 or _practiceMode
 				# Change button function for retry
 				if _practiceMode
+					_resultsButtonAriaLabel += ' Press Space or Enter to try again.'
 					$('#resultsButton').html "Try Again!"
 				else
-					$('#resultsButton').html "Try Again!<div>(" + (_freeAttempts) + " more guesses)</div>"
+					_guessOrGuesses = if _freeAttempts == 1 then 'guess' else 'guesses'
+					_resultsButtonAriaLabel += ' You have ' + _freeAttempts + ' ' + _guessOrGuesses + ' remaining.' +
+						' Press Space or Enter to try again.'
+					$('#resultsButton').html "Try Again!<div>(" + (_freeAttempts) + " more " + _guessOrGuesses + ")</div>"
 
 				$('#resultsButton').addClass 'show'
 				$('#lostPointsMessage').addClass 'show'
@@ -894,15 +913,18 @@ Namespace('Sequencer').Engine = do ->
 					$('#resultsOuter').remove()
 					$('.board').removeClass 'dim'
 					$('.fade').removeClass 'active'
+					$('.board').removeAttr 'inert'
 					$('#submit').prop('disabled', false)
 					$('.confirmDialog').children('button').attr('tabindex', -1)
 
 			# Used last attempt
 			else
+				_resultsButtonAriaLabel += ' You have no guesses remaining. Press Space or Enter to visit the score screen.'
 				_sendScores()
 				_end(no)
 				# Change button function for end
 				$('#resultsButton').html "Visit Score Screen"
+				$('#submitScoreButton').attr('aria-label', null)
 				$('#submitScoreButton').hide()
 				$('#attempts-info').hide()
 				$('#resultsButton').addClass 'show'
@@ -912,6 +934,9 @@ Namespace('Sequencer').Engine = do ->
 					$('.board').removeClass 'dim'
 					$('.fade').removeClass 'active'
 					_end()
+
+		$('#resultsButton').attr('aria-label', _resultsButtonAriaLabel)
+		$('#resultsButton').focus()
 
 	# Flip the numbers until flip to number correct
 	_singleDigitFlipCorrect = (ctr, results) ->
