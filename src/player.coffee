@@ -7,7 +7,7 @@ Namespace('Sequencer').Engine = do ->
 	_numTiles         = 0     # Total number of tiles in the qset
 	_ids              = []    # Array which holds random numbers for the tile Id's
 	_tilesInSequence  = 0     # Count for the number of tiles in the OrderArea div
-	_sequence         = [-1]  # Order of the submitted tiles
+	_sequence         = []  # Order of the submitted tiles
 	_attempts         = 0     # Number of tries the current user has made
 	_playDemo         = true  # Boolean for demo on/off
 	_insertAfter      = 0     # Number to where to drop tile inbetween other tiles
@@ -389,7 +389,8 @@ Namespace('Sequencer').Engine = do ->
 
 					$('#wraparound').removeAttr 'inert'
 
-					_setAriaLabelForTile(_curterm.id)
+					_setAriaLabelsForTiles()
+					_updateWraparoundAriaLabel()
 
 					_assistiveStatusUpdate(_tiles[_curterm.id].name + ' unsorted. ' + _tilesInSequence + ' of ' + _numTiles + ' tiles sorted.')
 
@@ -408,7 +409,8 @@ Namespace('Sequencer').Engine = do ->
 						_tilesSequenced()
 						$('#wraparound').attr 'inert', 'true'
 
-					_setAriaLabelForTile(_curterm.id)
+					_setAriaLabelsForTiles()
+					_updateWraparoundAriaLabel()
 
 					_assistiveStatusUpdate(_tiles[_curterm.id].name + ' sorted. '  + _tilesInSequence + ' of ' + _numTiles + ' tiles sorted.')
 					# approximate the y position of this tile within the drag area then scroll to that so it remains visible
@@ -420,7 +422,7 @@ Namespace('Sequencer').Engine = do ->
 				if (i = _sequence.indexOf(~~_curterm.id)) != -1 and i != 0
 					[_sequence[i - 1], _sequence[i]] = [_sequence[i], _sequence[i - 1]]
 
-					_setAriaLabelForTile(_curterm.id)
+					_setAriaLabelsForTiles()
 
 					_assistiveStatusUpdate(_tiles[_curterm.id].name + ' moved to position   ' + i + ' of ' + _tilesInSequence)
 
@@ -428,7 +430,7 @@ Namespace('Sequencer').Engine = do ->
 				if (i = _sequence.indexOf(~~_curterm.id)) != -1 and i != _sequence.length - 1
 					[_sequence[i + 1], _sequence[i]] = [_sequence[i], _sequence[i + 1]]
 
-					_setAriaLabelForTile(_curterm.id)
+					_setAriaLabelsForTiles()
 
 					_assistiveStatusUpdate(_tiles[_curterm.id].name + ' moved to position   ' + (i + 2) + ' of ' + _tilesInSequence)
 
@@ -545,6 +547,8 @@ Namespace('Sequencer').Engine = do ->
 
 		# Set the positions for each tile.
 		_setInitialTilePosition cWidth, cHeight
+
+		_updateWraparoundAriaLabel()
 
 		$('.tile').on 'touchstart', _mouseDownEvent
 		$('.tile').on 'MSPointerDown', _mouseDownEvent
@@ -685,17 +689,28 @@ Namespace('Sequencer').Engine = do ->
 		s.mozTransform = transform
 		s.transform = transform
 
-	_setAriaLabelForTile = (tileId) ->
-		tileLabel = _tiles[tileId].name + '.'
-		if _sequence.indexOf(~~tileId) >= 0
-			tileLabel = tileLabel + ' This tile has been added to the sequence.'
+	_setAriaLabelsForTiles = () ->
+		for tile in _tiles
+			_setAriaLabelForTile(tile) if tile
+
+	_setAriaLabelForTile = (tile) ->
+		tileLabel = tile.name + '.'
+		sequencedIndex = _sequence.indexOf(tile.id)
+		if sequencedIndex >= 0
+			tileLabel = tileLabel + ' This tile is in the sequence at position ' + (sequencedIndex + 1) + '.'
 		else
 			tileLabel = tileLabel + ' This tile has not been added to the sequence.'
-		if _tiles[tileId].clue is ''
-			$('#'+tileId).children('.clue').remove()
+		if tile.clue is ''
+			$('#'+tile.id).children('.clue').remove()
 		else
 			tileLabel = tileLabel + ' This tile has a clue, press enter to review it.'
-		$('#'+tileId).attr('aria-label', tileLabel)
+		$('#'+tile.id).attr('aria-label', tileLabel)
+
+	_updateWraparoundAriaLabel = () ->
+		labelPlusRemaining = 'Press Space or Enter to select the first unsorted tile, there are ' +
+			(_numTiles - _tilesInSequence) +
+			' unsorted tiles remaining.'
+		$('#wraparound').attr('aria-label', labelPlusRemaining)
 
 	# Set random tile position, angle, and z-index
 	_setInitialTilePosition = (maxWidth, maxHeight) ->
@@ -725,8 +740,7 @@ Namespace('Sequencer').Engine = do ->
 			if textLength >= 40
 				$('#'+tile.id).css
 					'font-size': 13+'px'
-			# Remove the clue symbol if there is no hint available
-			_setAriaLabelForTile tile.id
+		_setAriaLabelsForTiles()
 
 		_tilesInVertOrder = _tiles.toSorted (a,b) ->
 			if a.ypos < b.ypos
