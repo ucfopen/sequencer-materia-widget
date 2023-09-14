@@ -21,6 +21,8 @@ score:
   is_scorable: Yes
   score_module: Sequencer
 meta_data:
+  accessibility_keyboard: Full
+  accessibility_reader: Full
   features:
     - Customizable
     - Scorable
