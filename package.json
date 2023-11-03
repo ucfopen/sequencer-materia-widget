@@ -3,9 +3,9 @@
   "materia": {
     "cleanName": "sequencer"
   },
-  "version": "1.0.4",
+  "version": "1.0.5",
   "scripts": {
-	"start": "mwdk-start",
+    "start": "mwdk-start",
     "build": "mwdk-build-prod",
     "build-dev": "mwdk-build-dev",
     "test": "echo 'tests not implemented'",
