@@ -7,25 +7,15 @@ const widgetWebpack = require('materia-widget-development-kit/webpack-widget')
 const copy = widgetWebpack.getDefaultCopyList()
 
 const entries = {
-	'player.js': [
-			path.join(srcPath, 'player.coffee')
+	'player': [
+		path.join(srcPath, 'player.html'),
+		path.join(srcPath, 'player.scss'),
+		path.join(srcPath, 'player.coffee')
 	],
-	'creator.js': [
-			path.join(srcPath, 'creator.coffee')
-	],
-	'player.css': [
-			path.join(srcPath, 'player.html'),
-			path.join(srcPath, 'player.scss')
-	],
-	'creator.css': [
-			path.join(srcPath, 'creator.html'),
-			path.join(srcPath, 'creator.scss')
-	],
-	'guides/player.temp.html': [
-			path.join(srcPath, '_guides', 'player.md')
-	],
-	'guides/creator.temp.html': [
-			path.join(srcPath, '_guides', 'creator.md')
+	'creator': [
+		path.join(srcPath, 'creator.html'),
+		path.join(srcPath, 'creator.scss'),
+		path.join(srcPath, 'creator.coffee')
 	]
 }
 
