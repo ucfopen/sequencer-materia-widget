@@ -415,14 +415,16 @@ header {
 				margin-bottom: 14px;
 
 				.number {
+					display: flex;
+					justify-content: center;
+					align-items: center;
 					position: absolute;
 					top: 10px;
 					color: $light;
 					text-align: center;
 					background: $titleblue;
-					float: top;
-					padding-top: 5px;
-					height: 35px;
+					padding-top: 3px;
+					height: 32px;
 					width: 35px;
 					margin-left: 8px;
 					margin-bottom: 35px;
@@ -526,7 +528,7 @@ header {
 					border: none;
 					background: transparent;
 					width: 90%;
-					height: 90%;
+					height: calc(90% - 10px);
 					resize: none;
 				}
 			}
