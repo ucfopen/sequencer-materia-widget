@@ -21,43 +21,103 @@
 
 <body>
 <div class="fade active"></div>
-<script type="text/template" id="t-board"><div class="board">
-	<header>
-		<h3>Sequence:</h3>
-		<section id="widgetTitle"><%= title %></section>
-		<hr>
-	</header>
-	<div id="dragContainer">
-		<!-- tiles -->
-		<% for(var t in tiles) { var tile = tiles[t]; %>
-			<div class="tile" data-id="<%= tile.id %>" id="<%= tile.id %>" tabindex="<%= parseInt(t, 10)+1+(tiles.length) %>">
-			<%= tile.name %>
-			<div class="clue" data-id="<%= tile.id %>"></div>
+
+<!-- The child container element has to be inline. For some reason putting it on the next line breaks everything. -->
+<!-- message window (Tutorial) -->
+<script type="text/template" id="demo-window"><div id="demo">
+	<div id="popupWindowHeader">
+		<h3>Sequencer!</h3>
+		<h4>Put em in order</h4>
+	</div>
+	<div id="demoArea">
+		<section id='demo-animation' aria-hidden="true">
+			<div id="demoTitle"><%= demoTitle %></div>
+			<div id="demoFooter"></div>
+			<div class="demoTile move" id="dt1">1</div>
+			<div class="demoTile move" id="dt2">2</div>
+			<div class="demoTile move" id="dt3">3</div>
+			<div id="demoTileSection"></div>
+			<div id="demoOrderArea"></div>
+			<div id="demoNumberBar"></div>
+			<div id="demoSubmitButton" class="hover">Submit</div>
+			<div id="demoMouse"><img src="assets/cursor.svg"></div>
+			<div id="demoFinish" class="show">Score:
+				<div id="demoScore">100%</div>
 			</div>
-		<% } %>
-		<div id="tileFiller"></div>
+		</section>
+		<div id="playInstructions">
+			<h3>How to play:</h3>
+			<p>Order the tiles correctly in the sequence list.</p>
+			<p>You have <span class="demoDeduction"><%= freeAttempts %> guesses</span>.</p>
+			<p>Your highest score will be saved.</p>
+		</div>
+		<button tabindex=0
+			class="demoButton"
+			aria-label="<%= introInstructions %>">
+			Play Sequencer
+		</button>
 	</div>
-	<section id="tileSection"></section>
-	<aside id="numberBar" class="nondraggable">
-		<div class="numbers">1</div>
-	</aside>
-	<section id="orderArea">
-		<div id="orderInstructions">Drag and organize tiles here</div>
-	</section>
-	<div id="submitHolder" class="nondraggable">
-		<div id="submit" class="nondraggable">Submit Sequence</div>
+</div>
+</script>
+
+<script type="text/template" id="t-board"><div class="board" inert="true">
+		<header>
+			<h3>Sequence:</h3>
+			<section id="widgetTitle"><%= title %></section>
+			<hr>
+		</header>
+		<button id="keyboard-instructions"
+			class="big-button enabled"
+			tabindex=0
+			aria-label="<%= keyboardInstructions %>">
+			Keyboard Instructions
+		</button>
+		<div id="dragContainer" role="list">
+			<!-- tiles -->
+			<% for(var t in tiles) { var tile = tiles[t]; %>
+				<div class="tile"
+					data-id="<%= tile.id %>"
+					id="<%= tile.id %>"
+					tabindex=0
+					role="listitem">
+				<%= tile.name %>
+					<button class="clue" data-id="<%= tile.id %>" tabindex="-1"></button>
+				</div>
+			<% } %>
+			<div id="tileFiller"></div>
+		</div>
+		<section id="tileSection"></section>
+		<aside id="numberBar" class="nondraggable">
+			<div class="numbers">1</div>
+		</aside>
+		<section id="orderArea">
+			<div id="orderInstructions">Drag and organize tiles here</div>
+		</section>
+		<div id="submitHolder" class="nondraggable">
+			<button id="submit"
+				class="big-button nondraggable"
+				tabindex=0>
+				Submit Sequence
+			</button>
+		</div>
+		<button id="wraparound"
+			class="visible-on-focus big-button nondraggable"
+			tabindex=0
+			aria-label='Press Space or Enter to select the first unsorted tile.'>
+			Select First Unsorted Item
+		</button>
+		<footer id="score-area">
+			<h4 id="score-text">Score: <span id="score"><%= score %></span></h4>
+			<h5><span id="practiceMode-info">(Practice Mode)</span></h5>
+			<h5><span id="attempts-info">(<span id="attemptsLeft"><%= freeAttempts %></span> guesses left)</span></h5>
+		</footer>
 	</div>
-	<footer id="score-area">
-		<h4 id="score-text">Score: <span id="score"><%= score %></span></h4>
-		<h5><span id="practiceMode-info">(Practice Mode)</span></h5>
-		<h5><span id="attempts-info">(<span id="attemptsLeft"><%= freeAttempts %></span> guesses left)</span></h5>
-	</footer>
 </script>
 
 <!-- clues -->
 <script type="text/template" id="tile-clue-window"><div id="clueHeader">
 		<h3 class="clueTitle"><%= name %></h3>
-		<aside class="tile-clue-text">
+		<aside role="definition" class="tile-clue-text" aria-live="polite">
 			<p class="clueDescription"><%= clue %></p>
 		</aside>
 	</div>
@@ -82,44 +142,13 @@
 	</div>
 </script>
 
-<!-- message window (Tutorial) -->
-<script type="text/template" id="demo-window"><div id="demo">
-		<div id="popupWindowHeader">
-			<h3>Sequencer!</h3>
-			<h4>Put em in order</h4>
-		</div>
-		<div id="demoArea">
-			<div id="demoTitle"><%= demoTitle %></div>
-			<div id="demoFooter"></div>
-			<div class="demoTile move" id="dt1">1</div>
-			<div class="demoTile move" id="dt2">2</div>
-			<div class="demoTile move" id="dt3">3</div>
-			<div id="demoTileSection"></div>
-			<div id="demoOrderArea"></div>
-			<div id="demoNumberBar"></div>
-			<div id="demoSubmitButton" class="hover">Submit</div>
-			<div id="demoMouse"><img src="assets/cursor.svg"></div>
-			<div id="demoFinish" class="show">Score:
-				<div id="demoScore">100%</div>
-			</div>
-			<div id="playInstructions">
-				<h3>How to play:</h3>
-				<p>Order the tiles correctly in the sequence list.</p>
-				<p>You have <span class="demoDeduction"><%= freeAttempts %> guesses</span>.</p>
-				<p>Your highest score will be saved.</p>
-			</div>
-			<div class="demoButton">Play Sequencer</div>
-		</div>
-	</div>
-</script>
-
 <!-- score results -->
 <script type="text/template" id="results-popup"><section id="resultsOuter">
 		<div id="popupWindowHeader">
 			<h3>Sequencer!</h3>
 			<h4>Put "em in order</h4>
 		</div>
-		<div id="resultsInner">
+		<div id="resultsInner" aria-hidden="true">
 			<h5>You have</h5>
 			<div id="flipNumberContainer">
 				<div id="rightDigit">
@@ -165,23 +194,54 @@
 			</div>
 		</div>
 		<div id="resultsBox">
-			<span id="lostPointsMessage">This score: <span class="circle" id="circle"><%= penalty %></span></span>
+			<span id="lostPointsMessage" aria-hidden="true">
+				This score: <span class="circle" id="circle"><%= penalty %></span>
+			</span>
 			<!--<span id="bestScoreMessage">Best score: <span class="circle" id="bestcircle"><%= penalty %></span></span>-->
-			<div id="correctMessage">Great Job!</div>
-			<div id="allAttemptsMessage">You are out of guesses.</div>
-			<div id="resultsButton" class="resultsButton"></div>
-			<div id="submitScoreButton"></div>
+			<div id="correctMessage" aria-hidden="true">Great Job!</div>
+			<div id="allAttemptsMessage" aria-hidden="true">You are out of guesses.</div>
+			<button id="resultsButton" class="resultsButton" aria-label=''></button>
+			<button id="submitScoreButton" aria-label=''></button>
 		</div>
 	</section>
 </script>
 
-<div class="confirmDialog">
+<div id="keyboard-instructions-window">
+	<h3>Keyboard Instructions</h3>
+	<p>
+		Use the <strong>Tab</strong> key to navigate through the terms from top to bottom, left to right.
+	</p>
+	<p>
+		Hold the <strong>Shift</strong> key when pressing the <strong>Tab</strong> key to navigate in reverse.
+	</p>
+	<p>
+		You will reach the sequenced terms after navigating through all of the unsorted terms.
+	</p>
+	<p>
+		Press the <strong>Right Arrow</strong> key when an unsorted term is selected to move it to the end of the sequence.
+	</p>
+	<p>
+		Press the <strong>Left Arrow</strong> key when a sequenced term is selected to remove it from the sequence.
+	</p>
+	<p>
+		Press the <strong>Up Arrow</strong> or <strong>Down Arrow</strong> keys when a sequenced term is selected to move it up or down in the sequence.
+	</p>
+	<button id="keyboard-close"
+		class="big-button enabled"
+		tabindex=0>
+		Close Keyboard Instructions
+	</button>
+</div>
+
+<div class="confirmDialog" inert="true">
 	<p>
 		Are you sure you want to stop with your best score of <span class="bestscore bold"></span>?
 	</p>
-	<div id="cancelBestScoreButton" class="resultsButton arial">No, keep trying</div>
-	<div id="confirmBestScoreButton" class="resultsButton arial">Yes, finish with <span class="bestscore"></span>.</div>
+	<button id="cancelBestScoreButton" class="resultsButton">No, keep trying</button>
+	<button id="confirmBestScoreButton" class="resultsButton">Yes, finish with <span class="bestscore"></span>.</button>
 </div>
+
+<div role="status" class="ariaLiveStatus" aria-live="polite"></div>
 
 <!-- INITIALIZE -->
 	<script>

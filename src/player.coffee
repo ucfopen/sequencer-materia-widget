@@ -3,10 +3,11 @@ Namespace('Sequencer').Engine = do ->
 	_$board           = null
 	_$tile            = null
 	_tiles            = []    # Array of tile object information
+	_tilesInVertOrder = []    # Array of tiles in top to bottom visual order
 	_numTiles         = 0     # Total number of tiles in the qset
 	_ids              = []    # Array which holds random numbers for the tile Id's
 	_tilesInSequence  = 0     # Count for the number of tiles in the OrderArea div
-	_sequence         = [-1]  # Order of the submitted tiles
+	_sequence         = []  # Order of the submitted tiles
 	_attempts         = 0     # Number of tries the current user has made
 	_playDemo         = true  # Boolean for demo on/off
 	_insertAfter      = 0     # Number to where to drop tile inbetween other tiles
@@ -14,6 +15,13 @@ Namespace('Sequencer').Engine = do ->
 	_freeAttempts	  = 0     # Number of attempts before the penalty kicks in
 	_practiceMode     = false # true = practice mode, false = assessment mode
 	currentPenalty    = 0
+
+	_keyboardInstructions = 'Use the Tab key to navigate through the terms from top to bottom, left to right. ' +
+		'Hold the Shift key when pressing the Tab key to navigate in reverse. ' +
+		'You will reach the sequenced terms after navigating through all of the unsorted terms. ' +
+		'Press the Right Arrow key when an unsorted term is selected to move it to the end of the sequence. ' +
+		'Press the Left Arrow key when a sequenced term is selected to remove it from the sequence. ' +
+		'Press the Up Arrow or Down Arrow keys when a sequenced term is selected to move it up or down in the sequence.'
 
 	# The current dragging term and its position info
 	_curterm      = null
@@ -82,7 +90,7 @@ Namespace('Sequencer').Engine = do ->
 		_curterm.style.transition = 'none'
 
 		_relativeX = (e.clientX - $('#'+_curterm.id).offset().left)
-		_relativeY = (e.clientY - $('#'+_curterm.id).offset().top)
+		_relativeY = (e.clientY - $('#'+_curterm.id).offset().top + 15)
 
 		_curXstart = (e.clientX)
 		_curYstart = (e.clientY-10)
@@ -277,6 +285,165 @@ Namespace('Sequencer').Engine = do ->
 			_clearStyle.style.transition = '120ms'
 		, 0
 
+	_locateNextTile = (currentTile, backwards = false) ->
+		currentId = ~~currentTile.id
+		targetTile = null
+
+		# keep track of which tiles are still unordered to traverse them more easily
+		unorderedTiles = _tilesInVertOrder.filter (t) ->
+			return false unless t
+			_sequence.indexOf(t.id) < 0
+
+		# figure out if the current tile is ordered or not
+		indexInOrder = _sequence.indexOf(currentId)
+
+		# current tile is ordered
+		if indexInOrder > -1
+			if backwards
+				# current tile is not the first ordered tile
+				if indexInOrder > 0
+					# move to the previous ordered tile
+					targetTile = _tiles[_sequence[indexInOrder-1]]
+				else
+					# if there are remaining unordered tiles
+					if unorderedTiles.length
+						# move to the lowest unordered tile
+						targetTile = unorderedTiles[unorderedTiles.length-1]
+			else
+				# current tile is not the last ordered tile
+				if indexInOrder + 1 < _sequence.length
+					# move to the next ordered tile
+					targetTile = _tiles[_sequence[indexInOrder+1]]
+
+		else
+			# check all of the unordered tiles until we find the current one
+			for tile, index in unorderedTiles
+				# now get the next one based on the direction we're looking in
+				if tile.id == currentId
+					if backwards
+						# current tile is not the highest unordered tile
+						if index > 0
+							targetTile = unorderedTiles[index-1]
+					else
+						# current tile is the highest unordered tile
+						if index + 1 == unorderedTiles.length
+							# select the first organized tile instead, if there are any
+							if _sequence.length
+								targetTile = _tiles[_sequence[0]]
+						else
+							# select the next lowest unordered tile
+							targetTile = unorderedTiles[index+1]
+					break
+
+		unless targetTile
+			return false
+		return document.getElementById(targetTile.id)
+
+	_keyDownEvent = (e) ->
+		_curterm = e.target
+
+		switch e.key
+
+			when 'Tab' # select the next tile depending on position and sort status
+				e.stopPropagation()
+				e.preventDefault()
+
+				nextTile = _locateNextTile(_curterm, e.shiftKey)
+				if nextTile
+					nextTile.focus()
+					# also bring it up to the top of the pile so we can actually see it
+					nextTile.style.zIndex = ++_zIndex
+				else
+					# we're on the highest tile and have pressed shift+tab
+					if e.shiftKey
+						document.getElementById('keyboard-instructions').focus()
+					# we're on the lowest tile and have pressed tab
+					else
+						# if all tiles have been ordered, select the submit button
+						if _tilesInSequence == _numTiles
+							document.getElementById('submit').focus()
+						# otherwise select the wraparound button
+						else
+							document.getElementById('wraparound').focus()
+
+			when 'Enter' # reveal clue if the tile has one
+				if _tiles[_curterm.id].clue.length > 0
+					$('header').addClass 'slideUp'
+					_revealClue _curterm.id
+
+			when 'ArrowLeft' # put it back in the tile pile
+				if (i = _sequence.indexOf(~~_curterm.id)) != -1
+					_sequence.splice(i,1)
+					_tilesInSequence--
+
+					_curterm.style.transform =
+					_curterm.style.msTransform =
+					_curterm.style.webkitTransform = "translate(#{_tiles[_curterm.id].xpos}px,#{_tiles[_curterm.id].ypos}px) rotate(#{_tiles[_curterm.id].angle}deg)"
+
+					_curterm.style.position = 'fixed'
+
+					$('#message').remove()
+					$('#tileSection').removeClass 'fade'
+					$('#submit').prop('disabled', true)
+					$('#submit').removeClass 'enabled'
+
+					$('#wraparound').removeAttr 'inert'
+
+					_setAriaLabelsForTiles()
+					_updateWraparoundAriaLabel()
+
+					_assistiveStatusUpdate(_tiles[_curterm.id].name + ' unsorted. ' + _tilesInSequence + ' of ' + _numTiles + ' tiles sorted.')
+
+			when 'ArrowRight' # put it in the ordered list (at the bottom)
+				if _sequence.indexOf(~~_curterm.id) is -1
+					_sequence.push ~~_curterm.id
+					_tilesInSequence++
+
+					_curterm.style.position = 'absolute'
+
+					if _numTiles is 0 then $('#orderInstructions').addClass 'show'
+					else $('#orderInstructions').addClass 'hide'
+
+					$('#message').remove()
+					if _tilesInSequence == _numTiles
+						_tilesSequenced()
+						$('#wraparound').attr 'inert', 'true'
+
+					_setAriaLabelsForTiles()
+					_updateWraparoundAriaLabel()
+
+					_assistiveStatusUpdate(_tiles[_curterm.id].name + ' sorted. '  + _tilesInSequence + ' of ' + _numTiles + ' tiles sorted.')
+					# approximate the y position of this tile within the drag area then scroll to that so it remains visible
+					# math: position in sequence * tile height + padding between tiles
+					sequencedYPos = _sequence.indexOf(~~_curterm.id) * 61 + 10
+					document.getElementById('dragContainer').scrollTop = sequencedYPos
+
+			when 'ArrowUp' # sort upwards
+				if (i = _sequence.indexOf(~~_curterm.id)) != -1 and i != 0
+					[_sequence[i - 1], _sequence[i]] = [_sequence[i], _sequence[i - 1]]
+
+					_setAriaLabelsForTiles()
+
+					_assistiveStatusUpdate(_tiles[_curterm.id].name + ' moved to position   ' + i + ' of ' + _tilesInSequence)
+
+			when 'ArrowDown' # sort downwards
+				if (i = _sequence.indexOf(~~_curterm.id)) != -1 and i != _sequence.length - 1
+					[_sequence[i + 1], _sequence[i]] = [_sequence[i], _sequence[i + 1]]
+
+					_setAriaLabelsForTiles()
+
+					_assistiveStatusUpdate(_tiles[_curterm.id].name + ' moved to position   ' + (i + 2) + ' of ' + _tilesInSequence)
+
+
+		# Remove the empty slots
+		for i in [0..._sequence.length]
+			if _sequence[i] is -1
+				_sequence.splice(i, 1)
+
+		_curterm = null
+		_repositionOrderedTiles()
+		_updateTileNums()
+
 	_startDemo = ->
 		demoScreen = _.template $('#demo-window').html()
 
@@ -284,17 +451,35 @@ Namespace('Sequencer').Engine = do ->
 			_freeAttempts = 'unlimited'
 			_qset.options.penalty = 0
 
+		_introInstructions = 'Welcome to the ' + _qset.name + ' Sequencer widget. ' +
+			'You will be presented with a number of terms. ' +
+			'Your objective is to order all of the terms correctly in the sequence list. ' +
+			'You have ' + _freeAttempts + ' attempts to find the correct order. ' +
+			'Your highest score will be saved. ' +
+			_keyboardInstructions + ' ' +
+			'Press the Space or Enter key to begin.'
+
 		_$demo = $ demoScreen
 			demoTitle: ''
-			freeAttempts : _freeAttempts or "unlimited"
+			freeAttempts: _freeAttempts or "unlimited"
+			introInstructions: _introInstructions
 		$('body').append _$demo
 		$('.demoButton').offset()
-		$('.demoButton').addClass 'show'
+		$('.demoButton').addClass('show').focus()
 
 		# Exit demo
-		$('.demoButton').on 'click', ->
-			$('#demo').remove()
-			$('.fade').removeClass 'active'
+		# two listeners so we can handle mouse activation and keyboard activation separately
+		$('.demoButton').on 'mousedown', _closeDemo
+		# in the case of the keyboard, we want to auto-focus the highest tile after closing the demo
+		$('.demoButton').on 'keydown', (e) ->
+			if e.key == ' ' or e.key == 'Enter'
+				_closeDemo()
+				document.getElementById(_tilesInVertOrder[0].id).focus()
+
+	_closeDemo = () ->
+		$('#demo').remove()
+		$('.fade').removeClass 'active'
+		$('.board').removeAttr 'inert'
 
 	_makeRandomIdForTiles = (needed) ->
 		idArray = []
@@ -341,6 +526,7 @@ Namespace('Sequencer').Engine = do ->
 			score: "0%"
 			penalty: ~~_qset.options.penalty
 			freeAttempts: _freeAttempts
+			keyboardInstructions: 'Keyboard instructions: ' + _keyboardInstructions + ' Press the Tab key to return to the nearest tile.'
 
 		cWidth = 250
 		cHeight = 280
@@ -362,9 +548,12 @@ Namespace('Sequencer').Engine = do ->
 		# Set the positions for each tile.
 		_setInitialTilePosition cWidth, cHeight
 
+		_updateWraparoundAriaLabel()
+
 		$('.tile').on 'touchstart', _mouseDownEvent
 		$('.tile').on 'MSPointerDown', _mouseDownEvent
 		$('.tile').on 'mousedown', _mouseDownEvent
+		$('.tile').on 'keydown', _keyDownEvent
 
 		# Reveal the clue for clicked tile
 		$('#dragContainer').on 'mousedown', '.clue', ->
@@ -379,9 +568,67 @@ Namespace('Sequencer').Engine = do ->
 		$('#submit').on 'click', ->
 			_submitSequence()
 
+		$('#submit').on 'keydown', (e) ->
+			if e.key == 'Tab' and e.shiftKey
+				e.preventDefault()
+				e.stopPropagation()
+				document.getElementById(_sequence[_sequence.length-1]).focus()
+
 		$('.board').on 'click', '#clueHeader', ->
 			$('header').removeClass 'slideUp'
 			$('#clueHeader').transition({height: 0}, 500);
+
+		$('#keyboard-instructions').on 'click', _openKeyboardInstructions
+
+		$('#keyboard-close').on 'mousedown', _closeKeyboardInstructions
+		$('#keyboard-close').on 'keypress', (e) ->
+			if e.key == ' ' or e.key == 'Enter'
+				_closeKeyboardInstructions()
+				document.getElementById('keyboard-instructions').focus()
+
+		$('#keyboard-instructions').on 'keydown', (e) ->
+			if e.key == 'Tab' and not e.shiftKey
+				e.preventDefault()
+				e.stopPropagation()
+				unorderedTiles = _tilesInVertOrder.filter (t) ->
+					return false unless t
+					_sequence.indexOf(t.id) < 0
+				if unorderedTiles.length
+					document.getElementById(unorderedTiles[0].id).focus()
+				else
+					document.getElementById(_sequence[0]).focus()
+
+		$('#wraparound').on 'click', ->
+			unorderedTiles = _tilesInVertOrder.filter (t) ->
+				return false unless t
+				_sequence.indexOf(t.id) < 0
+			document.getElementById(unorderedTiles[0].id).focus()
+		$('#wraparound').on 'keydown', (e) ->
+			if e.key == 'Tab' and e.shiftKey
+				e.preventDefault()
+				e.stopPropagation()
+				if _sequence.length
+					document.getElementById(_sequence[_sequence.length-1]).focus()
+				else
+					# this array has a lot of empty space in it, the last element isn't necessarily the last tile
+					# we have to traverse it backwards to find the last tile
+					highestTile = null
+					for i in [_tilesInVertOrder.length..0]
+						if _tilesInVertOrder[i] and not _sequence.includes[_tilesInVertOrder[i].id]
+							highestTile = _tilesInVertOrder[i]
+							break
+					if highestTile
+						document.getElementById(highestTile.id).focus()
+
+	_openKeyboardInstructions = () ->
+		$('#keyboard-instructions-window').show()
+		$('.fade').addClass 'active'
+		$('.board').attr 'inert', 'true'
+		document.getElementById('keyboard-close').focus()
+	_closeKeyboardInstructions = () ->
+		$('#keyboard-instructions-window').hide()
+		$('.fade').removeClass 'active'
+		$('.board').removeAttr 'inert'
 
 	_resizeTitle = (length) ->
 		if length < 20
@@ -442,6 +689,29 @@ Namespace('Sequencer').Engine = do ->
 		s.mozTransform = transform
 		s.transform = transform
 
+	_setAriaLabelsForTiles = () ->
+		for tile in _tiles
+			_setAriaLabelForTile(tile) if tile
+
+	_setAriaLabelForTile = (tile) ->
+		tileLabel = tile.name + '.'
+		sequencedIndex = _sequence.indexOf(tile.id)
+		if sequencedIndex >= 0
+			tileLabel = tileLabel + ' This tile is in the sequence at position ' + (sequencedIndex + 1) + '.'
+		else
+			tileLabel = tileLabel + ' This tile has not been added to the sequence.'
+		if tile.clue is ''
+			$('#'+tile.id).children('.clue').remove()
+		else
+			tileLabel = tileLabel + ' This tile has a clue, press enter to review it.'
+		$('#'+tile.id).attr('aria-label', tileLabel)
+
+	_updateWraparoundAriaLabel = () ->
+		labelPlusRemaining = 'Press Space or Enter to select the first unsorted tile, there are ' +
+			(_numTiles - _tilesInSequence) +
+			' unsorted tiles remaining.'
+		$('#wraparound').attr('aria-label', labelPlusRemaining)
+
 	# Set random tile position, angle, and z-index
 	_setInitialTilePosition = (maxWidth, maxHeight) ->
 
@@ -470,13 +740,19 @@ Namespace('Sequencer').Engine = do ->
 			if textLength >= 40
 				$('#'+tile.id).css
 					'font-size': 13+'px'
-			# Remove the clue symbol if there is no hint available
-			if _tiles[tile.id].clue is ''
-				$('#'+tile.id).children('.clue').remove()
+		_setAriaLabelsForTiles()
+
+		_tilesInVertOrder = _tiles.toSorted (a,b) ->
+			if a.ypos < b.ypos
+				return -1
+			if a.ypos == b.ypos
+				if a.xpos < b.xpos
+					return -1
+				return 0
+			return 1
 
 	# Show the clue from the id of the tile clicked
 	_revealClue = (id) ->
-
 
 		# Get data for new clue
 		tileClue = _.template $('#tile-clue-window').html()
@@ -516,6 +792,7 @@ Namespace('Sequencer').Engine = do ->
 		$('#tileSection').append message
 		message.addClass 'show'
 		$('#tileSection').addClass 'fade'
+		$('#submit').prop('disabled', false)
 		$('#submit').addClass 'enabled'
 
 	# Answer submitted by user
@@ -579,12 +856,18 @@ Namespace('Sequencer').Engine = do ->
 		else
 			_singleDigitFlipCorrect 1, results
 
+		$('.board').attr 'inert', 'true'
+		$('#submit').prop('disabled', true)
+
 	_showScoreMessage = (results) ->
+		_resultsButtonAriaLabel = ''
+
 		# Correct sequence submitted
 		if results is _numTiles
 			# Change button function for end
 			_sendScores()
 			_end(no)
+			_resultsButtonAriaLabel = 'You have put all of the terms in the correct order. Press Space or Enter to visit the score screen.'
 			$('#resultsButton').html "Visit Score Screen"
 			$('#resultsButton').addClass 'show'
 			$('#correctMessage').addClass 'show'
@@ -592,6 +875,7 @@ Namespace('Sequencer').Engine = do ->
 				$('.fade').removeClass 'active'
 				$('#resultsOuter').remove()
 				$('.board').removeClass 'dim'
+				$('.board').removeAttr 'inert'
 				_end()
 
 		# Incorrect sequence
@@ -599,12 +883,18 @@ Namespace('Sequencer').Engine = do ->
 			$("#bestcircle").html highestScore + "%"
 			$("#circle").html Math.round((results / _numTiles) * 100) + "%"
 
+			_resultsButtonAriaLabel = results + ' out of ' + _numTiles +
+				' tiles sorted correctly, highest score so far is ' + highestScore + '.'
+
+			$('#submitScoreButton').attr('aria-label', 'Press Space or Enter to finish with your best score of ' + highestScore + '%.')
 			$('#submitScoreButton').html "Or finish with your best score of " + highestScore + "%"
 			$('#submitScoreButton').addClass "show"
 			$('#submitScoreButton').on 'click', ->
 				$('#resultsOuter').remove()
 				$('.bestscore').html highestScore + "%"
 				$('.confirmDialog').addClass 'show'
+				$('.confirmDialog').removeAttr 'inert'
+				$('.confirmDialog').children('button').attr('tabindex', 0)
 				$('#confirmBestScoreButton').on 'click', ->
 					_sendScores()
 					_end(yes)
@@ -613,14 +903,22 @@ Namespace('Sequencer').Engine = do ->
 					$('.board').removeClass 'dim'
 					$('.fade').removeClass 'active'
 					$('.confirmDialog').removeClass 'show'
+					$('.confirmDialog').attr 'inert', 'true'
+					$('.board').removeAttr 'inert'
+					$('#submit').prop('disabled', false)
+					$('.confirmDialog').children('button').attr('tabindex', -1)
 
 			# Still have more attempts
 			if _freeAttempts > 0 or _practiceMode
 				# Change button function for retry
 				if _practiceMode
+					_resultsButtonAriaLabel += ' Press Space or Enter to try again.'
 					$('#resultsButton').html "Try Again!"
 				else
-					$('#resultsButton').html "Try Again!<div>(" + (_freeAttempts) + " more guesses)</div>"
+					_guessOrGuesses = if _freeAttempts == 1 then 'guess' else 'guesses'
+					_resultsButtonAriaLabel += ' You have ' + _freeAttempts + ' ' + _guessOrGuesses + ' remaining.' +
+						' Press Space or Enter to try again.'
+					$('#resultsButton').html "Try Again!<div>(" + (_freeAttempts) + " more " + _guessOrGuesses + ")</div>"
 
 				$('#resultsButton').addClass 'show'
 				$('#lostPointsMessage').addClass 'show'
@@ -629,13 +927,18 @@ Namespace('Sequencer').Engine = do ->
 					$('#resultsOuter').remove()
 					$('.board').removeClass 'dim'
 					$('.fade').removeClass 'active'
+					$('.board').removeAttr 'inert'
+					$('#submit').prop('disabled', false)
+					$('.confirmDialog').children('button').attr('tabindex', -1)
 
 			# Used last attempt
 			else
+				_resultsButtonAriaLabel += ' You have no guesses remaining. Press Space or Enter to visit the score screen.'
 				_sendScores()
 				_end(no)
 				# Change button function for end
 				$('#resultsButton').html "Visit Score Screen"
+				$('#submitScoreButton').attr('aria-label', null)
 				$('#submitScoreButton').hide()
 				$('#attempts-info').hide()
 				$('#resultsButton').addClass 'show'
@@ -645,6 +948,9 @@ Namespace('Sequencer').Engine = do ->
 					$('.board').removeClass 'dim'
 					$('.fade').removeClass 'active'
 					_end()
+
+		$('#resultsButton').attr('aria-label', _resultsButtonAriaLabel)
+		$('#resultsButton').focus()
 
 	# Flip the numbers until flip to number correct
 	_singleDigitFlipCorrect = (ctr, results) ->
@@ -737,6 +1043,9 @@ Namespace('Sequencer').Engine = do ->
 
 				_doubleDigitFlipCorrect ++ctr, results
 		, 120
+
+	_assistiveStatusUpdate = (status) ->
+		$('.ariaLiveStatus').html status
 
 	_sendScores = () ->
 		answer = 0
