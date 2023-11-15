@@ -3,7 +3,7 @@
   "materia": {
     "cleanName": "sequencer"
   },
-  "version": "1.0.5",
+  "version": "1.0.6",
   "scripts": {
     "start": "mwdk-start",
     "build": "mwdk-build-prod",
@@ -12,7 +12,7 @@
     "test-ci": "echo 'tests not implemented'"
   },
   "dependencies": {
-    "materia-widget-development-kit": "3.0.0"
+    "materia-widget-development-kit": "^3.0.1"
   },
   "license": "AGPL-3.0",
   "description": "Sequencer is about teaching ordered events and sequences. Items are presented to students in a random order for them to re-arrange. Designed for use in Materia.",
