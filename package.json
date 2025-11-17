@@ -3,7 +3,7 @@
   "materia": {
     "cleanName": "sequencer"
   },
-  "version": "1.0.6",
+  "version": "1.0.7",
   "scripts": {
     "start": "mwdk-start",
     "build": "mwdk-build-prod",
