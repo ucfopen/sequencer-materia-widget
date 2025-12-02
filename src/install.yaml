@@ -33,3 +33,5 @@ meta_data:
   excerpt: >
     Students must order a random set of
     words or phrases in the correct order.
+  update_method: github
+  repo: ucfopen/sequencer-materia-widget
